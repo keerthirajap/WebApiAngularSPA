@@ -1,0 +1,39 @@
+<div class="row ">
+    <div class="col-4">
+    </div>
+    <div class="col-4 mt-5 justify-content-center">
+        <form>
+            <div class="card ">
+
+                <h5 class="card-header text-center">Login</h5>
+                <div class="card-body">
+
+                    <div class="form-group">
+                        <label for="lblUserName">User Name</label>
+                        <input type="text" class="form-control" id="inputUserName" aria-describedby="emailHelp"
+                        name="inputUserName" placeholder="Enter User Name" [(ngModel)]="userLogin.UserName">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lblUPassword">Password</label>
+                        <input type="password" class="form-control" id="inputPassword" placeholder="Password"
+                        name="inputPassword"    [(ngModel)]="userLogin.Password">
+                    </div>
+                    <div class="custom-control custom-checkbox mr-sm-2 text-center">
+                        <input type="checkbox" class="custom-control-input" id="customControlAutosizing">
+                        <label class="custom-control-label" for="customControlAutosizing">Remember Me</label>
+                    </div>
+                </div>
+
+                <div class="card-footer text-center">
+                    <button type="submit" class="btn btn-primary" (click)='loginUserButtonClick()'>
+                        <i class="fas fa-arrow-circle-right mr-2" aria-hidden="true"></i>
+                        Login</button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+    <div class="col-4">
+    </div>
+</div>

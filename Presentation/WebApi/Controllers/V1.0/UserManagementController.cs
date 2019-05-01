@@ -165,7 +165,7 @@
         }
 
         [AllowAnonymous]
-        [HttpGet("AuthenticateUser")]
+        [HttpPost("AuthenticateUser")]
         [ValidateModelState]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)] //For bad request
