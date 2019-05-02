@@ -15,4 +15,15 @@
     </Reference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Constants\" />
+    <Folder Include="DatabaseConnection\" />
+    <Folder Include="ErrorHandling\Email\" />
+    <Folder Include="ErrorHandling\Notification\" />
+    <Folder Include="Logging\" />
+    <Folder Include="Authentication\" />
+    <Folder Include="Auditing\" />
+    <Folder Include="Communication\" />
+  </ItemGroup>
+
 </Project>

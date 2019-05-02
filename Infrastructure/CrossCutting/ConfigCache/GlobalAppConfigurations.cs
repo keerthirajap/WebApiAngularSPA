@@ -5,18 +5,11 @@
     using System.Runtime.Caching;
     using System.Text;
 
-    public interface IGlobalConfigurationInMemoryCache
+    public interface IGlobalAppConfigurations
     {
         void AddKeysAndValues(Dictionary<string, object> keyValuePairs);
 
         object GetValue(string key);
-    }
-
-    public class ConfigurationModel
-    {
-        public string Key { get; set; }
-
-        public object Value { get; set; }
     }
 
     public abstract class CachingProviderBase
@@ -51,15 +44,15 @@
         }
     }
 
-    public class GlobalConfigurationInMemoryCache : CachingProviderBase, IGlobalConfigurationInMemoryCache
+    public class GlobalAppConfigurations : CachingProviderBase, IGlobalAppConfigurations
     {
         #region Singleton
 
-        protected GlobalConfigurationInMemoryCache()
+        protected GlobalAppConfigurations()
         {
         }
 
-        public static GlobalConfigurationInMemoryCache Instance
+        public static GlobalAppConfigurations Instance
         {
             get
             {
@@ -79,7 +72,7 @@
 
         private class Nested
         {
-            internal static readonly GlobalConfigurationInMemoryCache Instance = new GlobalConfigurationInMemoryCache();
+            internal static readonly GlobalAppConfigurations Instance = new GlobalAppConfigurations();
 
             // Explicit static constructor to tell C# compiler
             // not to mark type as beforefieldinit

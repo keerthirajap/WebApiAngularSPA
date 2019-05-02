@@ -58,7 +58,7 @@ namespace WebApi
                                                 .Select(item => new KeyValuePair<string, object>(item.Key, item.Value))
                                                 .ToDictionary(x => x.Key, x => x.Value);
 
-            GlobalConfigurationInMemoryCache.Instance.AddKeysAndValues(ApplicationConfigurations);
+            GlobalAppConfigurations.Instance.AddKeysAndValues(ApplicationConfigurations);
 
             // configure strongly typed settings objects
             var appSettingsSection = this.Configuration.GetSection("AppSettings");
