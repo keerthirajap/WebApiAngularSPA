@@ -1,6 +1,9 @@
 namespace WebApi
 {
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Text;
+    using CrossCutting.ConfigCache;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Builder;
@@ -18,6 +21,8 @@ namespace WebApi
 
     public class Startup
     {
+        public static Dictionary<string, object> ApplicationConfigurations { get; private set; }
+
         public IConfiguration Configuration { get; }
 
         public Startup(IConfiguration configuration)
@@ -48,13 +53,22 @@ namespace WebApi
 
             services.AddApiVersioning();
 
+            ApplicationConfigurations = this.Configuration.GetSection("AppSettings")
+                                                .GetChildren()
+                                                .Select(item => new KeyValuePair<string, object>(item.Key, item.Value))
+                                                .ToDictionary(x => x.Key, x => x.Value);
+
+            GlobalConfigurationInMemoryCache.Instance.AddKeysAndValues(ApplicationConfigurations);
+
             // configure strongly typed settings objects
             var appSettingsSection = this.Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
 
             // configure jwt authentication
             var appSettings = appSettingsSection.Get<AppSettings>();
+
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+
             services.AddAuthentication(x =>
             {
                 x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -77,6 +91,7 @@ namespace WebApi
 
             // configure DI for application services
             services.AddScoped<IUserService, UserService>();
+            services.AddSingleton<IConfiguration>(this.Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

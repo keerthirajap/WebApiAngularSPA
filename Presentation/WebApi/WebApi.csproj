@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Infrastructure\CrossCutting\CrossCutting.csproj" />
     <ProjectReference Include="..\BindingModel\BindingModel.csproj" />
   </ItemGroup>
 
