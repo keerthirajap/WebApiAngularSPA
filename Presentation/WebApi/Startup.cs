@@ -1,23 +1,32 @@
-namespace WebApi
+﻿namespace WebApi
 {
+    using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
     using System.Text;
+    using System.Threading.Tasks;
+    using Autofac;
+    using Autofac.Extensions.DependencyInjection;
+    using AutoMapper;
     using CrossCutting.ConfigCache;
+    using ElmahCore.Mvc;
+    using ElmahCore.Sql;
+    using IOC;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.HttpsPolicy;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Authorization;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Hosting;
+    using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Options;
     using Microsoft.IdentityModel.Tokens;
     using Newtonsoft.Json.Serialization;
+    using Swashbuckle.AspNetCore.Swagger;
     using WebApi.Infrastructure.Helpers;
-    using WebApi.Service;
 
     public class Startup
     {
@@ -25,33 +34,52 @@ namespace WebApi
 
         public IConfiguration Configuration { get; }
 
+        private readonly NLog.Logger logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+
+        public Autofac.IContainer ApplicationContainer { get; private set; }
+
         public Startup(IConfiguration configuration)
         {
             this.Configuration = configuration;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            services.Configure<ApiBehaviorOptions>(options =>
+            services.AddAutoMapper();
+
+            services.AddElmah(options =>
             {
-                options.SuppressModelStateInvalidFilter = true;
-                options.SuppressInferBindingSourcesForParameters = true;
+                //options.CheckPermissionAction = context => context.User.Identity.IsAuthenticated;
+                options.Path = @"elmah";
+            });
+            services.AddElmah<SqlErrorLog>(options =>
+            {
+                options.ConnectionString = "Data Source=.;Initial Catalog=MyCompanyAppDB;Integrated Security=True"; // DB structure see here: https://bitbucket.org/project-elmah/main/downloads/ELMAH-1.2-db-SQLServer.sql
             });
 
             services.AddCors();
-            services.AddMvcCore(config =>
-            {
-            })
-              .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
-            services.AddControllers()
-                .AddNewtonsoftJson(options =>
-                {
-                    options.SerializerSettings.ContractResolver = new DefaultContractResolver();
-                    options.SerializerSettings.DateFormatString = "MM/dd/yyyy HH:mm:ss";
-                });
 
-            services.AddApiVersioning();
+            services.AddMvc()
+                 .AddJsonOptions(options =>
+                 {
+                     options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                     options.SerializerSettings.DateFormatString = "MM/dd/yyyy HH:mm:ss";
+                 })
+                    .AddDataAnnotationsLocalization()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info
+                {
+                    Version = "v1",
+                    Title = "Test API",
+                    Description = "ASP.NET Core Web API"
+                });
+            });
+
+            //services.AddApiVersioning();
 
             ApplicationConfigurations = this.Configuration.GetSection("AppSettings")
                                                 .GetChildren()
@@ -60,7 +88,6 @@ namespace WebApi
 
             GlobalAppConfigurations.Instance.AddKeysAndValues(ApplicationConfigurations);
 
-            // configure strongly typed settings objects
             var appSettingsSection = this.Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
 
@@ -89,14 +116,34 @@ namespace WebApi
                 };
             });
 
-            // configure DI for application services
-            services.AddScoped<IUserService, UserService>();
             services.AddSingleton<IConfiguration>(this.Configuration);
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            var builder = new ContainerBuilder();
+            builder.Populate(services);
+            builder.RegisterModule(new ServiceIOC("InstancePerLifetimeScope"));
+            builder.RegisterModule(new DatabaseIOC("Data Source=.;Initial Catalog=MyCompanyAppDB;Integrated Security=True", "InstancePerLifetimeScope"));
+
+            this.ApplicationContainer = builder.Build();
+
+            // Create the IServiceProvider based on the container.
+            return new AutofacServiceProvider(this.ApplicationContainer);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            // Add a sample response header
+            app.Use(async (context, nextMiddleware) =>
+            {
+                context.Response.OnStarting(() =>
+                {
+                    context.Response.Headers.Add("RequestId", context.TraceIdentifier);
+                    return Task.FromResult(0);
+                });
+                await nextMiddleware();
+            });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -106,24 +153,17 @@ namespace WebApi
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
-            // global cors policy
-            app.UseCors(x => x
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader());
-
+            app.UseElmah();
             app.UseHttpsRedirection();
 
-            app.UseRouting();
+            app.UseCors(option => option.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
+            app.UseMvc();
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
             {
-                endpoints.MapControllers();
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Test API V1");
             });
-
             app.UseApiVersioning();
         }
     }

@@ -1,13 +1,13 @@
-﻿namespace WebApi.Infrastructure.Filters
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Mvc.ApplicationModels;
-    using Microsoft.AspNetCore.Mvc.Authorization;
+﻿using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-    public class AddAuthorizeFiltersControllerConvention : IControllerModelConvention
+namespace WebApi.Infrastructure.Filters
+{
+    public class AuthorizationFilter : IControllerModelConvention
     {
         public void Apply(ControllerModel controller)
         {

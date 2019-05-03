@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CrossCutting.ConfigCache
+﻿namespace CrossCutting.ConfigCache
 {
-    class GlobalAppSettings
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+
+    internal class GlobalAppSettings
     {
     }
 }

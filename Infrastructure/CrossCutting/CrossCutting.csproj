@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -7,6 +7,9 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Options" Version="2.2.0" />
     <PackageReference Include="System.Runtime.Caching" Version="4.5.0" />
+    <PackageReference Include="Autofac.Extras.DynamicProxy" Version="4.5.0" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
+    <PackageReference Include="NLog" Version="4.6.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,10 +23,8 @@
     <Folder Include="DatabaseConnection\" />
     <Folder Include="ErrorHandling\Email\" />
     <Folder Include="ErrorHandling\Notification\" />
-    <Folder Include="Logging\" />
     <Folder Include="Authentication\" />
     <Folder Include="Auditing\" />
     <Folder Include="Communication\" />
   </ItemGroup>
-
 </Project>
