@@ -11,5 +11,7 @@
         Task<long> RegisterUserAsync(User user);
 
         Task<User> GetUserDetailsByUserNameAsync(string userName);
+
+        Task<(User, UserAuthentication)> AuthenticateUserAsync(User user);
     }
 }

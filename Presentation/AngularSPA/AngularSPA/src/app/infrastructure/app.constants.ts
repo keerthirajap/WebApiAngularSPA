@@ -5,9 +5,9 @@ import { Injectable } from '@angular/core';
   })
 
 export class Configuration {
-    public server = 'https://localhost:44333/';
+    public server = 'https://localhost:44388/';
     public apiUrl = 'api/';
-    public serverWithApiUrl = this.server + this.apiUrl;
-    public apiVersion = '?api-version=1.0';
+    public apiVersion = 'v1.0/';
+    public serverApiVersionUrl = this.server + this.apiUrl + this.apiVersion;
     public userManagementApiPath = 'UserManagement/';
 }

@@ -6,29 +6,25 @@ import { map, catchError } from 'rxjs/operators';
 import { Configuration } from '../../infrastructure/app.constants';
 
 // Custom Component Imports
-import { UserLogin } from '../models/userLogin';
-import { UserAuthenticationModel } from '../models/userAuthenticationModel';
+import { UserModel } from '../../models/userModel';
 import { ListResponse, SingleResponse, Response } from '../../models/apiResponse';
 
-
 @Injectable()
-export class UserLoginService {
+export class UserManagementService {
 
     private actionUrl: string;
     private apiVersion: string;
-    public userLogin: UserLogin = new UserLogin();
-    private userLoginResponse: SingleResponse<UserAuthenticationModel>;
 
     constructor(private http: HttpClient, private configuration: Configuration) {
         this.actionUrl = this.configuration.serverApiVersionUrl + this.configuration.userManagementApiPath;
     }
 
-    public authenticateUser(user: UserLogin): Observable<SingleResponse<UserAuthenticationModel>> {
+    public getUserDetailsByUserName(userName: string): Observable<SingleResponse<UserModel>> {
 
-        return this.http.post<SingleResponse<UserAuthenticationModel>>(this.actionUrl + 'User/AuthenticateUser'
-            , user)
-            .pipe(catchError(this.handleError));
-    }
+        return this.http.get<SingleResponse<UserModel>>(this.actionUrl + 'User/' + userName)
+          .pipe(catchError(this.handleError));
+      }
+
 
 
 

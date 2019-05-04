@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Linq;
+    using System.Security.Claims;
     using System.Text;
     using System.Threading.Tasks;
     using Autofac;
@@ -26,10 +27,16 @@
     using Microsoft.IdentityModel.Tokens;
     using Newtonsoft.Json.Serialization;
     using Swashbuckle.AspNetCore.Swagger;
+    using WebApi.Infrastructure.Filters;
     using WebApi.Infrastructure.Helpers;
 
     public class Startup
     {
+        public Startup(IConfiguration configuration)
+        {
+            this.Configuration = configuration;
+        }
+
         public static Dictionary<string, object> ApplicationConfigurations { get; private set; }
 
         public IConfiguration Configuration { get; }
@@ -38,14 +45,16 @@
 
         public Autofac.IContainer ApplicationContainer { get; private set; }
 
-        public Startup(IConfiguration configuration)
-        {
-            this.Configuration = configuration;
-        }
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+
+                //  options.SuppressInferBindingSourcesForParameters = true;
+            });
+
             services.AddAutoMapper();
 
             services.AddElmah(options =>
@@ -60,13 +69,16 @@
 
             services.AddCors();
 
-            services.AddMvc()
+            services.AddMvc(options =>
+                        {
+                            options.Filters.Add(typeof(ValidateModelStateAttribute));
+                        })
                  .AddJsonOptions(options =>
                  {
                      options.SerializerSettings.ContractResolver = new DefaultContractResolver();
                      options.SerializerSettings.DateFormatString = "MM/dd/yyyy HH:mm:ss";
                  })
-                    .AddDataAnnotationsLocalization()
+
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddSwaggerGen(c =>
@@ -79,42 +91,55 @@
                 });
             });
 
-            //services.AddApiVersioning();
+            services.AddApiVersioning();
 
             ApplicationConfigurations = this.Configuration.GetSection("AppSettings")
                                                 .GetChildren()
                                                 .Select(item => new KeyValuePair<string, object>(item.Key, item.Value))
                                                 .ToDictionary(x => x.Key, x => x.Value);
+            GlobalAppConfigurations.Instance.AddKeysAndValues(ApplicationConfigurations);
+            ApplicationConfigurations = this.Configuration.GetSection("JwtAuthentication")
+                                    .GetChildren()
+                                    .Select(item => new KeyValuePair<string, object>(item.Key, item.Value))
+                                    .ToDictionary(x => x.Key, x => x.Value);
 
             GlobalAppConfigurations.Instance.AddKeysAndValues(ApplicationConfigurations);
 
-            var appSettingsSection = this.Configuration.GetSection("AppSettings");
-            services.Configure<AppSettings>(appSettingsSection);
+            ////var appSettingsSection = this.Configuration.GetSection("AppSettings");
+            ////services.Configure<AppSettings>(appSettingsSection);
 
-            // configure jwt authentication
-            var appSettings = appSettingsSection.Get<AppSettings>();
+            ////// configure jwt authentication
+            ////var appSettings = appSettingsSection.Get<AppSettings>();
 
-            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+            ////var key = Encoding.ASCII.GetBytes(appSettings.Secret);
 
-            services.AddAuthentication(x =>
-            {
-                x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(x =>
-            {
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                };
-            });
+            ////services.AddAuthentication(x =>
+            ////{
+            ////    x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            ////    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            ////    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            ////    x.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
+            ////})
+            ////.AddJwtBearer(x =>
+            ////{
+            ////    x.RequireHttpsMetadata = false;
+            ////    x.SaveToken = true;
+            ////    x.TokenValidationParameters = new TokenValidationParameters
+            ////    {
+            ////        ValidateIssuerSigningKey = true,
+            ////        IssuerSigningKey = new SymmetricSecurityKey(key),
+            ////        ValidateIssuer = false,
+            ////        ValidateAudience = false
+            ////    };
+            ////});
+
+            services.Configure<JwtAuthentication>(this.Configuration.GetSection("JwtAuthentication"));
+
+            // I use PostConfigureOptions to be able to use dependency injection for the configuration
+            // For simple needs, you can set the configuration directly in AddJwtBearer()
+            services.AddSingleton<IPostConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer();
 
             services.AddSingleton<IConfiguration>(this.Configuration);
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -122,7 +147,7 @@
             var builder = new ContainerBuilder();
             builder.Populate(services);
             builder.RegisterModule(new ServiceIOC("InstancePerLifetimeScope"));
-            builder.RegisterModule(new DatabaseIOC("Data Source=.;Initial Catalog=MyCompanyAppDB;Integrated Security=True", "InstancePerLifetimeScope"));
+            builder.RegisterModule(new DatabaseIOC(GlobalAppConfigurations.Instance.GetValue("SqlDbConnection").ToString(), "InstancePerLifetimeScope"));
 
             this.ApplicationContainer = builder.Build();
 
@@ -153,6 +178,7 @@
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             app.UseElmah();
             app.UseHttpsRedirection();
 
@@ -162,9 +188,54 @@
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
+                //https://localhost:44388/swagger/index.html
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Test API V1");
             });
             app.UseApiVersioning();
+        }
+
+        private class ConfigureJwtBearerOptions : IPostConfigureOptions<JwtBearerOptions>
+        {
+            private readonly IOptions<JwtAuthentication> _jwtAuthentication;
+
+            public ConfigureJwtBearerOptions(IOptions<JwtAuthentication> jwtAuthentication)
+            {
+                this._jwtAuthentication = jwtAuthentication ?? throw new System.ArgumentNullException(nameof(jwtAuthentication));
+            }
+
+            public void PostConfigure(string name, JwtBearerOptions options)
+            {
+                var jwtAuthentication = this._jwtAuthentication.Value;
+
+                options.ClaimsIssuer = jwtAuthentication.ValidIssuer;
+                options.IncludeErrorDetails = true;
+                options.RequireHttpsMetadata = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateActor = true,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtAuthentication.ValidIssuer,
+                    ValidAudience = jwtAuthentication.ValidAudience,
+                    IssuerSigningKey = jwtAuthentication.SymmetricSecurityKey,
+                    NameClaimType = ClaimTypes.NameIdentifier
+                };
+            }
+        }
+
+        public class JwtAuthentication
+        {
+            public string SecurityKey { get; set; }
+
+            public string ValidIssuer { get; set; }
+
+            public string ValidAudience { get; set; }
+
+            public SymmetricSecurityKey SymmetricSecurityKey => new SymmetricSecurityKey(Convert.FromBase64String(this.SecurityKey));
+
+            public SigningCredentials SigningCredentials => new SigningCredentials(this.SymmetricSecurityKey, SecurityAlgorithms.HmacSha256);
         }
     }
 }

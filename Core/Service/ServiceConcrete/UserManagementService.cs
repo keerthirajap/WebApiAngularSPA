@@ -26,5 +26,40 @@
         {
             return await this._userManagementRepository.RegisterUserAsync(user);
         }
+
+        public async Task<(User, UserAuthentication)> AuthenticateUserAsync(User user)
+        {
+            User userDetails = await this._userManagementRepository.GetUserDetailsByUserNameAsync(user.UserName);
+            UserAuthentication userAuthentication = new UserAuthentication();
+
+            if (userDetails == null || userDetails.UserId <= 0)
+            {
+                userAuthentication.IsUserAccountFound = false;
+            }
+            else
+            {
+                userAuthentication.UserName = user.UserName;
+                userAuthentication.IsUserAccountFound = true;
+
+                if (userDetails.IsLocked.Value)
+                {
+                    userAuthentication.IsUserAccountLocked = true;
+                }
+                else if (user.Password == userDetails.Password)
+                {
+                    if (userDetails.Password == user.Password)
+                    {
+                        userAuthentication.IsUserAuthenticated = true;
+                    }
+                }
+                else
+                {
+                    userAuthentication.IsUserAuthenticated = false;
+                    //Lock Acount
+                }
+            }
+
+            return (userDetails, userAuthentication);
+        }
     }
 }

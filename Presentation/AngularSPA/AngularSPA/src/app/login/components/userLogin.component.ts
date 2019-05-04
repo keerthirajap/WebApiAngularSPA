@@ -7,6 +7,7 @@ import { from } from 'rxjs';
 declare var $: any;
 
 import { UserLogin } from '../models/userLogin';
+import { UserAuthenticationModel } from '../models/userAuthenticationModel';
 import { ListResponse, SingleResponse, Response } from '../../models/apiResponse';
 
 // Custom Service Imports
@@ -20,7 +21,7 @@ import { UserLoginService } from '../services/userLogin.service';
 export class UserLoginComponent implements OnInit {
 
     public userLogin: UserLogin = new UserLogin();
-
+    private userLoginResponse: SingleResponse<UserAuthenticationModel>;
     constructor(
         private activatedRoute: ActivatedRoute,
         private router: Router,
@@ -31,7 +32,12 @@ export class UserLoginComponent implements OnInit {
     loginUserButtonClick(): void {
         this.userLoginService.authenticateUser(this.userLogin)
         .subscribe(
-          (singleResponse) => this.userLogin = singleResponse.Model,
+          (singleResponse) => {
+            this.userLoginResponse = singleResponse;
+            console.log(this.userLoginResponse.Message);
+            localStorage.setItem('userAuthentication',  this.userLoginResponse.Model.Token);
+            this.router.navigateByUrl('/');
+          },
           error => () => {
             console.error('Error');
           }

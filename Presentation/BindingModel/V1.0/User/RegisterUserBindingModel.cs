@@ -1,4 +1,4 @@
-﻿namespace BindingModel.User
+﻿namespace BindingModel.V1._0.User
 {
     using System.ComponentModel.DataAnnotations;
 

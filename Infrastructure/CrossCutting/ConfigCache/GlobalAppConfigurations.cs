@@ -10,6 +10,8 @@
         void AddKeysAndValues(Dictionary<string, object> keyValuePairs);
 
         object GetValue(string key);
+
+        Dictionary<string, object> GetAllValues();
     }
 
     public abstract class CachingProviderBase
@@ -37,10 +39,20 @@
         {
             lock (Padlock)
             {
-                string res = ApplicationConfiguration[key].ToString();
-
-                return res;
+                return ApplicationConfiguration[key];
             }
+        }
+
+        protected virtual Dictionary<string, object> GetAllValues()
+        {
+            Dictionary<string, object> keyValuePairs = new Dictionary<string, object>();
+
+            foreach (var item in ApplicationConfiguration)
+            {
+                keyValuePairs.Add(item.Key, item.Value);
+            }
+
+            return keyValuePairs;
         }
     }
 
@@ -63,6 +75,11 @@
         public virtual new void AddKeysAndValues(Dictionary<string, object> keyValuePairs)
         {
             base.AddKeysAndValues(keyValuePairs);
+        }
+
+        public virtual new Dictionary<string, object> GetAllValues()
+        {
+            return base.GetAllValues();
         }
 
         public virtual new object GetValue(string key)
