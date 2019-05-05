@@ -9,11 +9,11 @@
     using Castle.DynamicProxy;
     using NLog;
 
-    public class RepositoryInterfaceLoggInterceptor
+    public class RepositoryInterfaceLogInterceptor : IInterceptor
     {
         private readonly ILogger _logger;
 
-        public RepositoryInterfaceLoggInterceptor(ILogger logger)
+        public RepositoryInterfaceLogInterceptor(ILogger logger)
         {
             this._logger = logger;
         }

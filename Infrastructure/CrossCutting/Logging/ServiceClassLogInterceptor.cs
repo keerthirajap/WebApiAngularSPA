@@ -11,6 +11,8 @@
     {
         private readonly ILogger _logger;
 
+        private Logger _nLogger = LogManager.GetCurrentClassLogger(); // creates a logger using the class name
+
         public ServiceClassLogInterceptor(ILogger logger)
         {
             this._logger = logger;
@@ -18,18 +20,14 @@
 
         public void Intercept(IInvocation invocation)
         {
-            var codeBase = invocation.TargetType.Module.Assembly.CodeBase;
+            var codeBase = invocation.MethodInvocationTarget.DeclaringType.AssemblyQualifiedName;
             var invocationTarget = invocation.InvocationTarget.ToString();
             var methodName = invocation.Method.Name;
-
+            this._nLogger = LogManager.GetLogger(invocation.InvocationTarget.ToString() + methodName);
             try
             {
-                var logMethodStartEvent = LogEventInfo.Create(LogLevel.Info, invocationTarget,
-                                            "Executing method " + methodName);
-
-                logMethodStartEvent.SetCallerInfo(invocationTarget, methodName + " - ",
-                                                                         codeBase, 0);
-                this._logger.Log(logMethodStartEvent);
+                this._nLogger.Info(
+                    "Started method execution '{0}'", methodName);
 
                 invocation.Proceed();
 
@@ -44,11 +42,8 @@
 
                 if (!isAsync)
                 {
-                    var logMethodEndEvent = LogEventInfo.Create(LogLevel.Info, invocationTarget,
-                                                          "Method Excuted Successfuly " + methodName);
-                    logMethodEndEvent.SetCallerInfo(invocationTarget, methodName + " - ",
-                                                                             codeBase, 0);
-                    this._logger.Log(logMethodEndEvent);
+                    this._nLogger.Info(
+                        "Completed method execution '{0}'", methodName);
                 }
             }
             catch (Exception ex)

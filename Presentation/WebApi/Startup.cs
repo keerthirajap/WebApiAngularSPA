@@ -11,9 +11,11 @@
     using Autofac.Extensions.DependencyInjection;
     using AutoMapper;
     using CrossCutting.ConfigCache;
+    using CrossCutting.Logging;
     using ElmahCore.Mvc;
     using ElmahCore.Sql;
     using IOC;
+    using Microsoft.AspNetCore.Antiforgery;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -55,7 +57,21 @@
                 //  options.SuppressInferBindingSourcesForParameters = true;
             });
 
+            ApplicationConfigurations = this.Configuration.GetSection("AppSettings")
+                                    .GetChildren()
+                                    .Select(item => new KeyValuePair<string, object>(item.Key, item.Value))
+                                    .ToDictionary(x => x.Key, x => x.Value);
+            GlobalAppConfigurations.Instance.AddKeysAndValues(ApplicationConfigurations);
+            ApplicationConfigurations = this.Configuration.GetSection("JwtAuthentication")
+                                    .GetChildren()
+                                    .Select(item => new KeyValuePair<string, object>(item.Key, item.Value))
+                                    .ToDictionary(x => x.Key, x => x.Value);
+
+            GlobalAppConfigurations.Instance.AddKeysAndValues(ApplicationConfigurations);
+
             services.AddAutoMapper();
+
+            services.AddCors();
 
             services.AddElmah(options =>
             {
@@ -64,14 +80,13 @@
             });
             services.AddElmah<SqlErrorLog>(options =>
             {
-                options.ConnectionString = "Data Source=.;Initial Catalog=MyCompanyAppDB;Integrated Security=True"; // DB structure see here: https://bitbucket.org/project-elmah/main/downloads/ELMAH-1.2-db-SQLServer.sql
+                options.ConnectionString = GlobalAppConfigurations.Instance.GetValue("SqlDbConnection").ToString(); // DB structure see here: https://bitbucket.org/project-elmah/main/downloads/ELMAH-1.2-db-SQLServer.sql
             });
-
-            services.AddCors();
-
             services.AddMvc(options =>
                         {
                             options.Filters.Add(typeof(ValidateModelStateAttribute));
+                            options.Filters.Add<LoggingActionFilter>();
+                            //  options.Filters.Add(typeof(JsonExceptionFilter));
                         })
                  .AddJsonOptions(options =>
                  {
@@ -93,46 +108,6 @@
 
             services.AddApiVersioning();
 
-            ApplicationConfigurations = this.Configuration.GetSection("AppSettings")
-                                                .GetChildren()
-                                                .Select(item => new KeyValuePair<string, object>(item.Key, item.Value))
-                                                .ToDictionary(x => x.Key, x => x.Value);
-            GlobalAppConfigurations.Instance.AddKeysAndValues(ApplicationConfigurations);
-            ApplicationConfigurations = this.Configuration.GetSection("JwtAuthentication")
-                                    .GetChildren()
-                                    .Select(item => new KeyValuePair<string, object>(item.Key, item.Value))
-                                    .ToDictionary(x => x.Key, x => x.Value);
-
-            GlobalAppConfigurations.Instance.AddKeysAndValues(ApplicationConfigurations);
-
-            ////var appSettingsSection = this.Configuration.GetSection("AppSettings");
-            ////services.Configure<AppSettings>(appSettingsSection);
-
-            ////// configure jwt authentication
-            ////var appSettings = appSettingsSection.Get<AppSettings>();
-
-            ////var key = Encoding.ASCII.GetBytes(appSettings.Secret);
-
-            ////services.AddAuthentication(x =>
-            ////{
-            ////    x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            ////    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            ////    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            ////    x.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
-            ////})
-            ////.AddJwtBearer(x =>
-            ////{
-            ////    x.RequireHttpsMetadata = false;
-            ////    x.SaveToken = true;
-            ////    x.TokenValidationParameters = new TokenValidationParameters
-            ////    {
-            ////        ValidateIssuerSigningKey = true,
-            ////        IssuerSigningKey = new SymmetricSecurityKey(key),
-            ////        ValidateIssuer = false,
-            ////        ValidateAudience = false
-            ////    };
-            ////});
-
             services.Configure<JwtAuthentication>(this.Configuration.GetSection("JwtAuthentication"));
 
             // I use PostConfigureOptions to be able to use dependency injection for the configuration
@@ -140,15 +115,17 @@
             services.AddSingleton<IPostConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer();
-
+            services.AddSingleton<LoggingActionFilter>();
             services.AddSingleton<IConfiguration>(this.Configuration);
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             var builder = new ContainerBuilder();
             builder.Populate(services);
-            builder.RegisterModule(new ServiceIOC("InstancePerLifetimeScope"));
-            builder.RegisterModule(new DatabaseIOC(GlobalAppConfigurations.Instance.GetValue("SqlDbConnection").ToString(), "InstancePerLifetimeScope"));
+            builder.Register(c => new RepositoryInterfaceLogInterceptor(this.logger)).InstancePerLifetimeScope();
+            builder.Register(c => new ServiceClassLogInterceptor(this.logger)).InstancePerLifetimeScope();
 
+            builder.RegisterModule(new DatabaseIOC(GlobalAppConfigurations.Instance.GetValue("SqlDbConnection").ToString(), "InstancePerLifetimeScope"));
+            builder.RegisterModule(new ServiceIOC("InstancePerLifetimeScope"));
             this.ApplicationContainer = builder.Build();
 
             // Create the IServiceProvider based on the container.
@@ -175,11 +152,11 @@
             }
             else
             {
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
+            app.UseHttpStatusCodeExceptionMiddleware();
             app.UseElmah();
+
             app.UseHttpsRedirection();
 
             app.UseCors(option => option.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());

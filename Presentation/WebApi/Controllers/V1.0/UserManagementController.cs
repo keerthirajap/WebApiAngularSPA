@@ -12,6 +12,7 @@
     using Domain.User;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Cors;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
@@ -76,8 +77,9 @@
         }
 
         [HttpPost("User/AuthenticateUser")]
-        [ValidateModelState]
         [AllowAnonymous]
+        [ValidateModelState]
+        [Produces("application/json")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)] //For bad request
         [ProducesResponseType(500)] //If there was an internal server error
@@ -104,8 +106,8 @@
             else
             {
                 response.Model = userAuthenticationBindingModel;
-                response.Message = "User " + userAuthentication.UserName
-                        + " not authenticated.";
+                response.DidValidationError = true;
+                response.Message = "User Name or Password is Incorrect. Please try again";
             }
 
             return response.ToHttpResponse();
@@ -154,7 +156,7 @@
 
         private void CreateJWTToken(dynamic response, UserAuthenticationBindingModel userAuthentication)
         {
-            userAuthentication.ExpiresOn = DateTime.Now.AddSeconds(30);
+            userAuthentication.ExpiresOn = DateTime.Now.AddSeconds(300000);
             userAuthentication.LoggedOn = DateTime.Now;
             userAuthentication.IsUserAuthenticated = true;
             userAuthentication.IsUserAccountFound = true;

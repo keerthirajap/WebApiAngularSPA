@@ -14,9 +14,6 @@ import {formatDate} from '@angular/common';
 
 import { UserAuthenticationModel } from '../login/models/userAuthenticationModel';
 
-
-
-
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
 
