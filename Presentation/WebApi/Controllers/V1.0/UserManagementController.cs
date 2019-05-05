@@ -154,8 +154,8 @@
 
         private void CreateJWTToken(dynamic response, UserAuthenticationBindingModel userAuthentication)
         {
-            userAuthentication.ExpiresOn = DateTime.UtcNow.AddDays(30);
-            userAuthentication.LoggedOn = DateTime.UtcNow;
+            userAuthentication.ExpiresOn = DateTime.Now.AddSeconds(30);
+            userAuthentication.LoggedOn = DateTime.Now;
             userAuthentication.IsUserAuthenticated = true;
             userAuthentication.IsUserAccountFound = true;
 

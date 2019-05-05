@@ -34,7 +34,7 @@ export class UserManagementComponent implements OnInit {
         .subscribe(
           (singleResponse) => {
             this.userDetailsResponse = singleResponse;
-            console.log(this.userDetailsResponse.Message);
+            console.log(this.userDetailsResponse);
 
 
           },

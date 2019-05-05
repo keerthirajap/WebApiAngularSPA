@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpErrorResponse, HttpBackend } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
@@ -18,9 +18,11 @@ export class UserLoginService {
     private apiVersion: string;
     public userLogin: UserLogin = new UserLogin();
     private userLoginResponse: SingleResponse<UserAuthenticationModel>;
+    private http: HttpClient;
 
-    constructor(private http: HttpClient, private configuration: Configuration) {
+    constructor(private configuration: Configuration, handler: HttpBackend) {
         this.actionUrl = this.configuration.serverApiVersionUrl + this.configuration.userManagementApiPath;
+        this.http = new HttpClient(handler);
     }
 
     public authenticateUser(user: UserLogin): Observable<SingleResponse<UserAuthenticationModel>> {

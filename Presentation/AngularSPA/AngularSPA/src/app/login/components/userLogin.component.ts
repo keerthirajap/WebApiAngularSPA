@@ -35,7 +35,7 @@ export class UserLoginComponent implements OnInit {
           (singleResponse) => {
             this.userLoginResponse = singleResponse;
             console.log(this.userLoginResponse.Message);
-            localStorage.setItem('userAuthentication',  this.userLoginResponse.Model.Token);
+            localStorage.setItem('userAuthentication', JSON.stringify(this.userLoginResponse.Model));
             this.router.navigateByUrl('/');
           },
           error => () => {

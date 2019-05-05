@@ -220,7 +220,8 @@
                     ValidIssuer = jwtAuthentication.ValidIssuer,
                     ValidAudience = jwtAuthentication.ValidAudience,
                     IssuerSigningKey = jwtAuthentication.SymmetricSecurityKey,
-                    NameClaimType = ClaimTypes.NameIdentifier
+                    NameClaimType = ClaimTypes.NameIdentifier,
+                    ClockSkew = TimeSpan.Zero
                 };
             }
         }
