@@ -3,7 +3,9 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.Linq;
+    using System.Net;
     using System.Security.Claims;
     using System.Text;
     using System.Threading.Tasks;
@@ -27,6 +29,7 @@
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Microsoft.IdentityModel.Tokens;
+    using Newtonsoft.Json;
     using Newtonsoft.Json.Serialization;
     using Swashbuckle.AspNetCore.Swagger;
     using WebApi.Infrastructure.Filters;
@@ -148,13 +151,50 @@
 
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                // app.UseDeveloperExceptionPage();
             }
             else
             {
                 app.UseHsts();
             }
-            app.UseHttpStatusCodeExceptionMiddleware();
+            //app.UseHttpStatusCodeExceptionMiddleware();
+            app.Use(
+                    next =>
+                    {
+                        return async context =>
+                        {
+                            var stopWatch = new Stopwatch();
+                            stopWatch.Start();
+                            context.Response.OnStarting(
+                                () =>
+                                {
+                                    stopWatch.Stop();
+                                    context.Response.Headers.Add("X-ResponseTime-Ms", stopWatch.ElapsedMilliseconds.ToString());
+                                    return Task.CompletedTask;
+                                });
+
+                            try
+                            {
+                                await next(context);
+                            }
+                            catch (Exception ex)
+                            {
+                                //context.Response.Clear();
+                                var code = HttpStatusCode.InternalServerError; // 500 if unexpected
+                                context.Response.StatusCode = (int)code;
+                                await context.Response.WriteAsync(new
+                                {
+                                    StatusCode = context.Response.StatusCode,
+                                    Message = "Internal Server Error.",
+                                    RequestId = context.TraceIdentifier
+                                }.ToString());
+
+                                // throw ex;
+                                //  return;
+                            }
+                        };
+                    });
+
             app.UseElmah();
 
             app.UseHttpsRedirection();
