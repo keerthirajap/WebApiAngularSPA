@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28803.202
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.572
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{39F9BCD6-8F3C-43D4-8D8C-6D8CA6C2D54E}"
 EndProject
@@ -36,9 +36,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{2F
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{BA37AD54-71F8-4573-9B42-5DF748BA8864}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IOC", "Infrastructure\IOC\IOC.csproj", "{9B72176A-63AE-4A7B-A1F3-EC60CC613F9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IOC", "Infrastructure\IOC\IOC.csproj", "{9B72176A-63AE-4A7B-A1F3-EC60CC613F9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "Presentation\WebApi\WebApi.csproj", "{B90EB3BE-0748-4934-BA80-2551D388C9C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "Presentation\WebApi\WebApi.csproj", "{B90EB3BE-0748-4934-BA80-2551D388C9C5}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "WebApiAngularSPA", "Database\WebApiAngularSPA\WebApiAngularSPA.sqlproj", "{2EBB6E7F-6403-4A45-AFF1-5636D55ABED5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{A14B733D-C788-4F1C-A743-863DA84B31E0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQLComparator", "SQLComparator", "{20794683-C566-4359-9E77-FA972214DCC3}"
+	ProjectSection(SolutionItems) = preProject
+		Database\Infrastructure\SQLComparator\LocalToProject.scmp = Database\Infrastructure\SQLComparator\LocalToProject.scmp
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -82,6 +91,12 @@ Global
 		{B90EB3BE-0748-4934-BA80-2551D388C9C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B90EB3BE-0748-4934-BA80-2551D388C9C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B90EB3BE-0748-4934-BA80-2551D388C9C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EBB6E7F-6403-4A45-AFF1-5636D55ABED5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EBB6E7F-6403-4A45-AFF1-5636D55ABED5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EBB6E7F-6403-4A45-AFF1-5636D55ABED5}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{2EBB6E7F-6403-4A45-AFF1-5636D55ABED5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EBB6E7F-6403-4A45-AFF1-5636D55ABED5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EBB6E7F-6403-4A45-AFF1-5636D55ABED5}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -97,6 +112,9 @@ Global
 		{73135203-2E13-46B5-BB1F-4255ED67D4A0} = {BB7A84E4-0E0F-4FF6-9C3A-AA26D5D123CB}
 		{9B72176A-63AE-4A7B-A1F3-EC60CC613F9D} = {E3EDFEBD-22E2-4448-B715-14D6FB15B619}
 		{B90EB3BE-0748-4934-BA80-2551D388C9C5} = {39F9BCD6-8F3C-43D4-8D8C-6D8CA6C2D54E}
+		{2EBB6E7F-6403-4A45-AFF1-5636D55ABED5} = {2F30FA81-5AC9-4D75-AB8D-EB4977901DA8}
+		{A14B733D-C788-4F1C-A743-863DA84B31E0} = {2F30FA81-5AC9-4D75-AB8D-EB4977901DA8}
+		{20794683-C566-4359-9E77-FA972214DCC3} = {A14B733D-C788-4F1C-A743-863DA84B31E0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {530F9BBA-11E9-4375-B780-C792373D6244}
