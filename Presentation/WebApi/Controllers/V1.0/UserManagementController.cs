@@ -156,12 +156,23 @@
         }
 
         [Authorize(Roles = CoreWebApiRoles.User)]
-        [HttpPost("User/IsUserAdminAsync")]
+        [HttpPost("User/IsUserAdmin")]
         [Produces("application/json")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)] //For bad request
         [ProducesResponseType(500)] //If there was an internal server error
         public async Task<IActionResult> IsUserAdminAsync()
+        {
+            return Ok();
+        }
+
+        [Authorize(Roles = CoreWebApiRoles.User + "," + CoreWebApiRoles.Admin)]
+        [HttpPost("User/IsUserAdminAndUser")]
+        [Produces("application/json")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)] //For bad request
+        [ProducesResponseType(500)] //If there was an internal server error
+        public async Task<IActionResult> IsUserAdminAndUserAsync()
         {
             return Ok();
         }

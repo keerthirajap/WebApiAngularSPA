@@ -70,5 +70,6 @@
     <Build Include="dbo\Stored Procedures\ELMAH_LogError.sql" />
     <Build Include="dbo\Stored Procedures\ELMAH_GetErrorXml.sql" />
     <Build Include="dbo\Stored Procedures\ELMAH_GetErrorsXml.sql" />
+    <Build Include="dbo\Stored Procedures\P_GetUserDetailsByUserName.sql" />
   </ItemGroup>
 </Project>

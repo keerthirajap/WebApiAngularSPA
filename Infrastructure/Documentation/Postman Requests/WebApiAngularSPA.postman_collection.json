@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "62934dff-c2df-49b2-9132-cb2d20dd8e72",
+		"_postman_id": "e241bafa-75f7-4af1-a5b8-56c8e1d6fcaf",
 		"name": "WebApiAngularSPA",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -22,7 +22,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"UserId\": 0,\r\n  \"FirstName\": \"string\",\r\n  \"LastName\": \"string\",\r\n  \"UserName\": \"string2\",\r\n  \"Password\": \"string\",\r\n  \"Token\": \"string\"\r\n}"
+							"raw": "{\r\n  \"UserId\": 0,\r\n  \"FirstName\": \"Keerthi Raja\",\r\n  \"LastName\": \"P\",\r\n  \"UserName\": \"KeerthiRaja\",\r\n  \"Password\": \"string\",\r\n  \"Token\": \"string\"\r\n}"
 						},
 						"url": {
 							"raw": "https://localhost:44388/api/v1.0/UserManagement/User/RegisterUser",
@@ -56,7 +56,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"UserName\": \"string\",\n    \"Password\": \"string1\",\n    \"CanRememberMe\": true\n}"
+							"raw": "{\n    \"UserName\": \"string\",\n    \"Password\": \"string\",\n    \"CanRememberMe\": true\n}"
 						},
 						"url": {
 							"raw": "https://localhost:44388/api/v1.0/UserManagement/User/AuthenticateUser",
@@ -71,6 +71,368 @@
 								"UserManagement",
 								"User",
 								"AuthenticateUser"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "AuthenticateUser Incorrect PAssword",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"UserName\": \"string\",\n    \"Password\": \"string1\",\n    \"CanRememberMe\": true\n}"
+								},
+								"url": {
+									"raw": "https://localhost:44388/api/v1.0/UserManagement/User/AuthenticateUser",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "44388",
+									"path": [
+										"api",
+										"v1.0",
+										"UserManagement",
+										"User",
+										"AuthenticateUser"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Server",
+									"value": "Microsoft-IIS/10.0"
+								},
+								{
+									"key": "RequestId",
+									"value": "80000017-0001-fc00-b63f-84710c7967bb"
+								},
+								{
+									"key": "X-SourceFiles",
+									"value": "=?UTF-8?B?QzpcVXNlcnNca2VlcnRoaSByYWphIHBcc291cmNlXHJlcG9zXFdlYkFwaUFuZ3VsYXJTUEFcUHJlc2VudGF0aW9uXFdlYkFwaVxhcGlcdjEuMFxVc2VyTWFuYWdlbWVudFxVc2VyXEF1dGhlbnRpY2F0ZVVzZXI=?="
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ASP.NET"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 04 May 2019 14:09:44 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"Message\": \"User string authenticated successfully. Redirecting to Home screen.\",\n    \"DidError\": false,\n    \"DidValidationError\": false,\n    \"ErrorMessage\": null,\n    \"Model\": {\n        \"UserId\": 0,\n        \"UserName\": \"string\",\n        \"Token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzdHJpbmciLCJqdGkiOiJmNWZlM2IxNS04YzBiLTRkN2YtYjY1ZC0wOGQ4NjIyMTUyZGEiLCJuYmYiOjE1NTY5Nzg5ODQsImV4cCI6MTU1OTU3MDk4NCwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NDQzMTgvIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NDQzMTgvIn0.eA4nSIb6pf62S3WFTo5ENEQfjMAtAK5glLLXj7bDQqg\",\n        \"ExpiresOn\": \"06/03/2019 14:09:44\",\n        \"LoggedOn\": \"05/04/2019 14:09:44\",\n        \"IsUserAuthenticated\": true,\n        \"IsUserAccountLocked\": false,\n        \"IsUserAccountDisabled\": false,\n        \"IsUserAccountFound\": true\n    }\n}"
+						},
+						{
+							"name": "AuthenticateUser Correct Password",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"UserName\": \"string\",\n    \"Password\": \"string\",\n    \"CanRememberMe\": true\n}"
+								},
+								"url": {
+									"raw": "https://localhost:44388/api/v1.0/UserManagement/User/AuthenticateUser",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "44388",
+									"path": [
+										"api",
+										"v1.0",
+										"UserManagement",
+										"User",
+										"AuthenticateUser"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Server",
+									"value": "Microsoft-IIS/10.0"
+								},
+								{
+									"key": "RequestId",
+									"value": "80000016-0001-fc00-b63f-84710c7967bb"
+								},
+								{
+									"key": "X-SourceFiles",
+									"value": "=?UTF-8?B?QzpcVXNlcnNca2VlcnRoaSByYWphIHBcc291cmNlXHJlcG9zXFdlYkFwaUFuZ3VsYXJTUEFcUHJlc2VudGF0aW9uXFdlYkFwaVxhcGlcdjEuMFxVc2VyTWFuYWdlbWVudFxVc2VyXEF1dGhlbnRpY2F0ZVVzZXI=?="
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ASP.NET"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 04 May 2019 14:08:43 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"Message\": \"User string authenticated successfully. Redirecting to Home screen.\",\n    \"DidError\": false,\n    \"DidValidationError\": false,\n    \"ErrorMessage\": null,\n    \"Model\": {\n        \"UserId\": 0,\n        \"UserName\": \"string\",\n        \"Token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzdHJpbmciLCJqdGkiOiJlZmNiMmRhYS1hMWEyLTQzZDUtOTQ3My1kMzE0Y2UzNjA4ZDQiLCJuYmYiOjE1NTY5Nzg5MjMsImV4cCI6MTU1OTU3MDkyMywiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NDQzMTgvIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NDQzMTgvIn0.IHrnyXpsuRpgyhahJWiWXzH3hNRXL5-8_YGLjDbY-BY\",\n        \"ExpiresOn\": \"06/03/2019 14:08:43\",\n        \"LoggedOn\": \"05/04/2019 14:08:43\",\n        \"IsUserAuthenticated\": true,\n        \"IsUserAccountLocked\": false,\n        \"IsUserAccountDisabled\": false,\n        \"IsUserAccountFound\": true\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "IsUserAdmin",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzdHJpbmciLCJqdGkiOiJiZGRlMTMzNy1mOWZjLTQzOGEtYjkyOS04MmM5NzI1MmNhMzYiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsIm5iZiI6MTU1NzU2MDQ0MCwiZXhwIjoxNTU3ODYwNDQwLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo0NDMxOC8iLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo0NDMxOC8ifQ.1NRyvn-XqXSlB-U7Q0bZpcHqzTNG-_SP1-Voz4X1eyU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://localhost:44388/api/v1.0/UserManagement/User/IsUserAdmin",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44388",
+							"path": [
+								"api",
+								"v1.0",
+								"UserManagement",
+								"User",
+								"IsUserAdmin"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "AuthenticateUser Incorrect PAssword",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"UserName\": \"string\",\n    \"Password\": \"string1\",\n    \"CanRememberMe\": true\n}"
+								},
+								"url": {
+									"raw": "https://localhost:44388/api/v1.0/UserManagement/User/AuthenticateUser",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "44388",
+									"path": [
+										"api",
+										"v1.0",
+										"UserManagement",
+										"User",
+										"AuthenticateUser"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Server",
+									"value": "Microsoft-IIS/10.0"
+								},
+								{
+									"key": "RequestId",
+									"value": "80000017-0001-fc00-b63f-84710c7967bb"
+								},
+								{
+									"key": "X-SourceFiles",
+									"value": "=?UTF-8?B?QzpcVXNlcnNca2VlcnRoaSByYWphIHBcc291cmNlXHJlcG9zXFdlYkFwaUFuZ3VsYXJTUEFcUHJlc2VudGF0aW9uXFdlYkFwaVxhcGlcdjEuMFxVc2VyTWFuYWdlbWVudFxVc2VyXEF1dGhlbnRpY2F0ZVVzZXI=?="
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ASP.NET"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 04 May 2019 14:09:44 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"Message\": \"User string authenticated successfully. Redirecting to Home screen.\",\n    \"DidError\": false,\n    \"DidValidationError\": false,\n    \"ErrorMessage\": null,\n    \"Model\": {\n        \"UserId\": 0,\n        \"UserName\": \"string\",\n        \"Token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzdHJpbmciLCJqdGkiOiJmNWZlM2IxNS04YzBiLTRkN2YtYjY1ZC0wOGQ4NjIyMTUyZGEiLCJuYmYiOjE1NTY5Nzg5ODQsImV4cCI6MTU1OTU3MDk4NCwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NDQzMTgvIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NDQzMTgvIn0.eA4nSIb6pf62S3WFTo5ENEQfjMAtAK5glLLXj7bDQqg\",\n        \"ExpiresOn\": \"06/03/2019 14:09:44\",\n        \"LoggedOn\": \"05/04/2019 14:09:44\",\n        \"IsUserAuthenticated\": true,\n        \"IsUserAccountLocked\": false,\n        \"IsUserAccountDisabled\": false,\n        \"IsUserAccountFound\": true\n    }\n}"
+						},
+						{
+							"name": "AuthenticateUser Correct Password",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"UserName\": \"string\",\n    \"Password\": \"string\",\n    \"CanRememberMe\": true\n}"
+								},
+								"url": {
+									"raw": "https://localhost:44388/api/v1.0/UserManagement/User/AuthenticateUser",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "44388",
+									"path": [
+										"api",
+										"v1.0",
+										"UserManagement",
+										"User",
+										"AuthenticateUser"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Server",
+									"value": "Microsoft-IIS/10.0"
+								},
+								{
+									"key": "RequestId",
+									"value": "80000016-0001-fc00-b63f-84710c7967bb"
+								},
+								{
+									"key": "X-SourceFiles",
+									"value": "=?UTF-8?B?QzpcVXNlcnNca2VlcnRoaSByYWphIHBcc291cmNlXHJlcG9zXFdlYkFwaUFuZ3VsYXJTUEFcUHJlc2VudGF0aW9uXFdlYkFwaVxhcGlcdjEuMFxVc2VyTWFuYWdlbWVudFxVc2VyXEF1dGhlbnRpY2F0ZVVzZXI=?="
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ASP.NET"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 04 May 2019 14:08:43 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"Message\": \"User string authenticated successfully. Redirecting to Home screen.\",\n    \"DidError\": false,\n    \"DidValidationError\": false,\n    \"ErrorMessage\": null,\n    \"Model\": {\n        \"UserId\": 0,\n        \"UserName\": \"string\",\n        \"Token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzdHJpbmciLCJqdGkiOiJlZmNiMmRhYS1hMWEyLTQzZDUtOTQ3My1kMzE0Y2UzNjA4ZDQiLCJuYmYiOjE1NTY5Nzg5MjMsImV4cCI6MTU1OTU3MDkyMywiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NDQzMTgvIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NDQzMTgvIn0.IHrnyXpsuRpgyhahJWiWXzH3hNRXL5-8_YGLjDbY-BY\",\n        \"ExpiresOn\": \"06/03/2019 14:08:43\",\n        \"LoggedOn\": \"05/04/2019 14:08:43\",\n        \"IsUserAuthenticated\": true,\n        \"IsUserAccountLocked\": false,\n        \"IsUserAccountDisabled\": false,\n        \"IsUserAccountFound\": true\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "IsUserAdmin Copy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzdHJpbmciLCJqdGkiOiJiZGRlMTMzNy1mOWZjLTQzOGEtYjkyOS04MmM5NzI1MmNhMzYiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsIm5iZiI6MTU1NzU2MDQ0MCwiZXhwIjoxNTU3ODYwNDQwLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo0NDMxOC8iLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo0NDMxOC8ifQ.1NRyvn-XqXSlB-U7Q0bZpcHqzTNG-_SP1-Voz4X1eyU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://localhost:44388/api/v1.0/UserManagement/User/IsUserAdminAndUser",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44388",
+							"path": [
+								"api",
+								"v1.0",
+								"UserManagement",
+								"User",
+								"IsUserAdminAndUser"
 							]
 						}
 					},
