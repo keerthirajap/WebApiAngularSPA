@@ -9,6 +9,7 @@
     using AutoMapper;
     using BindingModel.V1._0.User;
     using CrossCutting.ConfigCache;
+    using CrossCutting.Constants;
     using Domain.User;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
@@ -154,6 +155,17 @@
             return response.ToHttpResponse();
         }
 
+        [Authorize(Roles = CoreWebApiRoles.User)]
+        [HttpPost("User/IsUserAdminAsync")]
+        [Produces("application/json")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)] //For bad request
+        [ProducesResponseType(500)] //If there was an internal server error
+        public async Task<IActionResult> IsUserAdminAsync()
+        {
+            return Ok();
+        }
+
         private void CreateJWTToken(dynamic response, UserAuthenticationBindingModel userAuthentication)
         {
             userAuthentication.ExpiresOn = DateTime.Now.AddSeconds(300000);
@@ -169,6 +181,7 @@
                 // You can add more claims if you want
                 new Claim(JwtRegisteredClaimNames.Sub, userAuthentication.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                 new Claim(ClaimTypes.Role, CoreWebApiRoles.Admin)
                 },
                 expires: userAuthentication.ExpiresOn,
                 notBefore: userAuthentication.LoggedOn,
