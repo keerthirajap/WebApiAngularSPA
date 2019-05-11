@@ -139,15 +139,15 @@
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             // Add a sample response header
-            app.Use(async (context, nextMiddleware) =>
-            {
-                context.Response.OnStarting(() =>
-                {
-                    context.Response.Headers.Add("RequestId", context.TraceIdentifier);
-                    return Task.FromResult(0);
-                });
-                await nextMiddleware();
-            });
+            //app.Use(async (context, nextMiddleware) =>
+            //{
+            //    context.Response.OnStarting(() =>
+            //    {
+            //        context.Response.Headers.Add("RequestId", context.TraceIdentifier);
+            //        return Task.FromResult(0);
+            //    });
+            //    await nextMiddleware();
+            //});
 
             if (env.IsDevelopment())
             {
@@ -168,7 +168,9 @@
                             context.Response.OnStarting(
                                 () =>
                                 {
+                                    context.Response.Headers.Add("RequestId", context.TraceIdentifier);
                                     stopWatch.Stop();
+
                                     context.Response.Headers.Add("X-ResponseTime-Ms", stopWatch.ElapsedMilliseconds.ToString());
                                     return Task.CompletedTask;
                                 });

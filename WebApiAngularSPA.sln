@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.572
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.202
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{39F9BCD6-8F3C-43D4-8D8C-6D8CA6C2D54E}"
 EndProject
@@ -47,6 +47,13 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQLComparator", "SQLComparator", "{20794683-C566-4359-9E77-FA972214DCC3}"
 	ProjectSection(SolutionItems) = preProject
 		Database\Infrastructure\SQLComparator\LocalToProject.scmp = Database\Infrastructure\SQLComparator\LocalToProject.scmp
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{1DA597F8-E21B-49F7-A3D7-F9AF9F154747}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Postman Requests", "Postman Requests", "{9EE46090-EECE-4FAB-AD71-ECB49283E52D}"
+	ProjectSection(SolutionItems) = preProject
+		Infrastructure\Documentation\Postman Requests\WebApiAngularSPA.postman_collection.json = Infrastructure\Documentation\Postman Requests\WebApiAngularSPA.postman_collection.json
 	EndProjectSection
 EndProject
 Global
@@ -115,6 +122,8 @@ Global
 		{2EBB6E7F-6403-4A45-AFF1-5636D55ABED5} = {2F30FA81-5AC9-4D75-AB8D-EB4977901DA8}
 		{A14B733D-C788-4F1C-A743-863DA84B31E0} = {2F30FA81-5AC9-4D75-AB8D-EB4977901DA8}
 		{20794683-C566-4359-9E77-FA972214DCC3} = {A14B733D-C788-4F1C-A743-863DA84B31E0}
+		{1DA597F8-E21B-49F7-A3D7-F9AF9F154747} = {E3EDFEBD-22E2-4448-B715-14D6FB15B619}
+		{9EE46090-EECE-4FAB-AD71-ECB49283E52D} = {1DA597F8-E21B-49F7-A3D7-F9AF9F154747}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {530F9BBA-11E9-4375-B780-C792373D6244}
