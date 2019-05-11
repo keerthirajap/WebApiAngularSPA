@@ -1,0 +1,71 @@
+﻿@model BindingModel.V1._0.User.RegisterUserBindingModel
+@{
+    ViewData["Title"] = "Register";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row pl-2 d-flex justify-content-center">
+    <div class="col-4">
+    </div>
+    <div class="col-4">
+        <div class="card  bg-white">
+            <div class="card-header text-center">
+                <h4>  Register </h4>
+            </div>
+            <form id="formRegisterUser" asp-area="Authentication"
+                  asp-controller="Auth" asp-action="RegisterUser"
+                  method="post" data-ajax="true"
+                  data-ajax-begin="authController.registerUserOnBegin"
+                  data-ajax-complete="authController.registerUserOnComplete"  
+                   data-ajax-success="authController.registerUserOnSuccess" 
+                  data-ajax-failure="authController.registerUserOnfailure" 
+                  data-ajax-mode="replace"
+                  data-ajax-update="#ajaxRegisterUserResult">
+                <div class="card-body">
+
+                    <div id="ajaxRegisterUserResult">
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+
+                                    <label asp-for="UserName"></label>
+                                    <input type="text" asp-for="UserName"
+                                           class="form-control" id="txtUserName"
+                                           placeholder="Enter User Name">
+                                    <span asp-validation-for="UserName" class="text-danger small"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label asp-for="Password"></label>
+                                    <input type="Password" asp-for="Password"
+                                           class="form-control" id="txtPassword"
+                                           placeholder="Enter Password">
+                                    <span asp-validation-for="Password" class="text-danger small"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="ConfirmPassword"></label>
+                                    <input type="Password" asp-for="ConfirmPassword"
+                                           class="form-control" id="txtConfirmPassword"
+                                           placeholder="Enter Confirm Password">
+                                    <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer text-center">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-user-plus"></i>Register</button>
+                    <button type="button" class="ml-3 btn btn-secondary"
+                            onclick="homeController.RedirectToUrl('Login')">
+                        <i class="fas fa-sign-in-alt"></i>Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="col-4">
+    </div>
+</div>
+
+<script src="~/JsControllers/authController.js"></script>

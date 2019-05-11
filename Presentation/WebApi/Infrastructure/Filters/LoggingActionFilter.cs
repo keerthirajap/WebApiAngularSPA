@@ -13,7 +13,7 @@
 
     public class LoggingActionFilter : IAsyncActionFilter
     {
-        private Microsoft.Extensions.Logging.ILogger _logger;
+        private readonly Microsoft.Extensions.Logging.ILogger _logger;
 
         private Logger _nLogger = LogManager.GetCurrentClassLogger(); // creates a logger using the class name
 
@@ -47,24 +47,11 @@
                           + resultContext.Exception.Message
                           , resultContext.Exception);
 
-                    //resultContext.Exception = null;
-
                     throw resultContext.Exception;
-
-                    //throw new HttpRequestException(new HttpResponseMessage(HttpStatusCode.Unauthorized).ToString());
-
-                    //.WriteAsync(new
-                    //{
-                    //    StatusCode = context.Response.StatusCode,
-                    //    Message = "Internal Server Error.",
-                    //    RequestId = context.TraceIdentifier
-                    //}.ToString());
                 }
             }
             catch (Exception ex)
             {
-                //this._nLogger.Error(ex.Message, ex);
-
                 throw;
             }
         }

@@ -59,34 +59,4 @@
             }
         }
     }
-
-    public static class HttpStatusCodeExceptionMiddlewareExtensions
-    {
-        public static IApplicationBuilder UseHttpStatusCodeExceptionMiddleware(this IApplicationBuilder builder)
-        {
-            return builder.UseMiddleware<HttpStatusCodeExceptionMiddleware>();
-        }
-    }
-
-    public class JsonExceptionFilter : IExceptionFilter
-    {
-        private Logger _nLogger = LogManager.GetCurrentClassLogger(); // creates a logger using the class name
-
-        public void OnException(ExceptionContext context)
-        {
-            this._nLogger = LogManager.GetLogger(context.ActionDescriptor.DisplayName);
-
-            this._nLogger.Error(context.Exception.Message, context.Exception);
-
-            var result = new ObjectResult(new
-            {
-                StatusCode = 500,
-                Message = "Internal Server Error.",
-                RequestId = context.HttpContext.TraceIdentifier
-            });
-
-            result.StatusCode = 500;
-            context.Result = result;
-        }
-    }
 }

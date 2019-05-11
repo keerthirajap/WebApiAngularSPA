@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CrossCutting.Constants
+﻿namespace CrossCutting.Constants
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+
     public static class CoreWebApiRoles
     {
         public const string Admin = "Admin";

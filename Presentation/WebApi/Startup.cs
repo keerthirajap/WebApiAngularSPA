@@ -89,7 +89,6 @@
                         {
                             options.Filters.Add(typeof(ValidateModelStateAttribute));
                             options.Filters.Add<LoggingActionFilter>();
-                            //  options.Filters.Add(typeof(JsonExceptionFilter));
                         })
                  .AddJsonOptions(options =>
                  {
@@ -138,17 +137,6 @@
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            // Add a sample response header
-            //app.Use(async (context, nextMiddleware) =>
-            //{
-            //    context.Response.OnStarting(() =>
-            //    {
-            //        context.Response.Headers.Add("RequestId", context.TraceIdentifier);
-            //        return Task.FromResult(0);
-            //    });
-            //    await nextMiddleware();
-            //});
-
             if (env.IsDevelopment())
             {
                 // app.UseDeveloperExceptionPage();
@@ -157,7 +145,7 @@
             {
                 app.UseHsts();
             }
-            //app.UseHttpStatusCodeExceptionMiddleware();
+
             app.Use(
                     next =>
                     {
