@@ -19,5 +19,7 @@
         Task<(User, UserAuthentication)> AuthenticateUserAsync(User user);
 
         Task<(User user, List<UserRole> userRoles, UserAuthentication authenticationDetails)> ValidateAndAuthenticateUserAsync(User user);
+
+        Task<List<UserRole>> GetRolesAsync();
     }
 }

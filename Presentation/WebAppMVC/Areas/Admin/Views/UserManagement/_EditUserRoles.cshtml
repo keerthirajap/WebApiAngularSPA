@@ -1,0 +1,79 @@
+﻿@model (List<BindingModel.V1._0.User.Role.UserRoleBindingModel> userRoles, string userName, long userId)
+
+<div class="modal" id="modalEditUserRoles" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="modalContentEditUserRoles">
+            <div class="card  bg-white" id="cardEditUserRoles">
+                <div class="card-header" id="cardHeaderModalEditUserRoles">
+                    <h4 class="pt-1">   Edit Roles</h4>
+                </div>
+                <input style="display:none" type="text" asp-for="@Model.userName"
+                       class="form-control" id="txtUserName"
+                       placeholder="Enter User Name">
+                <input style="display:none" type="text" asp-for="@Model.userId"
+                       class="form-control" id="txtuserId"
+                       placeholder="Enter User Id">
+                <div class="card-body pl-3 pr-3 pt-0" id="editUserRolesCardBody">
+
+                    <div class="row shadow-sm bg-white rounded">
+                        <div class="col-12 text-center">
+                            <label>User Name</label>
+                            <h4>@Model.userName</h4>
+                        </div>
+                    </div>
+                    <div id="divUserRolesCards" class="row text-center pt-2" style="overflow-y: scroll;height: 360px;">
+                        @foreach (var userRoles in @Model.userRoles.OrderBy(o => o.RoleId))
+                        {
+
+                            <div class="col-4  col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                                <div class="card mb-4 box-shadow">
+                                    <div class="card-header" style="display: flex;">
+
+                                        <div class="custom-control custom-switch" style="padding-top: 3px;">
+
+                                            <input type="checkbox" class="custom-control-input"
+                                                   id="@userRoles.RoleName"
+                                                   asp-for="@userRoles.IsActive" />                                         
+                                            <label class="display-4 custom-control-label" for="@userRoles.RoleName"></label>
+                                        </div>
+
+                                        <span class="h4" style="  padding-left: 11px;">@userRoles.RoleName</span>
+                                    </div>
+                                    <div class="card-body" style="HEIGHT: 220PX;">
+                                        <ul class="list-unstyled mt-3 mb-4"></ul>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-center">
+                <button type="button" id="btnEditUserRolesCancel"
+                        onclick="userManagementController.loadEditUserPartialView('@Url.Action("LoadEditUserPartialView", "UserManagement" , new { Area="Admin" , userName=Model.userName })')"
+                        class="btn  btn-success">
+                    <i class="fas fa-backward"></i>Back
+                </button>
+                <button type="button" class="btn btn-primary  ml-3"
+                        onclick="userManagementController.modifyUserRoles('@Url.Action("EditUserRolesAsync", "UserManagement" , new { Area="Admin"})')">
+                    <i class="fas fa-save"></i> Save
+                </button>
+
+                <button type="button" id="btnEditUserRolesCancel"
+                        onclick="userManagementController.closeEditUserRolesPartialView()"
+                        class="btn btn-dark ml-3">
+                    <i class="fas fa-times"></i>Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('#modalEditUserRoles').modal('show');
+
+    $("#modalContentEditUserRoles").draggable(
+        {
+            handle: "#cardHeaderModalEditUserRoles"
+        }
+    );
+</script>

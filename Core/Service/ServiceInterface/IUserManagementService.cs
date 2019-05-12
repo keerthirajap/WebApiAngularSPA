@@ -19,5 +19,7 @@
         Task<bool> DeleteUserAsync(User user);
 
         Task<List<UserRole>> GetUserRolesAsync(User user);
+
+        Task<bool> ModifyUserRolesAsync(User user, List<UserRole> userRoles);
     }
 }

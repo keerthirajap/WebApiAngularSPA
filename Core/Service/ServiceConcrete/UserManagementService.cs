@@ -38,5 +38,10 @@
         {
             return await this._userManagementRepository.GetUserRolesAsync(user);
         }
+
+        public async Task<bool> ModifyUserRolesAsync(User user, List<UserRole> userRoles)
+        {
+            return await this._userManagementRepository.ModifyUserRolesAsync(user, userRoles);
+        }
     }
 }

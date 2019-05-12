@@ -56,16 +56,51 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> LoadUserRolesPartialViewAsync(string userName)
+        public async Task<IActionResult> LoadUpdateUserRolesPartialViewAsync(string userName)
         {
+            dynamic ajaxReturn = new JObject();
             List<UserRoleBindingModel> userRolesBindingModel = new List<UserRoleBindingModel>();
             User user = new User();
+            List<UserRole> roles = new List<UserRole>();
 
+            user = await this._authenticationService.GetUserDetailsByUserNameAsync(userName);
+
+            if (user == null)
+            {
+                ajaxReturn.Status = "Warning";
+                ajaxReturn.UserName = userName;
+                ajaxReturn.Message = userName +
+                                    " - user name not found";
+            }
+            roles = await this._authenticationService.GetRolesAsync();
             List<UserRole> userRoles = await this._userManagementService.GetUserRolesAsync(user);
+
+            //var unMappedroles = roles.Where(item1 =>
+            //                roles.Any(item2 => item1.RoleName != item2.RoleName
+            //               )).ToList();
+
+            var unMappedroles = (from r in roles
+                                 join ur in userRoles on r.RoleName equals ur.RoleName
+                                 into result
+                                 where result.Count() == 0
+                                 select r).ToList();
+
+            if (unMappedroles != null && unMappedroles.Count > 0)
+            {
+                userRoles.AddRange(unMappedroles);
+            }
 
             userRolesBindingModel = this._mapper.Map<List<UserRoleBindingModel>>(userRoles);
 
-            return await Task.Run(() => this.PartialView("_GetUsers", userRolesBindingModel));
+            return await Task.Run(() => this.PartialView("_EditUserRoles", (userRolesBindingModel, userName, user.UserId)));
+        }
+
+        [Route("EditUserRolesAsync")]
+        [IgnoreAntiforgeryToken]
+        [HttpPost]
+        public async Task<IActionResult> EditUserRolesAsync(List<UserRoleBindingModel> userRolesBindingModel, string userName)
+        {
+            return await Task.Run(() => this.PartialView("_EditUser", userRolesBindingModel));
         }
 
         [HttpGet]

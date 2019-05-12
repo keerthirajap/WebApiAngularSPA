@@ -104,5 +104,10 @@
 
             return (userDetails, userRoles, userAuthentication);
         }
+
+        public async Task<List<UserRole>> GetRolesAsync()
+        {
+            return await this._authenticationRepository.GetRolesAsync();
+        }
     }
 }

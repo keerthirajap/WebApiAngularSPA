@@ -21,5 +21,8 @@
 
         [Sql("[dbo].[P_GetUserDetailsForAuth]")]
         Task<Results<User, UserRole>> GetUserDetailsForAuthAsync(string userName);
+
+        [Sql("SELECT [RoleId],[RoleName]  FROM [dbo].[Roles]")]
+        Task<List<UserRole>> GetRolesAsync();
     }
 }

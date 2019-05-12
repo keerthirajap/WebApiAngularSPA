@@ -6,6 +6,8 @@ namespace BindingModel.V1._0.User.Role
 {
     public class UserRoleBindingModel
     {
+        public long UserRoleId { get; set; }
+
         public string UserName { get; set; }
 
         public long UserId { get; set; }
@@ -13,5 +15,15 @@ namespace BindingModel.V1._0.User.Role
         public int RoleId { get; set; }
 
         public string RoleName { get; set; }
+
+        public bool IsActive { get; set; }
+
+        public DateTime? CreatedOn { get; set; }
+
+        public long? CreatedBy { get; set; }
+
+        public DateTime? ModifiedOn { get; set; }
+
+        public long? ModifiedBy { get; set; }
     }
 }

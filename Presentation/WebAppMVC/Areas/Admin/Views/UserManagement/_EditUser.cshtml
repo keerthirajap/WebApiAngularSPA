@@ -80,18 +80,29 @@
                                             <label class="custom-control-label" asp-for="IsLocked"></label>
                                         </div>
                                     </div>
+
+                                   
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="card-footer text-center">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Save
-                        </button>
-                        <button type="button" id="btnAddUserCancel" onclick="userManagementController.closeEditUserPartialView()"
-                                class="btn btn-dark ml-3">
-                            <i class="fas fa-times"></i>Cancel
-                        </button>
+                        <div>
+                            <button type="submit" class="btn btn-primary ml-5">
+                                <i class="fas fa-save"></i> Save
+                            </button>
+                            <button type="button" id="btnEditUserRolesCancel"
+                                    onclick="userManagementController.loadUpdateUserRolesPartialView('@Url.Action("LoadUpdateUserRolesPartialViewAsync", "UserManagement", new { Area = "Admin", userName = @Model.UserName })')"
+                                    class="btn  btn-info ml-3">
+                                <i class="fas fa-user-cog"></i>Edit Roles
+                            </button>
+                            <button type="button" id="btnAddUserCancel"
+                                    onclick="userManagementController.closeEditUserPartialView()"
+                                    class="btn btn-dark ml-3">
+                                <i class="fas fa-times"></i>Cancel
+                            </button>
+
+                        </div>
                     </div>
                 </form>
             </div>

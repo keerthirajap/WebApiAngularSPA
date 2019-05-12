@@ -77,6 +77,8 @@
         // #region Edit User
         publicMethod.loadEditUserPartialView = function (actionUrl) {
             homeController.ShowLoadingIndicator();
+            $('#modalEditUserRoles').modal('hide');
+            $('#modalEditUserRoles').remove();
             $.ajax({
                 async: true,
                 type: "GET",
@@ -113,7 +115,7 @@
             homeController.HideLoadingIndicator();
             if (typeof data.Status === "undefined") {
                 $('#modalEditUser').modal('hide');
-                $('#modamodalEditUserlAddUser').remove();
+                $('#modalEditUser').remove();
                 $('#loadEditUserPartialView').empty().html(data);
             }
             else if (data.Status === "Success") {
@@ -149,6 +151,130 @@
             homeController.showAjaxErrorMessagePopUp(xMLHttpRequest, textStatus, errorThrown);
         }
 
+        // #endregion
+
+        // #region Edit User Roles
+        publicMethod.loadUpdateUserRolesPartialView = function (actionUrl) {
+            $('#modalEditUser').modal('hide');
+            $('#modalEditUser').remove();
+            homeController.ShowLoadingIndicator();
+            $.ajax({
+                async: true,
+                type: "GET",
+                url: actionUrl,
+                begin: function () {
+                },
+                complete: function () {
+                },
+                success: function (data) {
+                    $('#loadEditUserPartialView').empty().html(data);
+
+                    setTimeout(
+                        function () {
+                            homeController.HideLoadingIndicator();
+                        }, 200);
+                },
+                error: function (xMLHttpRequest, textStatus, errorThrown) {
+                    homeController.HideLoadingIndicator();
+                    homeController.showAjaxErrorMessagePopUp(xMLHttpRequest, textStatus, errorThrown);
+                }
+            });
+        }
+
+        publicMethod.closeEditUserRolesPartialView = function () {
+            $('#modalEditUserRoles').modal('hide');
+            $('#modalEditUserRoles').remove();
+        }
+
+        publicMethod.modifyUserRoles = function (actionUrl) {
+            homeController.ShowLoadingIndicator();
+            var token = $('input[name="__RequestVerificationToken"]').val();
+            var roleAssetMappingViewModels = [];
+
+            $('#divUserRolesCards').find('input').each(function () {
+                if (this.id != "") {
+                    var roleAssetMappingViewModel = {};
+                    roleAssetMappingViewModel.IsActive = this.checked;
+                    roleAssetMappingViewModel.RoleName = this.id;
+                    roleAssetMappingViewModels.push(roleAssetMappingViewModel);
+                }
+            });
+            $.ajax({
+                type: 'POST',
+                url: actionUrl,
+                data: {
+                    userRolesBindingModel: roleAssetMappingViewModels,
+                    userName: $('#txtUserName').val(),
+                    __RequestVerificationToken: token
+                },
+
+                success: function (data, status, xhr) {
+                    if (jQuery.type(data.Status) === "undefined") {
+
+                    }
+                    else if (data.Status == 'ValidatationError') {
+                        swalWithBootstrapButtons.fire({
+                            title: 'Validatation Error',
+                            text: data.Message,
+                            type: 'warning',
+                            showCancelButton: false,
+                            confirmButtonText: '<i class="fas fa-check"></i> Ok'
+                        });
+                    }
+                    else {
+                        $('#modalAddRolesToUser').modal('hide');
+
+                        swalWithBootstrapButtons.fire({
+                            title: data.GetGoodJobVerb,
+                            text: data.Message,
+                            type: 'success',
+                            showCancelButton: false,
+                            confirmButtonText: '<i class="fas fa-check"></i> Ok'
+                        });
+
+                        $('#loadUserDetailsSummary').load(GetUserDetailsSummaryUrl + '?userId=' + data.UserId);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    new MvcGrid(document.querySelector('#gridGetsUsersAjax')).reload();
+
+                    homeController.showErrorMessagePopUp(XMLHttpRequest, textStatus, errorThrown);
+
+                    setTimeout(
+                        function () {
+                            $('#modalProgressBar').modal('hide');
+                        }, 500);
+                }
+            });
+        }
+
+        publicMethod.editUserRolesOnBegin = function (xhr, data) {
+           
+            homeController.ShowLoadingIndicator();
+        }
+
+        publicMethod.editUserRolesOnSuccess = function (data, status, xhr) {
+            homeController.HideLoadingIndicator();
+            if (typeof data.Status === "undefined") {
+                $('#modalEditUserRoles').modal('hide');
+                $('#modalEditUserRoles').remove();
+            }
+            else if (data.Status === "Success") {
+            }
+            else if (data.Status === "Error") {
+                $('#modalEditUserRoles').modal('hide');
+                $('#modalEditUserRoles').remove();
+                homeController.showErrorMessagePopUp(data.Message, xhr.getResponseHeader('RequestId'));
+            }
+        }
+
+        publicMethod.editUserRolesOnComplete = function (xhr, data) {
+        }
+
+        publicMethod.editUserRolesOnFailure = function (xMLHttpRequest, textStatus, errorThrown) {
+            homeController.HideLoadingIndicator();
+            homeController.showAjaxErrorMessagePopUp(xMLHttpRequest, textStatus, errorThrown);
+        }
         // #endregion
 
         // #region Delete User
