@@ -14,23 +14,23 @@
     {
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IUserManagementService _userManagementService;
+        private readonly IAuthenticationService _authenticationService;
 
         public ValidatationsController(
                                IMapper mapper,
                                IHttpContextAccessor httpContextAccessor,
-                               IUserManagementService userManagementService)
+                               IAuthenticationService authenticationService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._mapper = mapper;
-            this._userManagementService = userManagementService;
+            this._authenticationService = authenticationService;
         }
 
         public async Task<IActionResult> IsUserNameExists(string userName)
         {
             User user = new User();
             bool isUserNameExists = true;
-            user = await this._userManagementService.GetUserDetailsByUserNameAsync(userName);
+            user = await this._authenticationService.GetUserDetailsByUserNameAsync(userName);
 
             if (user != null && user.UserId > 0)
             {

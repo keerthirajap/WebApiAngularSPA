@@ -1,0 +1,33 @@
+﻿@model IEnumerable<BindingModel.V1._0.User.UserBindingModel>
+
+@(Html
+                         .Grid(Model)
+                         .Build(columns =>
+                         {
+
+                             columns.Add(model => model.UserId).Titled("User Id");
+                             columns.Add(model => model.UserName).Titled("User Name");
+                             columns.Add(model => model.FirstName).Titled("First Name");
+                             columns.Add(model => model.LastName).Titled("Last Name");
+                             columns.Add(model => model.CreatedOn).Titled("Created On");
+                             columns.Add(model => model.CreatedBy).Titled("Created By");
+                             columns.Add(model =>
+                               $"<button class='btn btn-secondary btn-sm' id=\"{model.UserId}\" " +
+                               $"onclick='GetEditUserPartialView(\"{@Url.Action("GetEditUserPartialView", "Admin", new { Area = "Admin", userID = model.UserId })}\")'>" +
+                               $"<i class='fas fa-user-edit'></i> Edit</button>"
+
+                               +
+                               $"<button class='btn btn-danger ml-2 btn-sm' id=\"{model.UserId}\"" +
+                               $"onclick='GetDeleteUserPartialView(" +
+                               $"\"{@Url.Action("GetDeleteUserPartialView", "Admin", new { Area = "Admin", userID = model.UserId })}\")'>" +
+
+                               $"<i class='fas fa-user-times'></i>Delete</button>"
+                           ).Encoded(false).Titled("Manage").AppendCss("userManagementGridWidth"); ;
+
+                         })
+                         .Empty("No data found")
+                         .Id("gridGetsUsersAjax")
+                         //.Filterable()
+                         //.Sortable()
+                         .Pageable()
+)

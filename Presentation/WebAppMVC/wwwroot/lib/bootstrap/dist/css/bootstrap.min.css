@@ -11371,6 +11371,14 @@ a {
         opacity: 1;
     }
 
+.card-body {
+    padding: .25rem;
+}
+
+.card-header {
+    padding: 0.25rem .80rem;
+}
+
 .card {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
 }

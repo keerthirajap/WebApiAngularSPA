@@ -1,22 +1,38 @@
 ﻿(
     function (publicMethod, $) {
-        publicMethod.showErrorMessagePopUp = function (XMLHttpRequest, textStatus, errorThrown) {
+        publicMethod.showAjaxErrorMessagePopUp = function (xMLHttpRequest, textStatus, errorThrown) {
             swalWithBootstrapButtons.fire({
                 title: 'Oops...',
-                text: "An error occurred while processing your request",
+               
                 type: 'error',
                 html: '<br> <br>  An error occurred while processing your request. <br> <br> <br> ' +
                     '<div style="text-align: center; font-size : 14px;" >   Error Message: ' + XMLHttpRequest.status + " " + errorThrown +
-                    '<br> <br> ' + ' Request Id : ' + XMLHttpRequest.getResponseHeader('RequestId') + ' </div>',
-                showCancelButton: false,
-                confirmButtonText: '<i class="fas fa-check"></i> Ok'
+                    '<br> <br> ' + ' Request Id : ' + xMLHttpRequest.getResponseHeader('RequestId') + ' </div>',
+                showCancelButton: true,
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                cancelButtonText: '<i class="fas fa-times"></i> Cancel'
+            });
+        }
+
+        publicMethod.showErrorMessagePopUp = function (message, requestId) {
+            swalWithBootstrapButtons.fire({
+                title: 'Oops...',
+                text: message,
+                type: 'error',
+                html: '<br> <br> ' +
+                    '<div style="text-align: center; font-size : 16px;" >   Error Message: ' + message +
+                    '<br> <br> ' + ' Request Id : ' + requestId + ' </div>',
+                showCancelButton: true,
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                cancelButtonText: '<i class="fas fa-times"></i> Close'
             });
         },
-
             publicMethod.onLogoutButtonClick = function (url) {
                 $.ajax({
                     async: true,
-                    type: "POST",
+                    type: "GET",
                     url: url,
                     contentType: 'application/json;',
                     dataType: 'json',
@@ -36,19 +52,10 @@
                         setTimeout(
                             function () {
                                 location.reload();
-                            }, 2500);
+                            }, 1000);
                     },
-                    error: function (XMLHttpRequest, textStatus, errorThrown) {
-                        swalWithBootstrapButtons.fire({
-                            title: 'Oops...',
-                            text: "An error occurred while processing your request",
-                            type: 'error',
-                            html: '<br> <br>  An error occurred while processing your request. <br> <br> <br> ' +
-                                '<div style="text-align: center; font-size : 14px;" >   Error Message: ' + XMLHttpRequest.status + " " + errorThrown +
-                                '<br> <br> ' + ' Request Id : ' + XMLHttpRequest.getResponseHeader('RequestId') + ' </div>',
-                            showCancelButton: false,
-                            confirmButtonText: '<i class="fas fa-check"></i> Ok'
-                        });
+                    error: function (xMLHttpRequest, textStatus, errorThrown) {
+                        homeController.showAjaxErrorMessagePopUp(xMLHttpRequest, textStatus, errorThrown);
                     }
                 });
             },
@@ -74,7 +81,7 @@
             },
 
             publicMethod.ShowLoaddingIndicator = function () {
-                 document.getElementById("myNav").style.height = "100%";
+                document.getElementById("myNav").style.height = "100%";
             },
 
             publicMethod.HideLoaddingIndicator = function () {
@@ -85,15 +92,19 @@
             },
 
             publicMethod.RedirectToHomePage = function () {
-                  // JsMain.ShowLoaddingIndicator();
+                // JsMain.ShowLoaddingIndicator();
                 var url = "\Home";
                 window.location.href = url;
             },
 
             publicMethod.RedirectToUrl = function (url) {
-               // JsMain.ShowLoaddingIndicator();
+                // JsMain.ShowLoaddingIndicator();
 
                 window.location.href = url;
+            },
+
+            publicMethod.reloadCurrentPage = function () {
+                location.reload();
             },
 
             publicMethod.ShowMessageShowReloadPopUp = function (header, message) {

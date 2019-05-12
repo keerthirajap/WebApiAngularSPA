@@ -4,7 +4,9 @@
     using System.Collections.Generic;
     using System.Text;
     using System.Threading.Tasks;
+    using System.Linq;
     using Domain.User;
+    using Domain.User.Role;
     using RepositoryInterface;
     using ServiceInterface;
 
@@ -17,49 +19,9 @@
             this._userManagementRepository = userManagementRepository;
         }
 
-        public async Task<User> GetUserDetailsByUserNameAsync(string userName)
+        public async Task<List<User>> GetUsersAsync(bool isLocked, bool isActive)
         {
-            return await this._userManagementRepository.GetUserDetailsByUserNameAsync(userName);
-        }
-
-        public async Task<long> RegisterUserAsync(User user)
-        {
-            return await this._userManagementRepository.RegisterUserAsync(user);
-        }
-
-        public async Task<(User, UserAuthentication)> AuthenticateUserAsync(User user)
-        {
-            User userDetails = await this._userManagementRepository.GetUserDetailsByUserNameAsync(user.UserName);
-            UserAuthentication userAuthentication = new UserAuthentication();
-
-            if (userDetails == null || userDetails.UserId <= 0)
-            {
-                userAuthentication.IsUserAccountFound = false;
-            }
-            else
-            {
-                userAuthentication.UserName = user.UserName;
-                userAuthentication.IsUserAccountFound = true;
-
-                if (userDetails.IsLocked.Value)
-                {
-                    userAuthentication.IsUserAccountLocked = true;
-                }
-                else if (user.Password == userDetails.Password)
-                {
-                    if (userDetails.Password == user.Password)
-                    {
-                        userAuthentication.IsUserAuthenticated = true;
-                    }
-                }
-                else
-                {
-                    userAuthentication.IsUserAuthenticated = false;
-                    //// Lock Acount
-                }
-            }
-
-            return (userDetails, userAuthentication);
+            return await this._userManagementRepository.GetUsersAsync(isLocked, isActive);
         }
     }
 }

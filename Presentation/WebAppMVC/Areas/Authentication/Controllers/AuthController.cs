@@ -8,6 +8,7 @@
     using AutoMapper;
     using BindingModel.V1._0.User;
     using Domain.User;
+    using Domain.User.Role;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Authorization;
@@ -23,16 +24,16 @@
     {
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IUserManagementService _userManagementService;
+        private readonly ServiceInterface.IAuthenticationService _authenticationService;
 
         public AuthController(
                                IMapper mapper,
                                IHttpContextAccessor httpContextAccessor,
-                               IUserManagementService userManagementService)
+                               ServiceInterface.IAuthenticationService authenticationService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._mapper = mapper;
-            this._userManagementService = userManagementService;
+            this._authenticationService = authenticationService;
         }
 
         public IActionResult Index()
@@ -62,9 +63,15 @@
             dynamic ajaxReturn = new JObject();
             var user = this._mapper.Map<User>(userLoginBindingModel);
 
-            var userAuthenticationDetails = await this._userManagementService.AuthenticateUserAsync(user);
-            var userAuthentication = userAuthenticationDetails.Item2;
-            var userDetails = userAuthenticationDetails.Item1;
+            var userAuthenticationDetails = await this._authenticationService.ValidateAndAuthenticateUserAsync(user);
+
+            User userDetails = new User();
+            List<UserRole> userRoles = new List<UserRole>();
+            UserAuthentication userAuthentication = new UserAuthentication();
+
+            userDetails = userAuthenticationDetails.user;
+            userRoles = userAuthenticationDetails.userRoles;
+            userAuthentication = userAuthenticationDetails.authenticationDetails;
 
             UserAuthenticationBindingModel userAuthenticationBindingModel = new UserAuthenticationBindingModel();
             userAuthenticationBindingModel = this._mapper.Map<UserAuthenticationBindingModel>(userAuthentication);
@@ -81,6 +88,11 @@
                 new Claim(ClaimTypes.Authentication , "Authenticated"),
                 new Claim("http://example.org/claims/LoggedInTime", "LoggedInTime", DateTime.Now.ToString())
              };
+                foreach (var item in userRoles)
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, item.RoleName));
+                }
+
                 var identityClaims = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
                 // create principal
@@ -106,9 +118,8 @@
         }
 
         [Route("LogOut")]
-        [IgnoreAntiforgeryToken]
         [AllowAnonymous]
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> LogOut()
         {
             // await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -146,7 +157,7 @@
 
             User user = this._mapper.Map<User>(registerUserBindingModel);
 
-            var userCreationSuccess = await this._userManagementService.RegisterUserAsync(user);
+            var userCreationSuccess = await this._authenticationService.RegisterUserAsync(user);
 
             if (userCreationSuccess > 0)
             {

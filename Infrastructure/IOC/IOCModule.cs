@@ -23,13 +23,17 @@
         {
             if (this._lifeTime == "InstancePerLifetimeScope")
             {
+                builder.RegisterType<AuthenticationService>().As<IAuthenticationService>()
+                    .InstancePerLifetimeScope().EnableInterfaceInterceptors();
                 builder.RegisterType<UserManagementService>().As<IUserManagementService>()
                     .InstancePerLifetimeScope().EnableInterfaceInterceptors();
             }
             else
             {
-                builder.RegisterType<UserManagementService>().As<IUserManagementService>()
+                builder.RegisterType<AuthenticationService>().As<IAuthenticationService>()
                     .EnableInterfaceInterceptors();
+                builder.RegisterType<UserManagementService>().As<IUserManagementService>()
+                   .EnableInterfaceInterceptors();
             }
 
             base.Load(builder);
@@ -54,13 +58,18 @@
             if (this._lifeTime == "InstancePerLifetimeScope")
             {
                 builder
+                    .Register(b => this._sqlConnection.AsParallel<IAuthenticationRepository>())
+                    .InstancePerLifetimeScope().EnableInterfaceInterceptors();
+                builder
                     .Register(b => this._sqlConnection.AsParallel<IUserManagementRepository>())
                     .InstancePerLifetimeScope().EnableInterfaceInterceptors();
             }
             else
             {
-                builder.Register(b => this._sqlConnection.AsParallel<IUserManagementRepository>())
+                builder.Register(b => this._sqlConnection.AsParallel<IAuthenticationRepository>())
                             .EnableInterfaceInterceptors();
+                builder.Register(b => this._sqlConnection.AsParallel<IUserManagementRepository>())
+                           .EnableInterfaceInterceptors();
             }
 
             base.Load(builder);

@@ -12,10 +12,7 @@
     [Intercept(typeof(RepositoryInterfaceLogInterceptor))]
     public interface IUserManagementRepository
     {
-        [Sql("[dbo].[P_RegisterUser]")]
-        Task<long> RegisterUserAsync(User user);
-
-        [Sql("[dbo].[P_GetUserDetailsByUserName]")]
-        Task<User> GetUserDetailsByUserNameAsync(string userName);
+        [Sql("[dbo].[P_GetUsers]")]
+        Task<List<User>> GetUsersAsync(bool isLocked, bool isActive);
     }
 }

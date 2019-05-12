@@ -32,7 +32,7 @@
         private readonly ILogger<UserManagementController> _logger;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IUserManagementService _userManagementService;
+        private readonly IAuthenticationService _authenticationService;
 
         private readonly IOptions<JwtAuthentication> _jwtAuthentication;
 
@@ -40,14 +40,14 @@
                                 IMapper mapper,
                                 IHttpContextAccessor httpContextAccessor,
                                 IOptions<JwtAuthentication> jwtAuthentication,
-                                IUserManagementService userManagementService)
+                                IAuthenticationService authenticationService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._logger = logger;
             this._mapper = mapper;
             this._jwtAuthentication = jwtAuthentication ?? throw new ArgumentNullException(nameof(jwtAuthentication));
 
-            this._userManagementService = userManagementService;
+            this._authenticationService = authenticationService;
         }
 
         // api/UserManagement/User/Test201?api-version=1.0
@@ -72,7 +72,7 @@
                 UserName = userName,
             };
 
-            var userDetailss = await this._userManagementService.GetUserDetailsByUserNameAsync(userName);
+            var userDetailss = await this._authenticationService.GetUserDetailsByUserNameAsync(userName);
             response.Model = userDetails;
             return response.ToHttpResponse();
         }
@@ -90,7 +90,7 @@
 
             var user = this._mapper.Map<User>(userLoginBindingModel);
 
-            var userAuthenticationDetails = await this._userManagementService.AuthenticateUserAsync(user);
+            var userAuthenticationDetails = await this._authenticationService.AuthenticateUserAsync(user);
             var userAuthentication = userAuthenticationDetails.Item2;
             var userDetails = userAuthenticationDetails.Item1;
 
@@ -125,7 +125,7 @@
             var errors = new Dictionary<string, string>();
             var response = new SingleCreatedResponse<dynamic>();
 
-            User user = await this._userManagementService.GetUserDetailsByUserNameAsync(userBindingModel.UserName);
+            User user = await this._authenticationService.GetUserDetailsByUserNameAsync(userBindingModel.UserName);
 
             if (user != null)
             {
@@ -138,7 +138,7 @@
 
             user = this._mapper.Map<User>(userBindingModel);
 
-            var userCreationSuccess = await this._userManagementService.RegisterUserAsync(user);
+            var userCreationSuccess = await this._authenticationService.RegisterUserAsync(user);
 
             if (userCreationSuccess > 0)
             {
@@ -162,7 +162,7 @@
         [ProducesResponseType(500)] //If there was an internal server error
         public async Task<IActionResult> IsUserAdminAsync()
         {
-            return this.Ok();
+            return await Task.Run(() => this.Ok());
         }
 
         [Authorize(Roles = CoreWebApiRoles.User + "," + CoreWebApiRoles.Admin)]
@@ -173,7 +173,7 @@
         [ProducesResponseType(500)] //If there was an internal server error
         public async Task<IActionResult> IsUserAdminAndUserAsync()
         {
-            return this.Ok();
+            return await Task.Run(() => this.Ok());
         }
 
         private void CreateJWTToken(dynamic response, UserAuthenticationBindingModel userAuthentication)

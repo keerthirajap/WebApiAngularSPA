@@ -1,5 +1,6 @@
 ﻿namespace BindingModel.V1._0.User
 {
+    using Microsoft.AspNetCore.Mvc;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
@@ -10,20 +11,44 @@
     {
         public int UserId { get; set; }
 
-        [Required(ErrorMessage = "The First Name field is required.")]
-        public string FirstName { get; set; }
-
-        [Required(ErrorMessage = "The Last Name field is required.")]
-        public string LastName { get; set; }
-
-        [Required(ErrorMessage = "The User Name field is required.")]
+        [Required(ErrorMessage = "The {0} field is required.")]
+        [StringLength(20, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [Remote(action: "IsUserNameExists", controller: "Validatations",
+        ErrorMessage = "User Name already exists. Please try again.")]
+        [Display(Name = "User Name")]
         public string UserName { get; set; }
 
-        [Required(ErrorMessage = "The Password field is required.")]
-        [RegularExpression("^(?=.{8,})(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$", ErrorMessage = "Password must be between 6 and 20 characters and contain one uppercase letter, one lowercase letter, one digit and one special character.")]
+        [Required(ErrorMessage = "The {0} field is required.")]
+        [StringLength(20, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [Display(Name = "Password")]
         public string Password { get; set; }
 
-        [NotMapped]
+        [Required(ErrorMessage = "The {0} field is required.")]
+        [StringLength(20, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 3)]
+        [Display(Name = "First Name")]
+        public string FirstName { get; set; }
+
+        [Required(ErrorMessage = "The {0} field is required.")]
+        [StringLength(20, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 3)]
+        [Display(Name = "Last Name")]
+        public string LastName { get; set; }
+
+        [Required(ErrorMessage = "The {0} field is required.")]
+        [Display(Name = "Email")]
+        public string Email { get; set; }
+
         public string Token { get; set; }
+
+        public bool? IsActive { get; set; }
+
+        public bool? IsLocked { get; set; }
+
+        public DateTime? CreatedOn { get; set; }
+
+        public long? CreatedBy { get; set; }
+
+        public DateTime? ModifiedOn { get; set; }
+
+        public long? ModifiedBy { get; set; }
     }
 }

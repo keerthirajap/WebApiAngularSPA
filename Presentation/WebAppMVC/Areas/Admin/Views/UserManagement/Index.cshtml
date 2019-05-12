@@ -3,4 +3,29 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>User Management</h1>
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-6">
+                <h4>  <i class="fas fa-users"></i>  Users </h4>
+            </div>
+            <div class="col-6">
+                <button type="button" id="btnGetAddUserPartialView" class="btn btn-primary float-right"
+                        onclick="userManagementController.loadAddUserPartialView('@Url.Action("LoadAddUserPartialView", "UserManagement", new { Area = "Admin" })')">
+                    <i class="fas fa-user-plus"></i> Add User
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        @Html.AjaxGrid(Url.Action("GetUsersAsync"), new { id = "gridGetsUsersAjax" })
+    </div>
+</div>
+
+<div id="loadAddUserPartialView">
+</div>
+
+<script src="~/jsControllers/admin/userManagementController.js"></script>
+<script>
+    $('#navbarAdminDropdown').addClass('active');
+</script>

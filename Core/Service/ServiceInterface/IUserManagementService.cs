@@ -7,14 +7,11 @@
     using Autofac.Extras.DynamicProxy;
     using CrossCutting.Logging;
     using Domain.User;
+    using Domain.User.Role;
 
     [Intercept(typeof(ServiceClassLogInterceptor))]
     public interface IUserManagementService
     {
-        Task<long> RegisterUserAsync(User user);
-
-        Task<User> GetUserDetailsByUserNameAsync(string userName);
-
-        Task<(User, UserAuthentication)> AuthenticateUserAsync(User user);
+        Task<List<User>> GetUsersAsync(bool isLocked, bool isActive);
     }
 }

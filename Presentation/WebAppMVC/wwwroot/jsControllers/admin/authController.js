@@ -25,7 +25,7 @@
             }
         }
 
-        publicMethod.registerUserOnfailure = function (XMLHttpRequest, textStatus, errorThrown) {
+        publicMethod.registerUserOnfailure = function (xMLHttpRequest, textStatus, errorThrown) {
         }
 
         publicMethod.loginUserOnBegin = function (xhr, data) {
@@ -40,34 +40,22 @@
             if (data.Status === "undefined") {
             }
             if (data.Status === "Success") {
-
                 homeController.RedirectToHomePage();
             }
             else if (data.Status === "Warning") {
                 swalWithBootstrapButtons.fire({
                     title: 'Sorry...',
                     text: data.Message,
-                    type: 'warning',                    
+                    type: 'warning',
                     showCancelButton: false,
                     confirmButtonText: '<i class="fas fa-check"></i> Ok'
                 });
-               
             }
             else {
             }
         }
 
-        publicMethod.loginUserOnfailure = function (XMLHttpRequest, textStatus, errorThrown) {
-            swalWithBootstrapButtons.fire({
-                title: 'Oops...',
-                text: "An error occurred while processing your request",
-                type: 'error',
-                html: '<br> <br>  An error occurred while processing your request. <br> <br> <br> ' +
-                    '<div style="text-align: center; font-size : 14px;" >   Error Message: ' + XMLHttpRequest.status + " " + errorThrown +
-                    '<br> <br> ' + ' Request Id : ' + XMLHttpRequest.getResponseHeader('RequestId') + ' </div>',
-                showCancelButton: false,
-                confirmButtonText: '<i class="fas fa-check"></i> Ok'
-            });
+        publicMethod.loginUserOnfailure = function (xMLHttpRequest, textStatus, errorThrown) {
         }
     }(window.authController = window.authController || {}, jQuery)
 );

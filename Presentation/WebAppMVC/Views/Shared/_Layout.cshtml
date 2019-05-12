@@ -1,18 +1,19 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
+    <meta http-equiv="Pragma" content="no-cache">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Web App MVC</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link href="~/lib/font-awesome/css/all.css" rel="stylesheet" />
-
+    <link href="~/lib/MvcGrid/mvc-grid.css" rel="stylesheet" />
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <link href="~/lib/jqueryui/jquery-ui.min.css" rel="stylesheet" />
 </head>
 <body>
 
-    <input id="reloadValue" type="hidden" name="reloadValue" value="" />
     <header id="topheader">
         <nav class="navbar navbar-expand-lg navbar-dark bg-success">
             <div class="container-fluid">
@@ -28,13 +29,7 @@
                             <li class="nav-item" id="nav-ItemHome">
                                 <a class="nav-link" id="navbarHome" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy"
-                                   id="navbarContact">Contact</a>
-                            </li>
+
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarAdminDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Admin
@@ -56,7 +51,9 @@
                                     <a class="dropdown-item" asp-controller="Home" asp-action="Error">Error</a>
                                 </div>
                             </li>
-
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
                             </li>
@@ -71,7 +68,7 @@
                         {
                             <button type="button" class="btn btn-outline-light">Hello @User.Identity.Name</button>
 
-                            <button type="button" onclick="homeController.onLogoutButtonClick('@Url.Action("Logout", "Auth" ,new { Area = "Authentication" } )')"
+                            <button type="button" onclick="homeController.onLogoutButtonClick('@Url.Action( "Logout", "Auth" , new { Area="Authentication" } )')"
                                     style="color:white;padding-right: 3px;margin-left: 9px;" class="btn btn-danger">
                                 <i style="font-size: 20px;margin-top: 6px;margin-left: 0px;margin-right: 0px;" class="fas fa-power-off"></i>
                             </button>
@@ -98,6 +95,13 @@
 
         <main role="main" class="pb-3 pt-2">
             @RenderBody()
+
+            <script src="~/lib/MvcGrid/mvc-grid.js"></script>
+            <script>
+                + [].forEach.call(document.getElementsByClassName('mvc-grid'), function (element) {
+                    +               new MvcGrid(element);
+                });
+            </script>
         </main>
         @{
             Html.RenderPartial("_LayoutContents");
@@ -111,35 +115,29 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsnlog/2.29.0/jsnlog.min.js"></script>
+    <script src="~/jsControllers/homeController.js"></script>
 
-    <input type="hidden" id="refreshed" value="no">
+    <script src="~/lib/jqueryui/jquery-ui.min.js"></script>
+
     <script type="text/javascript">
-           jQuery(document).ready(function()
-                    {
-                            var d = new Date();
-                            d = d.getTime();
-                            if (jQuery('#reloadValue').val().length == 0)
-                            {
-                                    jQuery('#reloadValue').val(d);
-                                    jQuery('body').show();
-                            }
-                            else
-                            {
-                                    jQuery('#reloadValue').val('');
-                                    location.reload();
-                            }
-                    });
 
-       
     </script>
 
-    <script src="~/JsControllers/homeController.js"></script>
     <script>
-
+        //parsing the unobtrusive attributes when we get content via ajax
+        $(document).ajaxComplete(function () {
+            $.validator.unobtrusive.parse(document);
+        });
+        window.onerror = function (msg, url, lineNo, columnNo, error) {
+            var message = "Error in " + url + " on line " + lineNo + ": " + columnNo + msg + error;
+            JL("").error(message);
+            return false;
+        };
         const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
                 confirmButton: 'btn btn-primary',
-                cancelButton: 'btn btn-danger'
+                cancelButton: 'btn btn-secondary',
+                allowOutsideClick: false
             },
             buttonsStyling: false,
         });
