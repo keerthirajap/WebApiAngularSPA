@@ -6,7 +6,9 @@
     using System.Threading.Tasks;
     using AutoMapper;
     using BindingModel.V1._0.User;
+    using BindingModel.V1._0.User.Role;
     using Domain.User;
+    using Domain.User.Role;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -51,6 +53,19 @@
             userBindingModel = this._mapper.Map<List<UserBindingModel>>(users);
 
             return await Task.Run(() => this.PartialView("_GetUsers", userBindingModel));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> LoadUserRolesPartialViewAsync(string userName)
+        {
+            List<UserRoleBindingModel> userRolesBindingModel = new List<UserRoleBindingModel>();
+            User user = new User();
+
+            List<UserRole> userRoles = await this._userManagementService.GetUserRolesAsync(user);
+
+            userRolesBindingModel = this._mapper.Map<List<UserRoleBindingModel>>(userRoles);
+
+            return await Task.Run(() => this.PartialView("_GetUsers", userRolesBindingModel));
         }
 
         [HttpGet]
@@ -104,12 +119,86 @@
             dynamic ajaxReturn = new JObject();
 
             User user = new User();
-            user.UserName = userName;
 
-            //var userAuthenticationDetails =
-            //    await this._userManagementService.GetUsersAsync(user);
+            user = await this._authenticationService.GetUserDetailsByUserNameAsync(userName);
+
+            userBindingModel = this._mapper.Map<UserBindingModel>(user);
 
             return await Task.Run(() => this.PartialView("_EditUser", userBindingModel));
+        }
+
+        [Route("EditUser")]
+        [HttpPost]
+        public async Task<IActionResult> EditUserAsync(UserBindingModel userBindingModel)
+        {
+            dynamic ajaxReturn = new JObject();
+
+            User user = this._mapper.Map<User>(userBindingModel);
+
+            var userCreationSuccess = await this._userManagementService.UpdateUserAsync(user);
+
+            if (userCreationSuccess)
+            {
+                ajaxReturn.Status = "Success";
+                ajaxReturn.UserName = userBindingModel.UserName;
+                ajaxReturn.GetGoodJobVerb = "Good Work";
+                ajaxReturn.Message = userBindingModel.UserName + " - user details saved sucessfully" +
+                    " ";
+            }
+            else
+            {
+                ajaxReturn.Status = "Error";
+                ajaxReturn.UserId = userCreationSuccess;
+                ajaxReturn.UserName = userBindingModel.UserName;
+                ajaxReturn.Message = "Error occured while updating user - " + userBindingModel.UserName +
+                                    "";
+            }
+            return this.Json(ajaxReturn);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> LoadDeleteUserPartialView(string userName)
+        {
+            UserBindingModel userBindingModel = new UserBindingModel();
+
+            dynamic ajaxReturn = new JObject();
+
+            User user = new User();
+
+            user = await this._authenticationService.GetUserDetailsByUserNameAsync(userName);
+
+            userBindingModel = this._mapper.Map<UserBindingModel>(user);
+
+            return await Task.Run(() => this.PartialView("_DeleteUser", userBindingModel));
+        }
+
+        [Route("DeleteUser")]
+        [HttpPost]
+        public async Task<IActionResult> DeleteUserAsync(UserBindingModel userBindingModel)
+        {
+            dynamic ajaxReturn = new JObject();
+
+            User user = this._mapper.Map<User>(userBindingModel);
+
+            var userCreationSuccess = await this._userManagementService.DeleteUserAsync(user);
+
+            if (userCreationSuccess)
+            {
+                ajaxReturn.Status = "Success";
+                ajaxReturn.UserName = userBindingModel.UserName;
+                ajaxReturn.GetGoodJobVerb = "Good Work";
+                ajaxReturn.Message = userBindingModel.UserName + " - user deleted sucessfully" +
+                    " ";
+            }
+            else
+            {
+                ajaxReturn.Status = "Error";
+                ajaxReturn.UserId = userCreationSuccess;
+                ajaxReturn.UserName = userBindingModel.UserName;
+                ajaxReturn.Message = "Error occured while deleting user - " + userBindingModel.UserName +
+                                    "";
+            }
+            return this.Json(ajaxReturn);
         }
     }
 }

@@ -13,5 +13,11 @@
     public interface IUserManagementService
     {
         Task<List<User>> GetUsersAsync(bool isLocked, bool isActive);
+
+        Task<bool> UpdateUserAsync(User user);
+
+        Task<bool> DeleteUserAsync(User user);
+
+        Task<List<UserRole>> GetUserRolesAsync(User user);
     }
 }

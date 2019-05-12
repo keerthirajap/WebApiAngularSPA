@@ -23,5 +23,20 @@
         {
             return await this._userManagementRepository.GetUsersAsync(isLocked, isActive);
         }
+
+        public async Task<bool> UpdateUserAsync(User user)
+        {
+            return await this._userManagementRepository.UpdateUserAsync(user);
+        }
+
+        public async Task<bool> DeleteUserAsync(User user)
+        {
+            return await this._userManagementRepository.DeleteUserAsync(user);
+        }
+
+        public async Task<List<UserRole>> GetUserRolesAsync(User user)
+        {
+            return await this._userManagementRepository.GetUserRolesAsync(user);
+        }
     }
 }

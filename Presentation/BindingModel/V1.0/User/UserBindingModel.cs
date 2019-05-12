@@ -39,9 +39,13 @@
 
         public string Token { get; set; }
 
-        public bool? IsActive { get; set; }
+        [Required(ErrorMessage = "The {0} field is required.")]
+        [Display(Name = "Account Active")]
+        public bool IsActive { get; set; }
 
-        public bool? IsLocked { get; set; }
+        [Required(ErrorMessage = "The {0} field is required.")]
+        [Display(Name = "Account Locked")]
+        public bool IsLocked { get; set; }
 
         public DateTime? CreatedOn { get; set; }
 

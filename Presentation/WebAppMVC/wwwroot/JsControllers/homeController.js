@@ -3,15 +3,15 @@
         publicMethod.showAjaxErrorMessagePopUp = function (xMLHttpRequest, textStatus, errorThrown) {
             swalWithBootstrapButtons.fire({
                 title: 'Oops...',
-               
+
                 type: 'error',
-                html: '<br> <br>  An error occurred while processing your request. <br> <br> <br> ' +
+                html: '<br> An error occurred while processing your request. <br> <br>' +
                     '<div style="text-align: center; font-size : 14px;" >   Error Message: ' + XMLHttpRequest.status + " " + errorThrown +
                     '<br> <br> ' + ' Request Id : ' + xMLHttpRequest.getResponseHeader('RequestId') + ' </div>',
                 showCancelButton: true,
                 showConfirmButton: false,
                 allowOutsideClick: false,
-                cancelButtonText: '<i class="fas fa-times"></i> Cancel'
+                cancelButtonText: '<i class="fas fa-times"></i> Close'
             });
         }
 
@@ -80,11 +80,11 @@
                 return $('#signalRconnectionId').val();
             },
 
-            publicMethod.ShowLoaddingIndicator = function () {
+            publicMethod.ShowLoadingIndicator = function () {
                 document.getElementById("myNav").style.height = "100%";
             },
 
-            publicMethod.HideLoaddingIndicator = function () {
+            publicMethod.HideLoadingIndicator = function () {
                 setTimeout(
                     function () {
                         document.getElementById("myNav").style.height = "0%";
@@ -92,13 +92,13 @@
             },
 
             publicMethod.RedirectToHomePage = function () {
-                // JsMain.ShowLoaddingIndicator();
+                // JsMain.ShowLoadingIndicator();
                 var url = "\Home";
                 window.location.href = url;
             },
 
             publicMethod.RedirectToUrl = function (url) {
-                // JsMain.ShowLoaddingIndicator();
+                // JsMain.ShowLoadingIndicator();
 
                 window.location.href = url;
             },

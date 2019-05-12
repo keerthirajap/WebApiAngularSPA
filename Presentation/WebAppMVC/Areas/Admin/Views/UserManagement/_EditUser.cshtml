@@ -1,43 +1,32 @@
 ﻿@model BindingModel.V1._0.User.UserBindingModel
-<div class="modal" id="modalAddUser" data-backdrop="static">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content" id="modalContentAddUser">
-            <div class="card  bg-white">
-                <div class="card-header" id="cardHeaderModalAddUser">
-                    <h4 class="pt-1">   Add User </h4>
-                </div>
-                <form id="formAddUser" asp-area="Admin"
-                      asp-controller="UserManagement" asp-action="AddUserAsync"
-                      method="post" data-ajax="true"
-                      data-ajax-success="userManagementController.addUserOnSuccess"
-                      data-ajax-failure="userManagementController.addUserOnfailure"
-                      data-ajax-begin="userManagementController.addUserOnBegin"
-                      data-ajax-complete="userManagementController.addUserOnComplete"
-                      data-ajax-mode="replace"
-                      data-ajax-update="#ajaxAddUserResult">
-                    <div class="card-body pl-3 pr-3 pt-3" id="addUserCardBody">
 
-                        <div id="ajaxAddUserResult">
+<div class="modal" id="modalEditUser" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="modalContentEditUser">
+            <div class="card  bg-white">
+                <div class="card-header" id="cardHeaderModalEditUser">
+                    <h4 class="pt-1">   Edit User </h4>
+                </div>
+                <form id="formEditUser" asp-area="Admin"
+                      asp-controller="UserManagement" asp-action="EditUserAsync"
+                      method="post" data-ajax="true"
+                      data-ajax-success="userManagementController.editUserOnSuccess"
+                      data-ajax-failure="userManagementController.editUserOnfailure"
+                      data-ajax-begin="userManagementController.editUserOnBegin"
+                      data-ajax-complete="userManagementController.editUserOnComplete"
+                      data-ajax-mode="replace"
+                      data-ajax-update="#ajaxEditUserResult">
+                    <div class="card-body pl-3 pr-3 pt-0" id="editUserCardBody">
+
+                        <div id="ajaxEditUserResult">
 
                             <div class="row shadow-sm bg-white rounded">
-                                <div class="col-6">
-                                    <div class="form-group">
-
-                                        <label asp-for="UserName"></label>
-                                        <input type="text" asp-for="UserName"
-                                               class="form-control" id="txtUserName"
-                                               placeholder="Enter User Name">
-                                        <span asp-validation-for="UserName" class="text-danger small"></span>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="form-group">
-                                        <label asp-for="Password"></label>
-                                        <input type="Password" asp-for="Password"
-                                               class="form-control" id="txtPassword"
-                                               placeholder="Enter Password">
-                                        <span asp-validation-for="Password" class="text-danger small"></span>
-                                    </div>
+                                <div class="col-12 text-center">
+                                    <label asp-for="UserName"></label>
+                                    <h4>@Model.UserName</h4>
+                                    <input hidden="hidden" type="text" asp-for="UserName"
+                                           class="form-control" id="txtUserName"
+                                           placeholder="Enter User Name">
                                 </div>
                             </div>
 
@@ -74,14 +63,32 @@
                                         <span asp-validation-for="Email" class="text-danger small"></span>
                                     </div>
                                 </div>
+
+                                <div class="col-6">
+                                    <div class="form-group pt-2">
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="IsActive"
+                                                   asp-for="IsActive">
+                                            <label class="custom-control-label" asp-for="IsActive"></label>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group pt-2">
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="IsLocked"
+                                                   asp-for="IsLocked">
+                                            <label class="custom-control-label" asp-for="IsLocked"></label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="card-footer text-center">
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-user-plus"></i> Add
+                            <i class="fas fa-save"></i> Save
                         </button>
-                        <button type="button" id="btnAddUserCancel" onclick="userManagementController.closeAddUserPartialView()"
+                        <button type="button" id="btnAddUserCancel" onclick="userManagementController.closeEditUserPartialView()"
                                 class="btn btn-dark ml-3">
                             <i class="fas fa-times"></i>Cancel
                         </button>
@@ -92,11 +99,11 @@
     </div>
 </div>
 <script>
-    $('#modalAddUser').modal('show');
+    $('#modalEditUser').modal('show');
 
-    $("#modalContentAddUser").draggable(
+    $("#modalContentEditUser").draggable(
         {
-            handle: "#cardHeaderModalAddUser"
+            handle: "#cardHeaderModalEditUser"
         }
     );
 </script>

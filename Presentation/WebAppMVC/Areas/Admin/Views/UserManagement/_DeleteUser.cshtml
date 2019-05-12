@@ -1,0 +1,111 @@
+﻿@model BindingModel.V1._0.User.UserBindingModel
+
+<div class="modal" id="modalDeleteUser" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="modalContentDeleteUser">
+            <div class="card  bg-white">
+                <div class="card-header" id="cardHeaderModalDeleteUser">
+                    <h4 class="pt-1">   Delete User </h4>
+                </div>
+                <form id="formDeleteUser" asp-area="Admin"
+                      asp-controller="UserManagement" asp-action="DeleteUserAsync"
+                      method="post" data-ajax="true"
+                      data-ajax-success="userManagementController.deleteUserOnSuccess"
+                      data-ajax-failure="userManagementController.deleteUserOnfailure"
+                      data-ajax-begin="userManagementController.deleteUserOnBegin"
+                      data-ajax-complete="userManagementController.deleteUserOnComplete"
+                      data-ajax-mode="replace"
+                      data-ajax-update="#ajaxDeleteUserResult">
+                    <div class="card-body pl-3 pr-3 pt-0" id="deleteUserCardBody">
+
+                        <div id="ajaxDeleteUserResult">
+
+                            <div class="row shadow-sm bg-white rounded">
+                                <div class="col-12 text-center">
+                                    <label asp-for="UserName"></label>
+                                    <h4>@Model.UserName</h4>
+                                    <input hidden="hidden" type="text" asp-for="UserName"
+                                           class="form-control" id="txtUserName"
+                                           placeholder="Enter User Name">
+                                </div>
+                            </div>
+
+                            <div class="row pt-3">
+                                <div class="col-6">
+                                    <div class="form-group">
+
+                                        <label asp-for="FirstName"></label>
+                                        <input disabled="disabled" type="text" asp-for="FirstName"
+                                               class="form-control" id="txtFirstName"
+                                               placeholder="Enter First Name">
+                                        <span asp-validation-for="FirstName" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label asp-for="LastName"></label>
+                                        <input disabled="disabled" type="text" asp-for="LastName"
+                                               class="form-control" id="txtLastName"
+                                               placeholder="Enter LastName">
+                                        <span asp-validation-for="LastName" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group">
+
+                                        <label asp-for="Email"></label>
+                                        <input disabled="disabled" type="text" asp-for="Email"
+                                               class="form-control" id="txtEmail"
+                                               placeholder="Enter Email">
+                                        <span asp-validation-for="Email" class="text-danger small"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-6">
+                                    <div class="form-group pt-2">
+                                        <div class="custom-control custom-switch">
+                                            <input disabled="disabled" type="checkbox" class="custom-control-input" id="IsActive"
+                                                   asp-for="IsActive">
+                                            <label class="custom-control-label" asp-for="IsActive"></label>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group pt-2">
+                                        <div class="custom-control custom-switch">
+                                            <input disabled="disabled" type="checkbox" class="custom-control-input" id="IsLocked"
+                                                   asp-for="IsLocked">
+                                            <label class="custom-control-label" asp-for="IsLocked"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer d-flex align-items-center justify-content-end">
+                        <p class="pr-4 mb-0 align-self-center"><em>Do you want to delete user <strong> @Model.UserName </strong> from application?</em></p>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-trash-alt"></i> Yes, Delete
+                        </button>
+                        <button type="button" id="btnDeleteUserCancel" onclick="userManagementController.closeDeleteUserPartialView()"
+                                class="btn btn-dark ml-3">
+                            <i class="fas fa-times"></i>Cancel
+                        </button>
+                       
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('#modalDeleteUser').modal('show');
+
+    $("#modalContentDeleteUser").draggable(
+        {
+            handle: "#cardHeaderModalDeleteUser"
+        }
+    );
+</script>

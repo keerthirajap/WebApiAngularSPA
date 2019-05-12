@@ -29,11 +29,11 @@
         }
 
         publicMethod.loginUserOnBegin = function (xhr, data) {
-            homeController.ShowLoaddingIndicator();
+            homeController.ShowLoadingIndicator();
         }
 
         publicMethod.loginUserOnComplete = function (xhr, data) {
-            homeController.HideLoaddingIndicator();
+            homeController.HideLoadingIndicator();
         }
 
         publicMethod.loginUserOnSuccess = function (data, status, xhr) {

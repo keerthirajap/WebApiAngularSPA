@@ -13,13 +13,13 @@
                              columns.Add(model => model.CreatedBy).Titled("Created By");
                              columns.Add(model =>
                                $"<button class='btn btn-secondary btn-sm' id=\"{model.UserId}\" " +
-                               $"onclick='GetEditUserPartialView(\"{@Url.Action("GetEditUserPartialView", "Admin", new { Area = "Admin", userID = model.UserId })}\")'>" +
+                               $"onclick='userManagementController.loadEditUserPartialView(\"{@Url.Action("LoadEditUserPartialView", "UserManagement", new { Area = "Admin", userName = model.UserName })}\")'>" +
                                $"<i class='fas fa-user-edit'></i> Edit</button>"
 
                                +
                                $"<button class='btn btn-danger ml-2 btn-sm' id=\"{model.UserId}\"" +
-                               $"onclick='GetDeleteUserPartialView(" +
-                               $"\"{@Url.Action("GetDeleteUserPartialView", "Admin", new { Area = "Admin", userID = model.UserId })}\")'>" +
+                               $"onclick='userManagementController.loadDeleteUserPartialView(" +
+                               $"\"{@Url.Action("LoadDeleteUserPartialView", "UserManagement", new { Area = "Admin", userName = model.UserName })}\")'>" +
 
                                $"<i class='fas fa-user-times'></i>Delete</button>"
                            ).Encoded(false).Titled("Manage").AppendCss("userManagementGridWidth"); ;
