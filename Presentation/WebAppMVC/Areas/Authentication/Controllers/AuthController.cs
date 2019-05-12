@@ -3,10 +3,14 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Security.Claims;
     using System.Threading.Tasks;
     using AutoMapper;
     using BindingModel.V1._0.User;
     using Domain.User;
+    using Microsoft.AspNetCore.Authentication;
+    using Microsoft.AspNetCore.Authentication.Cookies;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Newtonsoft.Json.Linq;
@@ -14,6 +18,7 @@
 
     [AutoValidateAntiforgeryToken]
     [Area("Authentication")]
+    [Authorize(Roles = "Admin")]
     public class AuthController : Controller
     {
         private readonly IMapper _mapper;
@@ -32,31 +37,109 @@
 
         public IActionResult Index()
         {
-            return View();
+            return this.View();
         }
 
         [Route("Login")]
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Login()
         {
+            await this.LogOut();
             return await Task.Run(() => this.View());
         }
 
+        [Route("Login")]
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<IActionResult> Login(UserLoginBindingModel userLoginBindingModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return await Task.Run(() => this.View(userLoginBindingModel));
+            }
+
+            dynamic ajaxReturn = new JObject();
+            var user = this._mapper.Map<User>(userLoginBindingModel);
+
+            var userAuthenticationDetails = await this._userManagementService.AuthenticateUserAsync(user);
+            var userAuthentication = userAuthenticationDetails.Item2;
+            var userDetails = userAuthenticationDetails.Item1;
+
+            UserAuthenticationBindingModel userAuthenticationBindingModel = new UserAuthenticationBindingModel();
+            userAuthenticationBindingModel = this._mapper.Map<UserAuthenticationBindingModel>(userAuthentication);
+            userAuthenticationBindingModel.UserName = userLoginBindingModel.UserName;
+
+            if (userAuthenticationBindingModel.IsUserAuthenticated)
+            {
+                var identity = (ClaimsIdentity)HttpContext.User.Identity;
+
+                List<Claim> claims = new List<Claim>
+             {
+                new Claim ("http://example.org/claims/UserName", "UserName", user.UserName),
+                new Claim(ClaimTypes.Name , user.UserName),
+                new Claim(ClaimTypes.Authentication , "Authenticated"),
+                new Claim("http://example.org/claims/LoggedInTime", "LoggedInTime", DateTime.Now.ToString())
+             };
+                var identityClaims = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                // create principal
+                ClaimsPrincipal principal = new ClaimsPrincipal(identityClaims);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+                ajaxReturn.Status = "Success";
+
+                ajaxReturn.GetGoodJobVerb = "Congratulations";
+                ajaxReturn.Message = userLoginBindingModel.UserName + " - user authenticated successfully." +
+                    " ";
+            }
+            else
+            {
+                ajaxReturn.Status = "Warning";
+
+                ajaxReturn.GetGoodJobVerb = "Opps";
+                ajaxReturn.Message = "User Name or Password is incorrect. Please try again." +
+                    " ";
+            }
+
+            return this.Json(ajaxReturn);
+        }
+
+        [Route("LogOut")]
+        [IgnoreAntiforgeryToken]
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<IActionResult> LogOut()
+        {
+            // await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignOutAsync();
+
+            dynamic ajaxReturn = new JObject();
+            ajaxReturn.Status = "Success";
+            ajaxReturn.Message = "You have been successfully logged out. " +
+                                    "Current window will be closed now";
+
+            return this.Json(ajaxReturn);
+        }
+
         [Route("Register")]
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Register()
         {
+            await this.LogOut();
             RegisterUserBindingModel registerUserBindingModel = new RegisterUserBindingModel();
             return await Task.Run(() => this.View(registerUserBindingModel));
         }
 
-        [Route("RegisterUser")]
+        [Route("Register")]
+        [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> RegisterUser([FromForm] RegisterUserBindingModel registerUserBindingModel)
+        public async Task<IActionResult> Register([FromForm] RegisterUserBindingModel registerUserBindingModel)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return await Task.Run(() => this.View("Register", registerUserBindingModel));
+                return await Task.Run(() => this.View(registerUserBindingModel));
             }
 
             dynamic ajaxReturn = new JObject();
@@ -73,10 +156,33 @@
                 ajaxReturn.GetGoodJobVerb = "Congratulations";
                 ajaxReturn.Message = registerUserBindingModel.UserName + " - user sucessfully created." +
                     " ";
-                return this.Json(ajaxReturn);
+
+                var identity = (ClaimsIdentity)HttpContext.User.Identity;
+
+                List<Claim> claims = new List<Claim>
+             {
+                new Claim ("http://example.org/claims/UserName", "UserName", user.UserName),
+                new Claim(ClaimTypes.Name , user.UserName),
+                new Claim(ClaimTypes.Authentication , "Authenticated"),
+                new Claim("http://example.org/claims/LoggedInTime", "LoggedInTime", DateTime.Now.ToString())
+             };
+                var identityClaims = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                // create principal
+                ClaimsPrincipal principal = new ClaimsPrincipal(identityClaims);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+            }
+            else
+            {
+                ajaxReturn.Status = "Error";
+                ajaxReturn.UserId = userCreationSuccess;
+                ajaxReturn.UserName = registerUserBindingModel.UserName;
+                ajaxReturn.GetGoodJobVerb = "Opps";
+                ajaxReturn.Message = registerUserBindingModel.UserName + " - user sucessfully created." +
+                    " ";
             }
 
-            return await Task.Run(() => this.View("Register", registerUserBindingModel));
+            return this.Json(ajaxReturn);
         }
     }
 }

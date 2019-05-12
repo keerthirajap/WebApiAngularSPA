@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using Domain.User;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using ServiceInterface;
-
-namespace WebAppMVC.Controllers
+﻿namespace WebAppMVC.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using AutoMapper;
+    using Domain.User;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+    using ServiceInterface;
+
     public class ValidatationsController : Controller
     {
         private readonly IMapper _mapper;
@@ -26,11 +26,6 @@ namespace WebAppMVC.Controllers
             this._userManagementService = userManagementService;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
         public async Task<IActionResult> IsUserNameExists(string userName)
         {
             User user = new User();
@@ -42,7 +37,7 @@ namespace WebAppMVC.Controllers
                 isUserNameExists = false;
             }
 
-            return Json(isUserNameExists); ;
+            return this.Json(isUserNameExists);
         }
     }
 }

@@ -11,6 +11,8 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
 </head>
 <body>
+
+    <input id="reloadValue" type="hidden" name="reloadValue" value="" />
     <header id="topheader">
         <nav class="navbar navbar-expand-lg navbar-dark bg-success">
             <div class="container-fluid">
@@ -22,43 +24,43 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     @if (User.Identity.IsAuthenticated)
                     {
-                    <ul class="navbar-nav mr-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" id="navbarHome" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy"
-                               id="navbarContact">Contact</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarAdminDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Admin
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" asp-area="Admin" asp-controller="Admin" asp-action="Index">User Management</a>
-                                <a class="dropdown-item" href="#">Another action</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">Something else here</a>
-                            </div>
-                        </li>
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item" id="nav-ItemHome">
+                                <a class="nav-link" id="navbarHome" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy"
+                                   id="navbarContact">Contact</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarAdminDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Admin
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" asp-area="Admin" asp-controller="UserManagement" asp-action="Index">User Management</a>
+                                    <a class="dropdown-item" href="#">Another action</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#">Something else here</a>
+                                </div>
+                            </li>
 
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Samples
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" asp-controller="Home" asp-action="AccessDeniedPage">Access Denied</a>
-                                <a class="dropdown-item" asp-controller="Home" asp-action="Error">Error</a>
-                            </div>
-                        </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Samples
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" asp-controller="Home" asp-action="AccessDenied">Access Denied</a>
+                                    <a class="dropdown-item" asp-controller="Home" asp-action="Error">Error</a>
+                                </div>
+                            </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                        </li>
-                    </ul>
+                            <li class="nav-item">
+                                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                            </li>
+                        </ul>
                     }
                     <div style="
                     display: flex;
@@ -67,28 +69,25 @@
                 " class="d-flex justify-content-end">
                         @if (User.Identity.IsAuthenticated)
                         {
-                        <a style="color:white; background-color:#15134e; padding-left: 5px;padding-right: 5px;" onclick="JsMain.GetLoggedInUserDetails('@Url.Action(" GetLoggedInUserDetails", "UserAccount" , new { Area="Security" })')"
-                           class="btn btn-primary" title="Manage">
-                            Hello <span class="blockquote">@User.Identity.Name</span>
-                        </a>
+                            <button type="button" class="btn btn-outline-light">Hello @User.Identity.Name</button>
 
-                        <button type="button" onclick="homeController.onLogoutButtonClick('@Url.Action(" Logout", "Home" )')"
-                                style="color:white;padding-right: 3px;margin-left: 9px;" class="btn btn-info">
-                            <i style="font-size: 20px;margin-top: 6px;margin-left: 0px;margin-right: 0px;" class="fas fa-power-off"></i>
-                        </button>
+                            <button type="button" onclick="homeController.onLogoutButtonClick('@Url.Action("Logout", "Auth" ,new { Area = "Authentication" } )')"
+                                    style="color:white;padding-right: 3px;margin-left: 9px;" class="btn btn-danger">
+                                <i style="font-size: 20px;margin-top: 6px;margin-left: 0px;margin-right: 0px;" class="fas fa-power-off"></i>
+                            </button>
 
                         }
                         else
                         {
-                        <ul class="nav navbar-nav navbar-right">
-                            <li class="nav-item">
-                                <a style="color:white" class="nav-link" asp-area="Authentication" asp-controller="Auth" asp-action="Register">Register</a>
-                            </li>
-                            <li class="nav-item">
-                                <a style="color:white" class="nav-link" asp-area="Authentication" asp-controller="Auth"
-                                   asp-action="Login">Login</a>
-                            </li>
-                        </ul>
+                            <ul class="nav navbar-nav navbar-right">
+                                <li class="nav-item" id="nav-ItemRegister">
+                                    <a style="color:white" class="nav-link" asp-area="Authentication" asp-controller="Auth" asp-action="Register">Register</a>
+                                </li>
+                                <li class="nav-item" id="nav-ItemLogin">
+                                    <a style="color:white" class="nav-link" asp-area="Authentication" asp-controller="Auth"
+                                       asp-action="Login">Login</a>
+                                </li>
+                            </ul>
                         }
                     </div>
                 </div>
@@ -96,28 +95,56 @@
         </nav>
     </header>
     <div class="container-fluid">
-        <partial name="_CookieConsentPartial" />
+
         <main role="main" class="pb-3 pt-2">
             @RenderBody()
         </main>
+        @{
+            Html.RenderPartial("_LayoutContents");
+        }
     </div>
-
+    <mini-profiler position="@RenderPosition.BottomRight" max-traces="5" show-controls="true" start-hidden="false" />
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
     <script src="~/lib/jquery-ajax-unobtrusive/dist/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
-    @RenderSection("Scripts", required: false)
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsnlog/2.29.0/jsnlog.min.js"></script>
+
+    <input type="hidden" id="refreshed" value="no">
+    <script type="text/javascript">
+           jQuery(document).ready(function()
+                    {
+                            var d = new Date();
+                            d = d.getTime();
+                            if (jQuery('#reloadValue').val().length == 0)
+                            {
+                                    jQuery('#reloadValue').val(d);
+                                    jQuery('body').show();
+                            }
+                            else
+                            {
+                                    jQuery('#reloadValue').val('');
+                                    location.reload();
+                            }
+                    });
+
+       
+    </script>
+
     <script src="~/JsControllers/homeController.js"></script>
     <script>
-                const swalWithBootstrapButtons = Swal.mixin({
-                    customClass: {
-                        confirmButton: 'btn btn-primary btn-lg',
-                        cancelButton: 'btn btn-danger btn-lg'
-                    },
-                    buttonsStyling: false,
-                });
+
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-primary',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false,
+        });
     </script>
+
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

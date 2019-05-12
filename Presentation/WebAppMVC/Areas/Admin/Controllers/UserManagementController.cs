@@ -1,4 +1,4 @@
-﻿namespace WebAppMVC.Areas.Dashboard.Controllers
+﻿namespace WebAppMVC.Areas.Admin.Controllers
 {
     using System;
     using System.Collections.Generic;
@@ -8,13 +8,10 @@
     using Microsoft.AspNetCore.Mvc;
 
     [AutoValidateAntiforgeryToken]
-    [Area("Dashboard")]
-    [Authorize]
-    public class DashboardController : Controller
+    [Area("Admin")]
+    [Authorize(Roles = "Admin")]
+    public class UserManagementController : Controller
     {
-        [Route("")]
-        [Route("Home")]
-        [HttpGet]
         public IActionResult Index()
         {
             return this.View();

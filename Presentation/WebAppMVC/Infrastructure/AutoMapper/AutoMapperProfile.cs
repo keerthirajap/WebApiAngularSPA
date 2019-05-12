@@ -1,13 +1,13 @@
-﻿using AutoMapper;
-using BindingModel.V1._0.User;
-using Domain.User;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace WebAppMVC.Infrastructure.AutoMapper
+﻿namespace WebAppMVC.Infrastructure.AutoMapper
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using BindingModel.V1._0.User;
+    using Domain.User;
+    using global::AutoMapper;
+
     public class AutoMapperProfile : Profile
     {
         public AutoMapperProfile()

@@ -86,7 +86,6 @@
         [ProducesResponseType(500)] //If there was an internal server error
         public async Task<IActionResult> AuthenticateUserAsync([FromBody] UserLoginBindingModel userLoginBindingModel)
         {
-            var errors = new Dictionary<string, string>();
             var response = new SingleResponse<dynamic>();
 
             var user = this._mapper.Map<User>(userLoginBindingModel);
@@ -163,7 +162,7 @@
         [ProducesResponseType(500)] //If there was an internal server error
         public async Task<IActionResult> IsUserAdminAsync()
         {
-            return Ok();
+            return this.Ok();
         }
 
         [Authorize(Roles = CoreWebApiRoles.User + "," + CoreWebApiRoles.Admin)]
@@ -174,7 +173,7 @@
         [ProducesResponseType(500)] //If there was an internal server error
         public async Task<IActionResult> IsUserAdminAndUserAsync()
         {
-            return Ok();
+            return this.Ok();
         }
 
         private void CreateJWTToken(dynamic response, UserAuthenticationBindingModel userAuthentication)

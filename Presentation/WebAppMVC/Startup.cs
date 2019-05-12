@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using System.Threading.Tasks;
     using Autofac;
@@ -9,7 +10,11 @@
     using AutoMapper;
     using CrossCutting.ConfigCache;
     using CrossCutting.Logging;
+    using ElmahCore.Mvc;
+    using ElmahCore.Sql;
     using IOC;
+    using JSNLog;
+    using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
@@ -17,6 +22,8 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Logging;
+    using StackExchange.Profiling.Storage;
     using WebAppMVC.Infrastructure.CustomFilters;
 
     public class Startup
@@ -44,6 +51,13 @@
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                    .AddCookie(options =>
+                    {
+                        options.LoginPath = "/Login";
+                        options.AccessDeniedPath = "/AccessDenied";
+                    });
+
             ApplicationConfigurations = this.Configuration.GetSection("AppSettings")
                         .GetChildren()
                         .Select(item => new KeyValuePair<string, object>(item.Key, item.Value))
@@ -52,9 +66,20 @@
 
             services.AddAutoMapper();
 
+            services.AddMiniProfiler();
+
+            services.AddElmah(options =>
+            {
+                //options.CheckPermissionAction = context => context.User.Identity.IsAuthenticated;
+                options.Path = @"elmah";
+            });
+            services.AddElmah<SqlErrorLog>(options =>
+            {
+                options.ConnectionString = GlobalAppConfigurations.Instance.GetValue("SqlDbConnection").ToString(); // DB structure see here: https://bitbucket.org/project-elmah/main/downloads/ELMAH-1.2-db-SQLServer.sql
+            });
             services.AddMvc(options =>
             {
-                //options.Filters.Add(typeof(ValidateModelStateAttribute));
+                options.Filters.Add<LoggingActionFilter>();
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddSingleton<IConfiguration>(this.Configuration);
@@ -74,7 +99,7 @@
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
@@ -86,9 +111,42 @@
                 app.UseHsts();
             }
 
+            app.UseAuthentication();
+            app.Use(
+                 next =>
+                 {
+                     return async context =>
+                     {
+                         var stopWatch = new Stopwatch();
+                         stopWatch.Start();
+                         context.Response.OnStarting(
+                             () =>
+                             {
+                                 context.Response.Headers.Add("RequestId", context.TraceIdentifier);
+                                 stopWatch.Stop();
+
+                                 context.Response.Headers.Add("X-ResponseTime-Ms", stopWatch.ElapsedMilliseconds.ToString());
+                                 return Task.CompletedTask;
+                             });
+
+                         await next(context);
+                     };
+                 });
+
+            app.UseElmah();
+            app.UseMiniProfiler();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+            var jsnlogConfiguration = new JsnlogConfiguration
+            {
+                serverSideMessageFormat = "Url : %url %newline* RequestId : %requestId  %entryId %newline*" +
+                                    "Message : %message %newline* %jsonmessage %newline*" +
+                                    "Sent: %date, Browser: %userAgent %newline*",
+                serverSideLogger = "WebApp.Jslogger"
+            };
+
+            app.UseJSNLog(new LoggingAdapter(loggerFactory), jsnlogConfiguration);
 
             app.UseMvc(routes =>
             {

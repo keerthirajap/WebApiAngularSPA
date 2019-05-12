@@ -37,11 +37,6 @@
 
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            this.Configuration = configuration;
-        }
-
         public static Dictionary<string, object> ApplicationConfigurations { get; private set; }
 
         public IConfiguration Configuration { get; }
@@ -49,6 +44,11 @@
         private readonly NLog.Logger logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
 
         public Autofac.IContainer ApplicationContainer { get; private set; }
+
+        public Startup(IConfiguration configuration)
+        {
+            this.Configuration = configuration;
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)

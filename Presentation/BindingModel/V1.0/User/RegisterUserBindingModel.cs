@@ -1,7 +1,7 @@
 ﻿namespace BindingModel.V1._0.User
 {
-    using Microsoft.AspNetCore.Mvc;
     using System.ComponentModel.DataAnnotations;
+    using Microsoft.AspNetCore.Mvc;
 
     public class RegisterUserBindingModel
     {
@@ -24,15 +24,12 @@
         [Display(Name = "Confirm Password")]
         public string ConfirmPassword { get; set; }
 
-        [Required]
         [StringLength(200)]
         public string FirstName { get; set; }
 
-        [Required]
         [StringLength(200)]
         public string LastName { get; set; }
 
-        [Required]
         [StringLength(200)]
         public string Email { get; set; }
     }

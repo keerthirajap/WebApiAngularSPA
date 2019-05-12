@@ -35,8 +35,7 @@
 
                         setTimeout(
                             function () {
-                                var win = window.open("about:blank", "_self");
-                                win.close();
+                                location.reload();
                             }, 2500);
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -75,13 +74,13 @@
             },
 
             publicMethod.ShowLoaddingIndicator = function () {
-                $('#loadingIconModal').modal('show');
+                 document.getElementById("myNav").style.height = "100%";
             },
 
             publicMethod.HideLoaddingIndicator = function () {
                 setTimeout(
                     function () {
-                        $('#loadingIconModal').modal('hide');
+                        document.getElementById("myNav").style.height = "0%";
                     }, 500);
             },
 

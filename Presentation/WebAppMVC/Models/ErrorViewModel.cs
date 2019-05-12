@@ -1,7 +1,7 @@
 namespace WebAppMVC.Models
 {
-    using Microsoft.AspNetCore.Mvc;
     using System;
+    using Microsoft.AspNetCore.Mvc;
 
     public class ErrorViewModel
     {
