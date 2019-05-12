@@ -1,58 +1,73 @@
-﻿
+﻿CREATE PROC [dbo].[P_RegisterUser] @UserId       [BIGINT], 
+                                  @UserName     [NVARCHAR](MAX), 
+                                  @FirstName    [NVARCHAR](MAX), 
+                                  @LastName     [NVARCHAR](MAX), 
+                                  @Email        [NVARCHAR](MAX), 
+                                  @Password     [NVARCHAR](MAX), 
+                                  @PasswordHash [NVARCHAR](500), 
+                                  @PasswordSalt [NVARCHAR](100), 
+                                  @CreatedBy    [BIGINT]
+AS
+    BEGIN
+        DECLARE @TodaysDate DATETIME= GETDATE();
+        IF @CreatedBy = 0 OR @CreatedBy = NULL
+            BEGIN
+                SELECT @CreatedBy = 1;
+        END;
+        BEGIN TRANSACTION;
 
+        INSERT INTO [dbo].[User]
+        ([UserName], 
+         [FullName], 
+         [FirstName], 
+         [LastName], 
+         [Email], 
+         [Password], 
+         [PasswordHash], 
+         [PasswordSalt], 
+         [IsActive], 
+         [IsLocked], 
+         [CreatedOn], 
+         [CreatedBy], 
+         [ModifiedOn], 
+         [ModifiedBy]
+        )
+               SELECT @UserName, 
+                      @FirstName + ' ' + @LastName, 
+                      @FirstName, 
+                      @LastName, 
+                      @Email, 
+                      @Password, 
+                      @PasswordHash, 
+                      @PasswordSalt, 
+                      1, 
+                      0, 
+                      @TodaysDate, 
+                      @CreatedBy, 
+                      @TodaysDate, 
+                      @CreatedBy
 
+        DECLARE @ID BIGINT= SCOPE_IDENTITY()
 
+        INSERT INTO [dbo].[UserRoles]
+				([UserId], 
+				 [RoleId], 
+				 [RoleName], 
+				 [IsActive], 
+				 [CreatedOn], 
+				 [CreatedBy], 
+				 [ModifiedOn], 
+				 [ModifiedBy]
+				)
+               SELECT @ID, 
+                      3, 
+                      'Access1', 
+                      1, 
+                      @TodaysDate, 
+                      @CreatedBy, 
+                      @TodaysDate, 
+                      @CreatedBy
 
-CREATE PROC [dbo].[P_RegisterUser] 
-	@UserId 		[bigint] ,
-	@UserName 		[nvarchar](max) ,
-
-	@FirstName		[nvarchar](max) ,
-	@LastName 		[nvarchar](max) ,
-	@Email 			[nvarchar](max) ,
-	@Password 		[nvarchar](max) ,
-	@PasswordHash   [nvarchar](500) ,
-	@PasswordSalt	[nvarchar](100) ,
-	@CreatedBy 		[bigint] 
-		
-  AS
-begin
-
-DECLARE @TodaysDate DATETIME = GETDATE()
-
-INSERT INTO [dbo].[User]
-           ([UserName]
-           ,[FullName]
-           ,[FirstName]
-           ,[LastName]
-           ,[Email]
-           ,[Password]
-           ,[PasswordHash]
-           ,[PasswordSalt]
-           ,[IsActive]
-           ,[IsLocked]
-           ,[CreatedOn]
-           ,[CreatedBy]
-           ,[ModifiedOn]
-           ,[ModifiedBy])
-		SELECT
-			@UserName 		
-			,@FirstName	+ ' ' + @LastName	
-			,@FirstName		
-			,@LastName 		
-			,@Email 			
-			,@Password 		
-			,@PasswordHash	
-			,@PasswordSalt	
-			,1 		
-			,0 
-			,@TodaysDate			
-			,@CreatedBy 		
-			,@TodaysDate
-			,@CreatedBy
-	
-	
-	DECLARE @ID BIGINT = SCOPE_IDENTITY()
-			
-SELECT @ID AS UserId
-end
+        COMMIT TRANSACTION;
+        SELECT @ID AS UserId;
+    END;
