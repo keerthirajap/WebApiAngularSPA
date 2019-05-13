@@ -21,19 +21,21 @@
                         <div id="ajaxEditUserResult">
 
                             <div class="row shadow-sm bg-white rounded">
-                                <div class="col-12 text-center">
-                                    <label asp-for="UserName"></label>
+                                <div class="col-6 text-center">
+                                    <label>User Id</label>
+                                    <h4>@Model.UserId</h4>
+                                </div>
+                                <div class="col-6 text-center">
+                                    <label>User Name</label>
                                     <h4>@Model.UserName</h4>
                                     <input hidden="hidden" type="text" asp-for="UserName"
                                            class="form-control" id="txtUserName"
                                            placeholder="Enter User Name">
                                 </div>
                             </div>
-
                             <div class="row pt-3">
                                 <div class="col-6">
                                     <div class="form-group">
-
                                         <label asp-for="FirstName"></label>
                                         <input type="text" asp-for="FirstName"
                                                class="form-control" id="txtFirstName"

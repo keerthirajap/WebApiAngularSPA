@@ -186,22 +186,25 @@
             $('#modalEditUserRoles').remove();
         }
 
-        publicMethod.modifyUserRoles = function (actionUrl) {
+        publicMethod.modifyUserRoles = function (editUserRolesAsyncUrl, loadUpdateUserRolesPartialViewAsync) {
             homeController.ShowLoadingIndicator();
             var token = $('input[name="__RequestVerificationToken"]').val();
             var roleAssetMappingViewModels = [];
 
             $('#divUserRolesCards').find('input').each(function () {
                 if (this.id != "") {
+                   
                     var roleAssetMappingViewModel = {};
                     roleAssetMappingViewModel.IsActive = this.checked;
                     roleAssetMappingViewModel.RoleName = this.id;
+                    roleAssetMappingViewModel.RoleId = this.value;
+                    roleAssetMappingViewModel.UserId = this.name;
                     roleAssetMappingViewModels.push(roleAssetMappingViewModel);
                 }
             });
             $.ajax({
                 type: 'POST',
-                url: actionUrl,
+                url: editUserRolesAsyncUrl,
                 data: {
                     userRolesBindingModel: roleAssetMappingViewModels,
                     userName: $('#txtUserName').val(),
@@ -209,8 +212,9 @@
                 },
 
                 success: function (data, status, xhr) {
+                    $('#modalEditUserRoles').modal('hide');
+                    $('#modalEditUserRoles').remove();
                     if (jQuery.type(data.Status) === "undefined") {
-
                     }
                     else if (data.Status == 'ValidatationError') {
                         swalWithBootstrapButtons.fire({
@@ -222,34 +226,29 @@
                         });
                     }
                     else {
-                        $('#modalAddRolesToUser').modal('hide');
-
-                        swalWithBootstrapButtons.fire({
+                        homeController.HideLoadingIndicator();
+                         swalWithBootstrapButtons.fire({
                             title: data.GetGoodJobVerb,
                             text: data.Message,
                             type: 'success',
                             showCancelButton: false,
                             confirmButtonText: '<i class="fas fa-check"></i> Ok'
+                        }).then((result) => {
+                            if (result.value) {
+                               
+                            }
                         });
 
-                        $('#loadUserDetailsSummary').load(GetUserDetailsSummaryUrl + '?userId=' + data.UserId);
+                        userManagementController.loadUpdateUserRolesPartialView(loadUpdateUserRolesPartialViewAsync);
+
                     }
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    new MvcGrid(document.querySelector('#gridGetsUsersAjax')).reload();
-
-                    homeController.showErrorMessagePopUp(XMLHttpRequest, textStatus, errorThrown);
-
-                    setTimeout(
-                        function () {
-                            $('#modalProgressBar').modal('hide');
-                        }, 500);
                 }
             });
         }
 
         publicMethod.editUserRolesOnBegin = function (xhr, data) {
-           
             homeController.ShowLoadingIndicator();
         }
 

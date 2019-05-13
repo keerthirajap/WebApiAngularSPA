@@ -4,6 +4,7 @@
 
 
 
+
 CREATE PROC [dbo].[P_ModifyUserRoles]
 								  @UserId       [BIGINT], 
                                   @UserName     [NVARCHAR](MAX),                                 
@@ -15,15 +16,22 @@ AS
 
 	DECLARE @TodaysDate DATETIME= GETDATE();
 
+	-- DROP TABLE TT_ModifyUserRoles
+	--select  *,@UserId AS UserIDD into TT_ModifyUserRoles from @T_ModifyUserRoles
+	-- select  * from TT_ModifyUserRoles
+	
+
+
 		MERGE dbo.UserRoles AS TARGET
 		USING  @T_ModifyUserRoles AS SOURCE
-		ON TARGET.[UserId] = SOURCE.[UserId]
+		ON TARGET.[UserId] = SOURCE.[UserId] AND TARGET.[RoleId] = SOURCE.[RoleId]
 		WHEN MATCHED AND TARGET.[IsActive] <> SOURCE.[IsActive]
 		THEN  
 			UPDATE SET TARGET.[RoleName] = SOURCE.[RoleName]  
+					 , TARGET.[IsActive] = SOURCE.[IsActive]  
 					 ,TARGET.[ModifiedOn] = @TodaysDate
 					 ,TARGET.[ModifiedBy] = @ModifiedBy
-		WHEN NOT MATCHED BY TARGET 
+		WHEN NOT MATCHED BY TARGET AND  SOURCE.[IsActive] = 1
 		THEN 
 			INSERT ([UserId]
 				   ,[RoleId]
@@ -34,10 +42,10 @@ AS
 				   ,[ModifiedOn]
 				   ,[ModifiedBy]) 
 			VALUES  
-			   (SOURCE.[UserId]
+			   (@UserId
 			   ,SOURCE.[RoleId]
 			   ,SOURCE.[RoleName]
-			   ,SOURCE.[IsActive]
+			   ,1
 			   ,@TodaysDate
 			   ,@ModifiedBy
 			   ,@TodaysDate

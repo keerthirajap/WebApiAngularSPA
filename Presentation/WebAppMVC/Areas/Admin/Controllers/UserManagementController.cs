@@ -75,10 +75,6 @@
             roles = await this._authenticationService.GetRolesAsync();
             List<UserRole> userRoles = await this._userManagementService.GetUserRolesAsync(user);
 
-            //var unMappedroles = roles.Where(item1 =>
-            //                roles.Any(item2 => item1.RoleName != item2.RoleName
-            //               )).ToList();
-
             var unMappedroles = (from r in roles
                                  join ur in userRoles on r.RoleName equals ur.RoleName
                                  into result
@@ -100,7 +96,39 @@
         [HttpPost]
         public async Task<IActionResult> EditUserRolesAsync(List<UserRoleBindingModel> userRolesBindingModel, string userName)
         {
-            return await Task.Run(() => this.PartialView("_EditUser", userRolesBindingModel));
+            dynamic ajaxReturn = new JObject();
+            User user = new User();
+            List<UserRole> roles = new List<UserRole>();
+
+            user = await this._authenticationService.GetUserDetailsByUserNameAsync(userName);
+
+            if (user == null)
+            {
+                ajaxReturn.Status = "Warning";
+                ajaxReturn.UserName = userName;
+                ajaxReturn.Message = userName +
+                                    " - user name not found";
+            }
+
+            roles = this._mapper.Map<List<UserRole>>(userRolesBindingModel);
+
+            var isModifyUserSuccess = await this._userManagementService.ModifyUserRolesAsync(user, roles);
+            if (isModifyUserSuccess)
+            {
+                ajaxReturn.Status = "Success";
+                ajaxReturn.UserName = userName;
+                ajaxReturn.GetGoodJobVerb = "Congratulations";
+                ajaxReturn.Message = userName + " - user roles modified successfully." +
+                    " ";
+            }
+            else
+            {
+                ajaxReturn.Status = "Error";
+                ajaxReturn.UserName = userName;
+                ajaxReturn.Message = "Error occured while modifying roles for - " + userName +
+                                    "";
+            }
+            return this.Json(ajaxReturn);
         }
 
         [HttpGet]

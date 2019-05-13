@@ -26,6 +26,6 @@
         Task<bool> DeleteUserAsync(User user);
 
         [Sql("[dbo].[P_ModifyUserRoles]")]
-        Task<bool> ModifyUserRolesAsync(User user, List<UserRole> userRoles);
+        Task<bool> ModifyUserRolesAsync(User user, List<UserRole> T_ModifyUserRoles);
     }
 }
