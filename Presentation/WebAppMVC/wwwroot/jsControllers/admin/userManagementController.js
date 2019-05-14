@@ -77,8 +77,7 @@
         // #region Edit User
         publicMethod.loadEditUserPartialView = function (actionUrl) {
             homeController.ShowLoadingIndicator();
-            $('#modalEditUserRoles').modal('hide');
-            $('#modalEditUserRoles').remove();
+            userManagementController.closeEditUserRolesPartialView();
             $.ajax({
                 async: true,
                 type: "GET",
@@ -119,8 +118,9 @@
                 $('#loadEditUserPartialView').empty().html(data);
             }
             else if (data.Status === "Success") {
-                $('#modalEditUser').modal('hide');
-                $('#modalEditUser').remove();
+
+                userManagementController.closeEditUserPartialView();
+                userManagementController.loadEditUserPartialView(getloadEditUserPartialViewAsyncUrl);
 
                 swalWithBootstrapButtons.fire({
                     title: data.GetGoodJobVerb,
@@ -131,7 +131,7 @@
                     confirmButtonText: '<i class="fas fa-check"></i> Ok'
                 }).then((result) => {
                     if (result.value) {
-                        homeController.reloadCurrentPage();
+
                     }
                 });
             }
@@ -193,7 +193,6 @@
 
             $('#divUserRolesCards').find('input').each(function () {
                 if (this.id != "") {
-                   
                     var roleAssetMappingViewModel = {};
                     roleAssetMappingViewModel.IsActive = this.checked;
                     roleAssetMappingViewModel.RoleName = this.id;
@@ -227,7 +226,7 @@
                     }
                     else {
                         homeController.HideLoadingIndicator();
-                         swalWithBootstrapButtons.fire({
+                        swalWithBootstrapButtons.fire({
                             title: data.GetGoodJobVerb,
                             text: data.Message,
                             type: 'success',
@@ -235,12 +234,10 @@
                             confirmButtonText: '<i class="fas fa-check"></i> Ok'
                         }).then((result) => {
                             if (result.value) {
-                               
                             }
                         });
 
                         userManagementController.loadUpdateUserRolesPartialView(loadUpdateUserRolesPartialViewAsync);
-
                     }
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {

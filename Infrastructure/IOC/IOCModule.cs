@@ -10,6 +10,7 @@
     using ServiceConcrete;
     using ServiceInterface;
 
+    // Dont create any design patterns here. Follow anti-patter only
     public class ServiceIOC : Module
     {
         private readonly string _lifeTime;
