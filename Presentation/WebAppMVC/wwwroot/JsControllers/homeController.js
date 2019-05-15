@@ -127,5 +127,17 @@
                     $('#modalMessageShowPopUp').modal('show');
                 }
             }
+
+        // #region User Details
+        publicMethod.getUserDetails = function (actionUrl) {
+            homeController.ShowLoadingIndicator();
+            $('#loadUserDetailsPartialView').load(actionUrl);
+        }
+
+        publicMethod.closeGetUserDetailsPartialView = function (actionUrl) {
+            $('#modalUserDetails').modal('hide');
+            $('#modalUserDetails').remove();
+        }
+        // #endregion
     }(window.homeController = window.homeController || {}, jQuery)
 );

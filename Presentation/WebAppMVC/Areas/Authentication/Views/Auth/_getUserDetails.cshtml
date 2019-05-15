@@ -1,0 +1,148 @@
+﻿@model (BindingModel.V1._0.User.UserBindingModel user, List<BindingModel.V1._0.User.Role.UserRoleBindingModel> userRoles)
+
+<div class="modal" id="modalUserDetails" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="modalContentmodalUserDetails">
+            <div class="card  bg-white" id="cardmodalUserDetails">
+                <div class="card-header" id="cardHeaderModalmodalUserDetails">
+                    <h4 class="pt-1">   User Details</h4>
+
+                </div>
+                <div class="card-body pl-3 pr-3 pt-0" id="editUserCardBody">
+                    <div class="row shadow-sm bg-white rounded">
+                        <div class="col-6 text-center">
+                            <label>User Id</label>
+                            <h4>@Model.user.UserId</h4>
+                        </div>
+                        <div class="col-6 text-center">
+                            <label>User Name</label>
+                            <h4>@Model.user.UserName</h4>
+                            <input hidden="hidden" type="text" asp-for="user.UserName"
+                                   class="form-control" id="txtUserName"
+                                   placeholder="Enter User Name">
+                        </div>
+                    </div>
+                    <div class="bs-component pt-1">
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-toggle="tab" href="#profile">Profile</a>
+                            </li>
+                           
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#roles">Roles</a>
+                            </li>
+                           
+                        </ul>
+                        <div id="myTabContent" class="tab-content">
+                            <div class="tab-pane fade active show" id="profile">
+                                <div class="row pt-3">
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label asp-for="user.FirstName"></label>
+                                            <input type="text" asp-for="user.FirstName"
+                                                readonly   class="form-control" id="txtFirstName"
+                                                   placeholder="Enter First Name">
+                                            <span asp-validation-for="user.FirstName" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label asp-for="user.LastName"></label>
+                                            <input type="text" asp-for="user.LastName"
+                                                readonly   class="form-control" id="txtLastName"
+                                                   placeholder="Enter LastName">
+                                            <span asp-validation-for="user.LastName" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group">
+
+                                            <label asp-for="user.Email"></label>
+                                            <input type="text" asp-for="user.Email"
+                                               readonly    class="form-control" id="txtEmail"
+                                                   placeholder="Enter Email">
+                                            <span asp-validation-for="user.Email" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <div class="form-group pt-2">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="IsActive"
+                                                     readonly  asp-for="user.IsActive">
+                                                <label class="custom-control-label" asp-for="user.IsActive"></label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group pt-2">
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="IsLocked"
+                                                   readonly    asp-for="user.IsLocked">
+                                                <label class="custom-control-label" asp-for="user.IsLocked"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="roles">
+                                <div id="divUserRolesCards" class="row text-center pt-2" style="overflow-y: scroll;height: 360px;">
+                                    @foreach (var userRoles in @Model.userRoles.OrderBy(o => o.RoleId))
+                                    {
+
+                                        <div class="col-4  col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                                            <div class="card mb-4 box-shadow">
+                                                <div class="card-header" style="display: flex;">
+
+                                                    <div class="custom-control custom-switch " style="padding-top: 3px;">
+
+                                                        <input  type="checkbox" class="custom-control-input" name="@Model.user.UserId"
+                                                             disabled="disabled" value="@userRoles.RoleId"
+                                                               id="@userRoles.RoleName"
+                                                               asp-for="@userRoles.IsActive" >
+                                                        <label class="display-4 custom-control-label" for="@userRoles.RoleName"></label>
+                                                    </div>
+
+                                                    <span class="h4" style="  padding-left: 11px;">@userRoles.RoleName</span>
+                                                </div>
+                                                <div class="card-body" style="HEIGHT: 220PX;">
+                                                    <ul class="list-unstyled mt-3 mb-4"></ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="card-footer text-center">
+                    <div>
+                      
+                        <button type="button" id="btnAddUserCancel"
+                                onclick="homeController.closeGetUserDetailsPartialView()"
+                                class="btn btn-dark ml-3">
+                            <i class="fas fa-times"></i>Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+     homeController.HideLoadingIndicator();
+    $('#modalUserDetails').modal('show');
+
+    $("#modalContentmodalUserDetails").draggable(
+        {
+            handle: "#cardHeaderModalmodalUserDetails"
+        }
+    );
+</script>

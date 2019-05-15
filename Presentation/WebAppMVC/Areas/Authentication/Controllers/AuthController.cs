@@ -7,6 +7,7 @@
     using System.Threading.Tasks;
     using AutoMapper;
     using BindingModel.V1._0.User;
+    using BindingModel.V1._0.User.Role;
     using Domain.User;
     using Domain.User.Role;
     using Microsoft.AspNetCore.Authentication;
@@ -25,14 +26,17 @@
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ServiceInterface.IAuthenticationService _authenticationService;
+        private readonly IUserManagementService _userManagementService;
 
         public AuthController(
                                IMapper mapper,
                                IHttpContextAccessor httpContextAccessor,
+                               IUserManagementService userManagementService,
                                ServiceInterface.IAuthenticationService authenticationService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._mapper = mapper;
+            this._userManagementService = userManagementService;
             this._authenticationService = authenticationService;
         }
 
@@ -194,6 +198,23 @@
             }
 
             return this.Json(ajaxReturn);
+        }
+
+        [Route("LoadUserDetailsPartialView")]
+        [HttpGet]
+        public async Task<IActionResult> LoadUserDetailsPartialViewAsync(string userName)
+        {
+            dynamic ajaxReturn = new JObject();
+            List<UserRoleBindingModel> userRolesBindingModel = new List<UserRoleBindingModel>();
+            UserBindingModel userBindingModel = new UserBindingModel();
+            User user = new User();
+            List<UserRole> roles = new List<UserRole>();
+
+            user = await this._authenticationService.GetUserDetailsByUserNameAsync(userName);
+            List<UserRole> userRoles = await this._userManagementService.GetUserRolesAsync(user);
+            userBindingModel = this._mapper.Map<UserBindingModel>(user);
+            userRolesBindingModel = this._mapper.Map<List<UserRoleBindingModel>>(userRoles);
+            return await Task.Run(() => this.PartialView("_getUserDetails", (userBindingModel, userRolesBindingModel)));
         }
     }
 }

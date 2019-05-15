@@ -66,9 +66,13 @@
                 " class="d-flex justify-content-end">
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <button type="button" class="btn btn-outline-light">Hello @User.Identity.Name</button>
+                            <button type="button" onclick="homeController.getUserDetails('@Url.Action( "LoadUserDetailsPartialViewAsync", "Auth" , new { Area="Authentication" , userName = @User.Identity.Name} )')"
+                                    class="btn btn-outline-light" data-toggle="tooltip" data-placement="bottom" title="Click to see current user information">
+                                Hello @User.Identity.Name
+                            </button>
 
                             <button type="button" onclick="homeController.onLogoutButtonClick('@Url.Action( "Logout", "Auth" , new { Area="Authentication" } )')"
+                                    data-toggle="tooltip" data-placement="bottom" title="Logout Application"
                                     style="color:white;padding-right: 3px;margin-left: 9px;" class="btn btn-danger">
                                 <i style="font-size: 20px;margin-top: 6px;margin-left: 0px;margin-right: 0px;" class="fas fa-power-off"></i>
                             </button>
@@ -120,7 +124,6 @@
     <script src="~/lib/jqueryui/jquery-ui.min.js"></script>
 
     <script type="text/javascript">
-
     </script>
 
     <script>
