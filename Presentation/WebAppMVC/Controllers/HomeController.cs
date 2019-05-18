@@ -35,5 +35,33 @@
         {
             return this.View("AccessDenied");
         }
+
+        [AllowAnonymous]
+        public IActionResult GetSampleGridPostDataView()
+        {
+            List<SampleModel> sampleModels = new List<SampleModel>();
+            sampleModels.Add(new SampleModel
+            {
+                SampleData1 = "1SampleData1",
+                SampleData2 = "1SampleData2",
+                SampleData3 = "1SampleData3"
+            });
+
+            sampleModels.Add(new SampleModel
+            {
+                SampleData1 = "2SampleData1",
+                SampleData2 = "2SampleData2",
+                SampleData3 = "2SampleData3"
+            });
+
+            return this.View("SampleGridPostData", sampleModels);
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public IActionResult PostSampleGridData(List<SampleModel> sampleModels)
+        {
+            return this.Ok();
+        }
     }
 }

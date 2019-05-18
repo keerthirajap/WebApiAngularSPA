@@ -178,3 +178,8 @@ body.swal2-toast-shown .swal2-container.swal2-shown {
 }
 
 /* NonFactors.Grid.Mvc6 End */
+
+
+.custom-control-input:disabled:checked ~ .custom-control-label::before {
+    background: none;
+}

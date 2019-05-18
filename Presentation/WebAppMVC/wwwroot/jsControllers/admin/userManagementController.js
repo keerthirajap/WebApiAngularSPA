@@ -77,7 +77,7 @@
         // #region Edit User
         publicMethod.loadEditUserPartialView = function (actionUrl) {
             homeController.ShowLoadingIndicator();
-            userManagementController.closeEditUserRolesPartialView();
+
             $.ajax({
                 async: true,
                 type: "GET",
@@ -101,6 +101,18 @@
             });
         }
 
+        publicMethod.saveUserDetailsButtonClick = function () {
+            var activeTab = $(".tab-content").find(".active");
+            var activeTabId = activeTab.attr('id');
+           
+            if (activeTabId == "profile") {
+                $("#formEditUser").submit();
+            }
+            else if (activeTabId == "roles") {
+                userManagementController.modifyUserRoles(editUserRolesAsyncUrl)
+            }
+        }
+
         publicMethod.closeEditUserPartialView = function () {
             $('#modalEditUser').modal('hide');
             $('#modalEditUser').remove();
@@ -119,6 +131,9 @@
             }
             else if (data.Status === "Success") {
 
+                var activeTab = $(".tab-content").find(".active");
+                var activeTabId = activeTab.attr('id');
+
                 userManagementController.closeEditUserPartialView();
                 userManagementController.loadEditUserPartialView(getloadEditUserPartialViewAsyncUrl);
 
@@ -132,6 +147,12 @@
                 }).then((result) => {
                     if (result.value) {
 
+                        if (activeTabId == "profile") {
+                           $('#tabEditUser a[href="#profile"]').tab('show')
+                        }
+                        else if (activeTabId == "roles") {
+                            $('#tabEditUser a[href="#roles"]').tab('show') 
+                        }
                     }
                 });
             }
@@ -186,7 +207,7 @@
             $('#modalEditUserRoles').remove();
         }
 
-        publicMethod.modifyUserRoles = function (editUserRolesAsyncUrl, loadUpdateUserRolesPartialViewAsync) {
+        publicMethod.modifyUserRoles = function (editUserRolesAsyncUrl) {
             homeController.ShowLoadingIndicator();
             var token = $('input[name="__RequestVerificationToken"]').val();
             var roleAssetMappingViewModels = [];
@@ -211,8 +232,13 @@
                 },
 
                 success: function (data, status, xhr) {
-                    $('#modalEditUserRoles').modal('hide');
-                    $('#modalEditUserRoles').remove();
+                    var activeTab = $(".tab-content").find(".active");
+                    var activeTabId = activeTab.attr('id');
+
+                    userManagementController.closeEditUserPartialView();
+                    userManagementController.loadEditUserPartialView(getloadEditUserPartialViewAsyncUrl);
+
+
                     if (jQuery.type(data.Status) === "undefined") {
                     }
                     else if (data.Status == 'ValidatationError') {
@@ -234,10 +260,14 @@
                             confirmButtonText: '<i class="fas fa-check"></i> Ok'
                         }).then((result) => {
                             if (result.value) {
+                                if (activeTabId == "profile") {
+                                    $('#tabEditUser a[href="#profile"]').tab('show')
+                                }
+                                else if (activeTabId == "roles") {
+                                    $('#tabEditUser a[href="#roles"]').tab('show')
+                                }
                             }
                         });
-
-                        userManagementController.loadUpdateUserRolesPartialView(loadUpdateUserRolesPartialViewAsync);
                     }
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {

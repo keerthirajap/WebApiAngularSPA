@@ -1,117 +1,165 @@
-﻿@model BindingModel.V1._0.User.UserBindingModel
+﻿@model (BindingModel.V1._0.User.UserBindingModel user, List<BindingModel.V1._0.User.Role.UserRoleBindingModel> userRoles)
 
 <div class="modal" id="modalEditUser" data-backdrop="static">
     <div class="modal-dialog modal-lg">
         <div class="modal-content" id="modalContentEditUser">
-            <div class="card  bg-white">
+            <div class="card  bg-white" id="cardModalEditUser">
                 <div class="card-header" id="cardHeaderModalEditUser">
-                    <h4 class="pt-1">   Edit User </h4>
+                    <h4 class="pt-1">   User Details</h4>
                 </div>
-                <form id="formEditUser" asp-area="Admin"
-                      asp-controller="UserManagement" asp-action="EditUserAsync"
-                      method="post" data-ajax="true"
-                      data-ajax-success="userManagementController.editUserOnSuccess"
-                      data-ajax-failure="userManagementController.editUserOnfailure"
-                      data-ajax-begin="userManagementController.editUserOnBegin"
-                      data-ajax-complete="userManagementController.editUserOnComplete"
-                      data-ajax-mode="replace"
-                      data-ajax-update="#ajaxEditUserResult">
-                    <div class="card-body pl-3 pr-3 pt-0" id="editUserCardBody">
-
-                        <div id="ajaxEditUserResult">
-
-                            <div class="row shadow-sm bg-white rounded">
-                                <div class="col-6 text-center">
-                                    <label>User Id</label>
-                                    <h4>@Model.UserId</h4>
-                                </div>
-                                <div class="col-6 text-center">
-                                    <label>User Name</label>
-                                    <h4>@Model.UserName</h4>
-                                    <input hidden="hidden" type="text" asp-for="UserName"
-                                           class="form-control" id="txtUserName"
-                                           placeholder="Enter User Name">
-                                </div>
-                            </div>
-                            <div class="row pt-3">
-                                <div class="col-6">
-                                    <div class="form-group">
-                                        <label asp-for="FirstName"></label>
-                                        <input type="text" asp-for="FirstName"
-                                               class="form-control" id="txtFirstName"
-                                               placeholder="Enter First Name">
-                                        <span asp-validation-for="FirstName" class="text-danger small"></span>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="form-group">
-                                        <label asp-for="LastName"></label>
-                                        <input type="text" asp-for="LastName"
-                                               class="form-control" id="txtLastName"
-                                               placeholder="Enter LastName">
-                                        <span asp-validation-for="LastName" class="text-danger small"></span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-6">
-                                    <div class="form-group">
-
-                                        <label asp-for="Email"></label>
-                                        <input type="text" asp-for="Email"
-                                               class="form-control" id="txtEmail"
-                                               placeholder="Enter Email">
-                                        <span asp-validation-for="Email" class="text-danger small"></span>
-                                    </div>
-                                </div>
-
-                                <div class="col-6">
-                                    <div class="form-group pt-2">
-                                        <div class="custom-control custom-switch">
-                                            <input type="checkbox" class="custom-control-input" id="IsActive"
-                                                   asp-for="IsActive">
-                                            <label class="custom-control-label" asp-for="IsActive"></label>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group pt-2">
-                                        <div class="custom-control custom-switch">
-                                            <input type="checkbox" class="custom-control-input" id="IsLocked"
-                                                   asp-for="IsLocked">
-                                            <label class="custom-control-label" asp-for="IsLocked"></label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                <div class="card-body pl-3 pr-3 pt-0" id="editUserCardBody">
+                    <div class="row shadow-sm bg-white rounded">
+                        <div class="col-6 text-center">
+                            <label>User Id</label>
+                            <h4>@Model.user.UserId</h4>
+                        </div>
+                        <div class="col-6 text-center">
+                            <label>User Name</label>
+                            <h4>@Model.user.UserName</h4>
+                            <input hidden="hidden" type="text" asp-for="user.UserName"
+                                   class="form-control" id="txtUserName"
+                                   placeholder="Enter User Name">
                         </div>
                     </div>
-                    <div class="card-footer text-center">
-                        <div>
-                            <button type="submit" class="btn btn-primary ml-5">
-                                <i class="fas fa-save"></i> Save
-                            </button>
-                            <button type="button" id="btnEditUserRolesCancel"
-                                    onclick="userManagementController.loadUpdateUserRolesPartialView('@Url.Action("LoadUpdateUserRolesPartialViewAsync", "UserManagement", new { Area = "Admin", userName = @Model.UserName })')"
-                                    class="btn  btn-info ml-3">
-                                <i class="fas fa-user-cog"></i>Edit Roles
-                            </button>
-                            <button type="button" id="btnAddUserCancel"
-                                    onclick="userManagementController.closeEditUserPartialView()"
-                                    class="btn btn-dark ml-3">
-                                <i class="fas fa-times"></i>Cancel
-                            </button>
+                    <div class="bs-component pt-1">
+                        <ul class="nav nav-tabs" id="tabEditUser">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-toggle="tab" href="#profile">Profile</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#roles">Roles</a>
+                            </li>
+                        </ul>
+                        <div id="tabEditUserContent" class="tab-content">
+                            <div class="tab-pane fade active show" id="profile">
+                                <form id="formEditUser" asp-area="Admin"
+                                      asp-controller="UserManagement" asp-action="EditUserAsync"
+                                      method="post" data-ajax="true"
+                                      data-ajax-success="userManagementController.editUserOnSuccess"
+                                      data-ajax-failure="userManagementController.editUserOnfailure"
+                                      data-ajax-begin="userManagementController.editUserOnBegin"
+                                      data-ajax-complete="userManagementController.editUserOnComplete"
+                                      data-ajax-mode="replace"
+                                      data-ajax-update="#ajaxEditUserResult">
+                                    <div class="card-body pl-3 pr-3 pt-0" id="editUserCardBody">
+
+                                        <div id="ajaxEditUserResult">
+                                            <div class="row pt-3">
+                                                <div class="col-6">
+                                                    <div class="form-group">
+                                                        <input style="display:none" type="text" asp-for="user.UserName"
+                                                               class="form-control" id="txtUserName"
+                                                               placeholder="Enter User Name">
+                                                        <label asp-for="user.FirstName"></label>
+                                                        <input type="text" asp-for="user.FirstName"
+                                                               class="form-control" id="txtFirstName"
+                                                               placeholder="Enter First Name">
+                                                        <span asp-validation-for="user.FirstName" class="text-danger small"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="form-group">
+                                                        <label asp-for="user.LastName"></label>
+                                                        <input type="text" asp-for="user.LastName"
+                                                               class="form-control" id="txtLastName"
+                                                               placeholder="Enter LastName">
+                                                        <span asp-validation-for="user.LastName" class="text-danger small"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <div class="form-group">
+
+                                                        <label asp-for="user.Email"></label>
+                                                        <input type="text" asp-for="user.Email"
+                                                               class="form-control" id="txtEmail"
+                                                               placeholder="Enter Email">
+                                                        <span asp-validation-for="user.Email" class="text-danger small"></span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-6">
+                                                    <div class="form-group pt-3">
+                                                        <div class="custom-control custom-switch">
+                                                            <input type="checkbox" class="custom-control-input" id="user.IsActive"
+                                                                   asp-for="user.IsActive">
+                                                            <label class="custom-control-label" asp-for="user.IsActive" for="user.IsActive"></label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="custom-control custom-switch">
+                                                            <input type="checkbox" class="custom-control-input" id="user.IsLocked"
+                                                                   asp-for="user.IsLocked">
+                                                            <label class="custom-control-label" asp-for="user.IsLocked" for="user.IsLocked"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="tab-pane fade" id="roles">
+                                <div id="divUserRolesCards" class="row text-center pt-2" style="overflow-y: scroll;height: 360px;">
+                                    @foreach (var userRoles in @Model.userRoles.OrderBy(o => o.RoleId))
+                                    {
+
+                                        <div class="col-4  col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                                            <div class="card mb-4 box-shadow">
+                                                <div class="card-header" style="display: flex;">
+                                                    <div class="custom-control custom-switch" style="padding-top: 3px;">
+
+                                                        <input type="checkbox" class="custom-control-input" name="@Model.user.UserId"
+                                                               value="@userRoles.RoleId"
+                                                               id="@userRoles.RoleName"
+                                                               asp-for="@userRoles.IsActive" />
+                                                        <label class="display-4 custom-control-label" for="@userRoles.RoleName"></label>
+                                                    </div>
+
+                                                    <span class="h4" style="  padding-left: 11px;">@userRoles.RoleName</span>
+
+                                                </div>
+                                                <div class="card-body" style="HEIGHT: 220PX;">
+                                                    <ul class="list-unstyled mt-3 mb-4"></ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+
                         </div>
+
                     </div>
-                </form>
+                </div>
+
+                <div class="card-footer text-center">
+                    <div>
+                        <button type="button" class="btn btn-primary ml-5"
+                                onclick="userManagementController.saveUserDetailsButtonClick()">
+                            <i class="fas fa-save"></i> Save
+                        </button>
+                        <button type="button" id="btnAddUserCancel"
+                                onclick="userManagementController.closeEditUserPartialView()"
+                                class="btn btn-dark ml-3">
+                            <i class="fas fa-times"></i>Cancel
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-<script>
 
+        <script>
     var getEditUserAsyncUrl = '@Url.Action("EditUserAsync", "UserManagement", new { Area = "Admin" })';
-    var getloadEditUserPartialViewAsyncUrl = '@Url.Action("LoadEditUserPartialView", "UserManagement", new { Area = "Admin", userName = @Model.UserName })';
+      var editUserRolesAsyncUrl = '@Url.Action("EditUserRolesAsync", "UserManagement", new { Area = "Admin" })';
+    var getloadEditUserPartialViewAsyncUrl = '@Url.Action("LoadEditUserPartialView", "UserManagement", new { Area = "Admin", userName = @Model.user.UserName })';
+
+    homeController.HideLoadingIndicator();
 
     $('#modalEditUser').modal('show');
 
@@ -120,4 +168,4 @@
             handle: "#cardHeaderModalEditUser"
         }
     );
-</script>
+        </script>

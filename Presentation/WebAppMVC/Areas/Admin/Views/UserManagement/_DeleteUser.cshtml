@@ -21,8 +21,12 @@
                         <div id="ajaxDeleteUserResult">
 
                             <div class="row shadow-sm bg-white rounded">
-                                <div class="col-12 text-center">
-                                    <label asp-for="UserName"></label>
+                                <div class="col-6 text-center">
+                                    <label>User Id</label>
+                                    <h4>@Model.UserId</h4>
+                                </div>
+                                <div class="col-6 text-center">
+                                    <label>User Name</label>
                                     <h4>@Model.UserName</h4>
                                     <input hidden="hidden" type="text" asp-for="UserName"
                                            class="form-control" id="txtUserName"
@@ -85,7 +89,7 @@
                         </div>
                     </div>
                     <div class="card-footer d-flex align-items-center justify-content-end">
-                        <p class="pr-4 mb-0 align-self-center"><em>Do you want to delete user <strong> @Model.UserName </strong> from application?</em></p>
+                        <p class="pr-4 mb-0 align-self-center"><em>Do you want to delete user from application?</em></p>
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-trash-alt"></i> Yes, Delete
                         </button>

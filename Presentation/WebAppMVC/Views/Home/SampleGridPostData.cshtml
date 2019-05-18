@@ -1,0 +1,33 @@
+﻿@{
+    ViewData["Title"] = "SampleGridPostData";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model List<WebAppMVC.Models.SampleModel>
+<form action="/Home/PostSampleGridData" method="post" id="form">
+    <table>
+        @for (int i = 0; i < Model.Count(); i++)
+        {
+        <tr>
+            <td>
+                <input type="text" name="[@i].SampleData1" />
+            </td>
+            <td>
+                <input type="text" name="[@i].SampleData2" />
+            </td>
+            <td>
+                <input type="text" name="[@i].SampleData3" />
+            </td>
+
+            <td>
+                @Html.CheckBoxFor(g => g[i].SampleCheckBoxData1)
+            </td>
+            <td>
+                @Html.CheckBoxFor(g => g[i].SampleCheckBoxData2)
+            </td>
+          
+        </tr>
+        }
+    </table>
+    <input type="submit" value="Save" />
+</form>

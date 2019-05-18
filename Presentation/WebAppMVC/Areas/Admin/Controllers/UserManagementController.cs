@@ -55,42 +55,6 @@
             return await Task.Run(() => this.PartialView("_GetUsers", userBindingModel));
         }
 
-        [HttpGet]
-        public async Task<IActionResult> LoadUpdateUserRolesPartialViewAsync(string userName)
-        {
-            dynamic ajaxReturn = new JObject();
-            List<UserRoleBindingModel> userRolesBindingModel = new List<UserRoleBindingModel>();
-            User user = new User();
-            List<UserRole> roles = new List<UserRole>();
-
-            user = await this._authenticationService.GetUserDetailsByUserNameAsync(userName);
-
-            if (user == null)
-            {
-                ajaxReturn.Status = "Warning";
-                ajaxReturn.UserName = userName;
-                ajaxReturn.Message = userName +
-                                    " - user name not found";
-            }
-            roles = await this._authenticationService.GetRolesAsync();
-            List<UserRole> userRoles = await this._userManagementService.GetUserRolesAsync(user);
-
-            var unMappedroles = (from r in roles
-                                 join ur in userRoles on r.RoleName equals ur.RoleName
-                                 into result
-                                 where result.Count() == 0
-                                 select r).ToList();
-
-            if (unMappedroles != null && unMappedroles.Count > 0)
-            {
-                userRoles.AddRange(unMappedroles);
-            }
-
-            userRolesBindingModel = this._mapper.Map<List<UserRoleBindingModel>>(userRoles);
-
-            return await Task.Run(() => this.PartialView("_EditUserRoles", (userRolesBindingModel, userName, user.UserId)));
-        }
-
         [Route("EditUserRolesAsync")]
         [IgnoreAntiforgeryToken]
         [HttpPost]
@@ -177,22 +141,35 @@
         [HttpGet]
         public async Task<IActionResult> LoadEditUserPartialView(string userName)
         {
-            UserBindingModel userBindingModel = new UserBindingModel();
-
             dynamic ajaxReturn = new JObject();
-
+            List<UserRoleBindingModel> userRolesBindingModel = new List<UserRoleBindingModel>();
+            UserBindingModel userBindingModel = new UserBindingModel();
             User user = new User();
+            List<UserRole> roles = new List<UserRole>();
 
+            roles = await this._authenticationService.GetRolesAsync();
             user = await this._authenticationService.GetUserDetailsByUserNameAsync(userName);
+            List<UserRole> userRoles = await this._userManagementService.GetUserRolesAsync(user);
+
+            var unMappedroles = (from r in roles
+                                 join ur in userRoles on r.RoleName equals ur.RoleName
+                                 into result
+                                 where result.Count() == 0
+                                 select r).ToList();
+
+            if (unMappedroles != null && unMappedroles.Count > 0)
+            {
+                userRoles.AddRange(unMappedroles);
+            }
 
             userBindingModel = this._mapper.Map<UserBindingModel>(user);
-
-            return await Task.Run(() => this.PartialView("_EditUser", userBindingModel));
+            userRolesBindingModel = this._mapper.Map<List<UserRoleBindingModel>>(userRoles);
+            return await Task.Run(() => this.PartialView("_EditUser", (userBindingModel, userRolesBindingModel)));
         }
 
         [Route("EditUser")]
         [HttpPost]
-        public async Task<IActionResult> EditUserAsync(UserBindingModel userBindingModel)
+        public async Task<IActionResult> EditUserAsync([Bind(Prefix = "Item1")] UserBindingModel userBindingModel)
         {
             dynamic ajaxReturn = new JObject();
 

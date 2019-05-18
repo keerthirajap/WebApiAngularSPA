@@ -60,7 +60,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAppMVC", "Presentation\W
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{83B44DC8-774F-4C72-BD72-AF6CE44B6B6A}"
 	ProjectSection(SolutionItems) = preProject
-		Data13052019.sql = Data13052019.sql
+		Database\Infrastructure\Scripts\Data13052019.sql = Database\Infrastructure\Scripts\Data13052019.sql
 	EndProjectSection
 EndProject
 Global
