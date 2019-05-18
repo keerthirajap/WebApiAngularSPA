@@ -49,7 +49,7 @@
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
     }

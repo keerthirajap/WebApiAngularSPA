@@ -11,7 +11,7 @@
     {
         private readonly ILogger _logger;
 
-        private Logger _nLogger = LogManager.GetCurrentClassLogger(); // creates a logger using the class name
+        private Logger _nlogger = LogManager.GetCurrentClassLogger(); // creates a logger using the class name
 
         public ServiceClassLogInterceptor(ILogger logger)
         {
@@ -23,10 +23,10 @@
             var codeBase = invocation.MethodInvocationTarget.DeclaringType.AssemblyQualifiedName;
             var invocationTarget = invocation.InvocationTarget.ToString();
             var methodName = invocation.Method.Name;
-            this._nLogger = LogManager.GetLogger(invocation.InvocationTarget.ToString() + methodName);
+            this._nlogger = LogManager.GetLogger(invocation.InvocationTarget.ToString() + methodName);
             try
             {
-                this._nLogger.Info(
+                this._nlogger.Info(
                     "Started method execution '{0}'", methodName);
 
                 invocation.Proceed();
@@ -42,7 +42,7 @@
 
                 if (!isAsync)
                 {
-                    this._nLogger.Info(
+                    this._nlogger.Info(
                         "Completed method execution '{0}'", methodName);
                 }
             }

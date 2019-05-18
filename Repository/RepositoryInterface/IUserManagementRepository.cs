@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Text;
     using System.Threading.Tasks;
     using Autofac.Extras.DynamicProxy;
@@ -10,6 +11,7 @@
     using Domain.User.Role;
     using Insight.Database;
 
+    [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1305:FieldNamesMustNotUseHungarianNotation", Justification = "Reviewed.")]
     [Intercept(typeof(RepositoryInterfaceLogInterceptor))]
     public interface IUserManagementRepository
     {
@@ -26,6 +28,6 @@
         Task<bool> DeleteUserAsync(User user);
 
         [Sql("[dbo].[P_ModifyUserRoles]")]
-        Task<bool> ModifyUserRolesAsync(User user, List<UserRole> T_ModifyUserRoles);
+        Task<bool> ModifyUserRolesAsync(User user, List<UserRole> t_ModifyUserRoles);
     }
 }

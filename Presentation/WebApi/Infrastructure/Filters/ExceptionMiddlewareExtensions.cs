@@ -17,7 +17,7 @@
     {
         private readonly RequestDelegate _next;
         private readonly ILogger<HttpStatusCodeExceptionMiddleware> _logger;
-        private Logger _nLogger = LogManager.GetCurrentClassLogger(); // creates a logger using the class name
+        private Logger _nlogger = LogManager.GetCurrentClassLogger(); // creates a logger using the class name
 
         public HttpStatusCodeExceptionMiddleware(RequestDelegate next, ILoggerFactory loggerFactory)
         {
@@ -36,9 +36,9 @@
                 var actionDescriptor = context.Response.Headers
                                             .Where(x => x.Key == "ActionDescriptor").FirstOrDefault().Value;
 
-                this._nLogger = LogManager.GetLogger(actionDescriptor);
+                this._nlogger = LogManager.GetLogger(actionDescriptor);
 
-                this._nLogger.Error(ex.Message, ex);
+                this._nlogger.Error(ex.Message, ex);
 
                 if (context.Response.HasStarted)
                 {

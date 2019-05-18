@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Net;
     using System.Security.Claims;
@@ -35,13 +36,15 @@
     using WebApi.Infrastructure.Filters;
     using WebApi.Infrastructure.Helpers;
 
+    [SuppressMessage("StyleCop.CSharp.OrderingRules", "SA1202:ElementsMustBeOrderedByAccess", Justification = "Reviewed.")]
+    [SuppressMessage("StyleCop.CSharp.OrderingRules", "SA1201:ElementsMustAppearInTheCorrectOrder", Justification = "Reviewed.")]
     public class Startup
     {
+        private readonly NLog.Logger logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+
         public static Dictionary<string, object> ApplicationConfigurations { get; private set; }
 
         public IConfiguration Configuration { get; }
-
-        private readonly NLog.Logger logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
 
         public Autofac.IContainer ApplicationContainer { get; private set; }
 

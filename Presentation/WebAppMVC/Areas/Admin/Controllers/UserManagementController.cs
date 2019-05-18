@@ -92,6 +92,7 @@
                 ajaxReturn.Message = "Error occured while modifying roles for - " + userName +
                                     "";
             }
+
             return this.Json(ajaxReturn);
         }
 
@@ -135,6 +136,7 @@
                 ajaxReturn.Message = "Error occured while creating user - " + userBindingModel.UserName +
                                     "";
             }
+
             return this.Json(ajaxReturn);
         }
 
@@ -151,15 +153,15 @@
             user = await this._authenticationService.GetUserDetailsByUserNameAsync(userName);
             List<UserRole> userRoles = await this._userManagementService.GetUserRolesAsync(user);
 
-            var unMappedroles = (from r in roles
-                                 join ur in userRoles on r.RoleName equals ur.RoleName
-                                 into result
-                                 where result.Count() == 0
-                                 select r).ToList();
+            var rolesNotMapped = (from r in roles
+                                  join ur in userRoles on r.RoleName equals ur.RoleName
+                                  into result
+                                  where result.Count() == 0
+                                  select r).ToList();
 
-            if (unMappedroles != null && unMappedroles.Count > 0)
+            if (rolesNotMapped != null && rolesNotMapped.Count > 0)
             {
-                userRoles.AddRange(unMappedroles);
+                userRoles.AddRange(rolesNotMapped);
             }
 
             userBindingModel = this._mapper.Map<UserBindingModel>(user);
@@ -193,6 +195,7 @@
                 ajaxReturn.Message = "Error occured while updating user - " + userBindingModel.UserName +
                                     "";
             }
+
             return this.Json(ajaxReturn);
         }
 
@@ -238,6 +241,7 @@
                 ajaxReturn.Message = "Error occured while deleting user - " + userBindingModel.UserName +
                                     "";
             }
+
             return this.Json(ajaxReturn);
         }
     }

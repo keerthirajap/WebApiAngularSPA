@@ -33,6 +33,8 @@
     <Folder Include="Areas\Authentication\Models\" />
     <Folder Include="Areas\Dashboard\Data\" />
     <Folder Include="Areas\Dashboard\Models\" />
+    <Folder Include="Areas\FileCrypt\Data\" />
+    <Folder Include="Areas\FileCrypt\Models\" />
   </ItemGroup>
 
   <ItemGroup>

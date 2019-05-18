@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Runtime.Caching;
     using System.Text;
 
@@ -87,12 +88,11 @@
             return base.GetValue(key);
         }
 
+        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1409:RemoveUnnecessaryCode", Justification = "Reviewed.")]
         private class Nested
         {
             internal static readonly GlobalAppConfigurations Instance = new GlobalAppConfigurations();
 
-            // Explicit static constructor to tell C# compiler
-            // not to mark type as beforefieldinit
             static Nested()
             {
             }

@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace BindingModel.V1._0.User.Role
+﻿namespace BindingModel.V1._0.User.Role
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+
     public class UserRoleBindingModel
     {
         public long UserRoleId { get; set; }
