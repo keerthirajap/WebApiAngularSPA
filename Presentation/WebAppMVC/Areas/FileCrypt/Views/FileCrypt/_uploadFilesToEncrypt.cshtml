@@ -19,20 +19,26 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="custom-file">
-                                    <input type="file" name="filesToEncrypt" class="custom-file-input" id="exampleInputFile" multiple>
-                                    <label class="custom-file-label" id="testtest" for="filesToEncrypt" data-browse="Browse">Choose files...</label>
+                                    <input type="file" name="filesForUpload" class="custom-file-input" id="filesForUpload" multiple
+                                           accept="image/jpeg, image/png, image/gif,">
+                                    <label class="custom-file-label" id="testtest" for="filesForUpload" data-browse="Browse">Choose files...</label>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <p class="lead">
                                     Selected files for upload
                                 </p>
-                                <div class="bs-component" id="filesForEncrypt" style="overflow-y: auto;height: 360px;">
+
+
+                                <div id="FilelistForUpload" class="bs-component" style="overflow-y: auto;height: 360px;">
+
                                 </div>
+
+                                @*<div id="Filelist" class="bs-component" style="overflow-y: auto;height: 360px;">
+
+                                </div>*@
                             </div>
                         </div>
-
-
                     </div>
 
                     <div class="card-footer text-center">
@@ -51,69 +57,75 @@
 </div>
 
 <script>
-    $('#modalUploadFilesToEncrypt').modal('show');
+        $('#modalUploadFilesToEncrypt').modal('show');
 
-    $("#modalContentUploadFilesToEncrypt").draggable(
-        {
-            handle: "#cardHeaderModalUploadFilesToEncrypt"
-        }
-    );
+        $("#modalContentUploadFilesToEncrypt").draggable(
+            {
+                handle: "#cardHeaderModalUploadFilesToEncrypt"
+            }
+        );
 
-    homeController.HideLoadingIndicator();
+        homeController.HideLoadingIndicator();
 
-    $("input[name=filesToEncrypt]").trigger("click");
+        $("input[name=filesForUpload]").trigger("click");
 
-    var fileSelectedforUplaod = [];
+        var fileSelectedforUplaod = [];
 
-    $("input[name=filesToEncrypt]").change(function () {
+        $("input[name=filesToEncrypt]").change(function () {
 
-        fileSelectedforUplaod = [];
-        $('#filesForEncrypt').html("");
+            fileSelectedforUplaod = [];
+            $('#filesForEncrypt').html("");
 
-        var names = $(this).get(0);
-        for (var i = 0; i < $(this).get(0).files.length; ++i) {
+            var names = $(this).get(0);
+            for (var i = 0; i < $(this).get(0).files.length; ++i) {
 
-            fileSelectedforUplaod.push($(this).get(0).files[i].name);
-            $('#filesForEncrypt').append('<div class="alert alert-dismissible alert-success mr-2" id=fileSelectedAlert'
-                + $(this).get(0).files[i].name
-                + '> '
-                + '<button type="button" class="close" data-dismiss="alert" id=fileSelectedAlertBtn_'
-                + $(this).get(0).files[i].name
-                + '>×</button>'
-                + $(this).get(0).files[i].name
-                + '</div>'
-            );
-        }
-    })
+                fileSelectedforUplaod.push($(this).get(0).files[i].name);
+                $('#filesForEncrypt').append('<div class="alert alert-dismissible alert-success mr-2" id=fileSelectedAlert'
+                    + $(this).get(0).files[i].name
+                    + '> '
+                    + '<button type="button" class="close" data-dismiss="alert" id=fileSelectedAlertBtn_'
+                    + $(this).get(0).files[i].name
+                    + '>×</button>'
+                    + $(this).get(0).files[i].name
+                    + '</div>'
+                );
+            }
+        })
 
-    $('[id^="fileSelectedAlertBtn_"]').click(function () {
-        var newFileList = Array.from($('#exampleInputFile').get(0).files);
-        newFileList.splice(2, 1);
+        $('[id^="fileSelectedAlertBtn_"]').click(function () {
+            var newFileList = Array.from($('#exampleInputFile').get(0).files);
+            newFileList.splice(2, 1);
 
-    })
+        })
 
 </script>
 
 <script type="text/javascript">
-    //I added event handler for the file upload control to access the files properties.
-    document.addEventListener("DOMContentLoaded", init, false);
+        //I added event handler for the file upload control to access the files properties.
+        document.addEventListener("DOMContentLoaded", init, false);
 
-    //To save an array of attachments
-    var AttachmentArray = [];
+        //To save an array of attachments
+        var AttachmentArray = [];
 
-    //counter for attachment array
-    var arrCounter = 0;
+        //counter for attachment array
+        var arrCounter = 0;
 
-    //un ordered list to keep attachments thumbnails
-    var ul = document.createElement('ul');
-    ul.className = ("thumb-Images");
-    ul.id = "imgList";
+        //un ordered list to keep attachments thumbnails
+        var ul = document.createElement('ul');
+        ul.className = ("thumb-Images");
+        ul.id = "imgList";
 
-    function init() {
-        //add javascript handlers for the file upload event
-        document.querySelector('#files').addEventListener('change', handleFileSelect, false);
-    }
+        function init() {
+            //add javascript handlers for the file upload event
+            document.querySelector('#files').addEventListener('change', handleFileSelect, false);
+        }
 
+
+    $("input[id=filesForUpload]").change(function (e) {
+       handleFileSelect(e)
+
+    });
+   
     //the handler for file upload event
     function handleFileSelect(e) {
         //to make sure the user select file/files
@@ -124,7 +136,7 @@
 
         // Loop through the FileList and then to render image files as thumbnails.
         for (var i = 0, f; f = files[i]; i++) {
-
+        
             //instantiate a FileReader object to read its contents into memory
             var fileReader = new FileReader();
 
@@ -142,13 +154,13 @@
 
             fileReader.readAsDataURL(f);
         }
-        document.getElementById('files').addEventListener('change', handleFileSelect, false);
+        document.getElementById('filesForUpload').addEventListener('change', handleFileSelect, false);
     }
 
     //To remove attachment once user click on x button
     jQuery(function ($) {
 
-        $('#Filelist').on('click', '.img-wrap .close', function () {
+        $('#FilelistForUpload').on('click', '.img-wrap .close', function () {
             var id = $(this).closest('.img-wrap').find('img').data('id');
             //to remove the deleted item from array
             var elementPos = AttachmentArray.map(function (x) {
@@ -195,7 +207,7 @@
         li.appendChild(div);
         div.innerHTML = [readerEvt.name].join('');
 
-        document.getElementById('Filelist').insertBefore(ul, null);
+        document.getElementById('FilelistForUpload').insertBefore(ul, null);
         changeTitle();
     }
 
@@ -219,7 +231,7 @@
         $("#imgList>li").each(function () {
             title += `${$(this).find(".FileNameCaptionStyle").text()}\n`;
         });
-        $("#files").attr("title", title);
+        $("#filesForUpload").attr("title", title);
     }
 </script>
 

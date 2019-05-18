@@ -41,14 +41,14 @@
 
         [HttpPost]
         [DisableRequestSizeLimit]
-        public async Task<IActionResult> UploadFiles(List<IFormFile> filesToEncrypt)
+        public async Task<IActionResult> UploadFiles(List<IFormFile> filesForUpload)
         {
             UserBindingModel loggediInUserDetails = new UserBindingModel();
             loggediInUserDetails = this.User.GetLoggedInUserDetails();
 
             var uploadFilepath = Path.Combine(_hostingEnvironment.WebRootPath, @"EncryptedFiles\");
 
-            foreach (var fileToEncrypt in filesToEncrypt)
+            foreach (var fileToEncrypt in filesForUpload)
             {
                 FileCrypt fileCrypt = new FileCrypt();
                 fileCrypt.FileName = fileToEncrypt.FileName;
