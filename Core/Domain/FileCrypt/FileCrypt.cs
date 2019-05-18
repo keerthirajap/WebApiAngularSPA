@@ -10,9 +10,13 @@
 
         public string FileName { get; set; }
 
-        public string FilePath { get; set; }
+        public byte[] FileBytes { get; set; }
 
-        public string FileFullPath { get; set; }
+        public string EncryptedFileName { get; set; }
+
+        public string EncryptedFilePath { get; set; }
+
+        public string EncryptedFileFullPath { get; set; }
 
         public DateTime CreatedOn { get; set; }
 

@@ -1,0 +1,225 @@
+﻿<div class="modal" id="modalUploadFilesToEncrypt" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="modalContentUploadFilesToEncrypt">
+            <div class="card  bg-white">
+                <form id="formUploadFilesToEncrypt" asp-area="FileCrypt"
+                      asp-controller="FileCrypt" asp-action="UploadFiles"
+                      method="post" data-ajax="true" enctype="multipart/form-data"
+                      data-ajax-success="fileCryptController.uploadFilesOnSuccess"
+                      data-ajax-failure="fileCryptController.uploadFilesOnfailure"
+                      data-ajax-begin="fileCryptController.uploadFilesOnBegin"
+                      data-ajax-complete="fileCryptController.uploadFilesOnComplete"
+                      data-ajax-mode="replace"
+                      data-ajax-update="#ajaxAddUserResult">
+                    <div class="card-header" id="cardHeaderModalUploadFilesToEncrypt">
+                        <h4 class="pt-1">   Upload Files </h4>
+                    </div>
+
+                    <div class="card-body pl-3 pr-3 pt-3 pb-3" id="addUserCardBody">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="custom-file">
+                                    <input type="file" name="filesToEncrypt" class="custom-file-input" id="exampleInputFile" multiple>
+                                    <label class="custom-file-label" id="testtest" for="filesToEncrypt" data-browse="Browse">Choose files...</label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <p class="lead">
+                                    Selected files for upload
+                                </p>
+                                <div class="bs-component" id="filesForEncrypt" style="overflow-y: auto;height: 360px;">
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="card-footer text-center">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-file-upload"></i> Upload
+                        </button>
+                        <button type="button" id="btnAddUserCancel" onclick="fileCryptController.closeUploadFilesPartialView()"
+                                class="btn btn-dark ml-3">
+                            <i class="fas fa-times"></i>Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#modalUploadFilesToEncrypt').modal('show');
+
+    $("#modalContentUploadFilesToEncrypt").draggable(
+        {
+            handle: "#cardHeaderModalUploadFilesToEncrypt"
+        }
+    );
+
+    homeController.HideLoadingIndicator();
+
+    $("input[name=filesToEncrypt]").trigger("click");
+
+    var fileSelectedforUplaod = [];
+
+    $("input[name=filesToEncrypt]").change(function () {
+
+        fileSelectedforUplaod = [];
+        $('#filesForEncrypt').html("");
+
+        var names = $(this).get(0);
+        for (var i = 0; i < $(this).get(0).files.length; ++i) {
+
+            fileSelectedforUplaod.push($(this).get(0).files[i].name);
+            $('#filesForEncrypt').append('<div class="alert alert-dismissible alert-success mr-2" id=fileSelectedAlert'
+                + $(this).get(0).files[i].name
+                + '> '
+                + '<button type="button" class="close" data-dismiss="alert" id=fileSelectedAlertBtn_'
+                + $(this).get(0).files[i].name
+                + '>×</button>'
+                + $(this).get(0).files[i].name
+                + '</div>'
+            );
+        }
+    })
+
+    $('[id^="fileSelectedAlertBtn_"]').click(function () {
+        var newFileList = Array.from($('#exampleInputFile').get(0).files);
+        newFileList.splice(2, 1);
+
+    })
+
+</script>
+
+<script type="text/javascript">
+    //I added event handler for the file upload control to access the files properties.
+    document.addEventListener("DOMContentLoaded", init, false);
+
+    //To save an array of attachments
+    var AttachmentArray = [];
+
+    //counter for attachment array
+    var arrCounter = 0;
+
+    //un ordered list to keep attachments thumbnails
+    var ul = document.createElement('ul');
+    ul.className = ("thumb-Images");
+    ul.id = "imgList";
+
+    function init() {
+        //add javascript handlers for the file upload event
+        document.querySelector('#files').addEventListener('change', handleFileSelect, false);
+    }
+
+    //the handler for file upload event
+    function handleFileSelect(e) {
+        //to make sure the user select file/files
+        if (!e.target.files) return;
+
+        //To obtaine a File reference
+        var files = e.target.files;
+
+        // Loop through the FileList and then to render image files as thumbnails.
+        for (var i = 0, f; f = files[i]; i++) {
+
+            //instantiate a FileReader object to read its contents into memory
+            var fileReader = new FileReader();
+
+            // Closure to capture the file information and apply validation.
+            fileReader.onload = (function (readerEvt) {
+                return function (e) {
+
+                    //Render attachments thumbnails.
+                    RenderThumbnail(e, readerEvt);
+
+                    //Fill the array of attachment
+                    FillAttachmentArray(e, readerEvt)
+                };
+            })(f);
+
+            fileReader.readAsDataURL(f);
+        }
+        document.getElementById('files').addEventListener('change', handleFileSelect, false);
+    }
+
+    //To remove attachment once user click on x button
+    jQuery(function ($) {
+
+        $('#Filelist').on('click', '.img-wrap .close', function () {
+            var id = $(this).closest('.img-wrap').find('img').data('id');
+            //to remove the deleted item from array
+            var elementPos = AttachmentArray.map(function (x) {
+                return x.FileName;
+            }).indexOf(id);
+            if (elementPos !== -1) {
+                AttachmentArray.splice(elementPos, 1);
+            }
+
+            //to remove image tag
+            $(this).parent().find('img').not().remove();
+
+            //to remove div tag that contain the image
+            $(this).parent().find('div').not().remove();
+
+            //to remove div tag that contain caption name
+            $(this).parent().parent().find('div').not().remove();
+
+            //to remove li tag
+            var lis = document.querySelectorAll('#imgList li');
+            for (var i = 0; li = lis[i]; i++) {
+                if (li.innerHTML == "") {
+                    li.parentNode.removeChild(li);
+                }
+            }
+            changeTitle();
+        });
+    });
+
+    //Render attachments thumbnails.
+    function RenderThumbnail(e, readerEvt) {
+        var li = document.createElement('li');
+        li.className = "list-group-item";
+        li.style = "border: none;";
+        ul.appendChild(li);
+        li.innerHTML = ['<div class="img-wrap alert alert-dismissible alert-success mb-0">'
+            + '<button type="button" class="close" data-dismiss="alert">×</button>'
+            + readerEvt.name + '</div>'
+        ].join('');
+
+        var div = document.createElement('div');
+        div.className = "FileNameCaptionStyle";
+        div.style = "display: none;";
+        li.appendChild(div);
+        div.innerHTML = [readerEvt.name].join('');
+
+        document.getElementById('Filelist').insertBefore(ul, null);
+        changeTitle();
+    }
+
+    //Fill the array of attachment
+    function FillAttachmentArray(e, readerEvt) {
+        AttachmentArray[arrCounter] = {
+            AttachmentType: 1,
+            ObjectType: 1,
+            FileName: readerEvt.name,
+            FileDescription: "Attachment",
+            NoteText: "",
+            MimeType: readerEvt.type,
+            Content: e.target.result.split("base64,")[1],
+            FileSizeInBytes: readerEvt.size,
+        };
+        arrCounter = arrCounter + 1;
+    }
+
+    function changeTitle() {
+        var title = "";
+        $("#imgList>li").each(function () {
+            title += `${$(this).find(".FileNameCaptionStyle").text()}\n`;
+        });
+        $("#files").attr("title", title);
+    }
+</script>
+

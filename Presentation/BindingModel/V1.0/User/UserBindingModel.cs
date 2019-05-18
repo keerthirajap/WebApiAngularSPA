@@ -9,7 +9,7 @@
 
     public class UserBindingModel
     {
-        public int UserId { get; set; }
+        public long UserId { get; set; }
 
         [Required(ErrorMessage = "The {0} field is required.")]
         [StringLength(20, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]

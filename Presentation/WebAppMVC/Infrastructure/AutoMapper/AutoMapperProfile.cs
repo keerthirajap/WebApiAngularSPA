@@ -27,6 +27,12 @@
             CreateMap<UserRoleBindingModel, UserRole>().ReverseMap();
 
             #endregion User
+
+            #region File Crypt
+
+            CreateMap<BindingModel.V1._0.FileCrypt.FileCryptBindingModel, Domain.FileCrypt.FileCrypt>().ReverseMap();
+
+            #endregion File Crypt
         }
     }
 }

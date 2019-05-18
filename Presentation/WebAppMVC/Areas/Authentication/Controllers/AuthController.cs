@@ -87,8 +87,10 @@
 
                 List<Claim> claims = new List<Claim>
              {
-                new Claim ("http://example.org/claims/UserName", "UserName", user.UserName),
+                new Claim ("http://example.org/claims/UserName", userDetails.UserName),
                 new Claim(ClaimTypes.Name , user.UserName),
+                new Claim("http://example.org/claims/UserId", userDetails.UserId.ToString()),
+                new Claim(ClaimTypes.NameIdentifier , userDetails.UserId.ToString()),
                 new Claim(ClaimTypes.Authentication , "Authenticated"),
                 new Claim("http://example.org/claims/LoggedInTime", "LoggedInTime", DateTime.Now.ToString())
              };
@@ -178,6 +180,7 @@
              {
                 new Claim ("http://example.org/claims/UserName", "UserName", user.UserName),
                 new Claim(ClaimTypes.Name , user.UserName),
+
                 new Claim(ClaimTypes.Authentication , "Authenticated"),
                 new Claim("http://example.org/claims/LoggedInTime", "LoggedInTime", DateTime.Now.ToString())
              };

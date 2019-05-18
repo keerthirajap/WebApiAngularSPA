@@ -28,13 +28,17 @@
                     .InstancePerLifetimeScope().EnableInterfaceInterceptors();
                 builder.RegisterType<UserManagementService>().As<IUserManagementService>()
                     .InstancePerLifetimeScope().EnableInterfaceInterceptors();
+                builder.RegisterType<FileCryptService>().As<IFileCryptService>()
+                    .InstancePerLifetimeScope().EnableInterfaceInterceptors();
             }
             else
             {
                 builder.RegisterType<AuthenticationService>().As<IAuthenticationService>()
                     .EnableInterfaceInterceptors();
                 builder.RegisterType<UserManagementService>().As<IUserManagementService>()
-                   .EnableInterfaceInterceptors();
+                    .EnableInterfaceInterceptors();
+                builder.RegisterType<FileCryptService>().As<IFileCryptService>()
+                    .EnableInterfaceInterceptors();
             }
 
             base.Load(builder);
