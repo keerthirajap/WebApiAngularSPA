@@ -7,6 +7,7 @@
     using System.Threading.Tasks;
     using Autofac.Extras.DynamicProxy;
     using CrossCutting.Logging;
+    using Domain.FileCrypt;
     using Domain.User;
     using Domain.User.Role;
 
@@ -16,5 +17,7 @@
         Task<byte[]> CopyStreamToByteBuffer(Stream stream);
 
         Task WriteBufferToFile(byte[] buffer, string path);
+
+        Task<bool> UploadFileAndEncrypt(FileCrypt fileCrypt, Stream stream);
     }
 }

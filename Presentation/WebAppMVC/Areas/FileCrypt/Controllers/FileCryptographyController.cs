@@ -52,13 +52,13 @@
             {
                 FileCrypt fileCrypt = new FileCrypt();
                 fileCrypt.FileName = fileToEncrypt.FileName;
-                fileCrypt.FileBytes = await this._fileCryptService.CopyStreamToByteBuffer(fileToEncrypt.OpenReadStream());
                 fileCrypt.EncryptedFileName = Guid.NewGuid().ToString();
                 fileCrypt.EncryptedFilePath = uploadFilepath;
+                fileCrypt.EncryptedFileFullPath = fileCrypt.EncryptedFilePath + fileCrypt.EncryptedFileName;
                 fileCrypt.CreatedBy = loggediInUserDetails.UserId;
                 fileCrypt.ModifiedBy = loggediInUserDetails.UserId;
 
-                await this._fileCryptService.WriteBufferToFile(fileCrypt.FileBytes, fileCrypt.EncryptedFilePath + fileCrypt.EncryptedFileName);
+                await this._fileCryptService.UploadFileAndEncrypt(fileCrypt, fileToEncrypt.OpenReadStream());
             }
 
             return Ok();

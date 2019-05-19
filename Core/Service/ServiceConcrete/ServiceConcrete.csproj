@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ChoPGP" Version="1.0.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\..\Repository\RepositoryInterface\RepositoryInterface.csproj" />
     <ProjectReference Include="..\ServiceInterface\ServiceInterface.csproj" />
   </ItemGroup>
