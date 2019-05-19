@@ -60,7 +60,7 @@
 
             filesCryptBindingModel = this._mapper.Map<List<FileCryptBindingModel>>(filesCrypt);
 
-            return await Task.Run(() => this.PartialView("_getEncryptedFileDetailsAsync", filesCryptBindingModel));
+            return await Task.Run(() => this.PartialView("_getEncryptedFileDetails", filesCryptBindingModel));
         }
 
         [HttpGet]
@@ -120,7 +120,7 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> DeleteEncryptedFiles(long fileCryptId)
+        public async Task<IActionResult> DeleteEncryptedFilesAsync(long fileCryptId)
         {
             dynamic ajaxReturn = new JObject();
             UserBindingModel loggedInUserDetails = new UserBindingModel();
@@ -147,6 +147,21 @@
             }
 
             return this.Json(ajaxReturn);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetEncryptedFileDownloadHistoryAsync(long fileCryptId)
+        {
+            List<FileCryptBindingModel> filesCryptBindingModel = new List<FileCryptBindingModel>();
+            List<FileCrypt> filesCrypt = new List<FileCrypt>();
+            FileCrypt fileCrypt = new FileCrypt();
+
+            fileCrypt.FileCryptId = fileCryptId;
+            filesCrypt = await this._fileCryptService.GetEncryptedFileDownloadHistoryAsync(fileCrypt);
+
+            filesCryptBindingModel = this._mapper.Map<List<FileCryptBindingModel>>(filesCrypt);
+
+            return await Task.Run(() => this.PartialView("_getEncryptedFileDownloadHistory", filesCryptBindingModel));
         }
     }
 }

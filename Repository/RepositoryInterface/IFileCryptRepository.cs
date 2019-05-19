@@ -33,5 +33,8 @@
 
         [Sql("[dbo].[P_DeleteEncryptedFile]")]
         Task<bool> DeleteEncryptedFileAsync(FileCrypt fileCrypt);
+
+        [Sql("[dbo].[P_GetEncryptedFileDownloadHistory]")]
+        Task<List<FileCrypt>> GetEncryptedFileDownloadHistoryAsync(FileCrypt fileCrypt);
     }
 }

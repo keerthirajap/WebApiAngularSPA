@@ -30,10 +30,15 @@
                 homeController.showErrorMessagePopUp(data.Message, xhr.getResponseHeader('RequestId'));
             }
             homeController.HideLoadingIndicator();
-            
+
+            var grid = new MvcGrid(document.querySelector('.mvc-grid'));
+            grid.reload();
         }
 
         publicMethod.uploadFilesOnfailure = function (xMLHttpRequest, textStatus, errorThrown) {
+            var grid = new MvcGrid(document.querySelector('.mvc-grid'));
+            grid.reload();
+            homeController.HideLoadingIndicator();
             homeController.showAjaxErrorMessagePopUp(xMLHttpRequest, textStatus, errorThrown);
         }
 
@@ -46,7 +51,7 @@
 
         // #endregion
 
-        // #region Decrypt And Download Files
+        // #region Decrypt And Download Files, Delete, View History
 
         publicMethod.decryptAndDownloadFile = function (fileName, actionUrl) {
             homeController.ShowLoadingIndicator();
@@ -71,9 +76,11 @@
             homeController.ShowLoadingIndicator();
             $.ajax({
                 url: actionUrl,
-                success: function (data, status, xhr) {                   
+                success: function (data, status, xhr) {
+                   
+                    var grid = new MvcGrid(document.querySelector('.mvc-grid'));
+                    grid.reload();
                     homeController.HideLoadingIndicator();
-
                     if (jQuery.type(data.Status) === "undefined") {
                     }
                     else if (data.Status == 'ValidatationError') {
@@ -96,10 +103,24 @@
                             confirmButtonText: '<i class="fas fa-check"></i> Ok'
                         }).then((result) => {
                             if (result.value) {
-                                
                             }
                         });
                     }
+                },
+                error: function (xMLHttpRequest, textStatus, errorThrown) {
+                    homeController.HideLoadingIndicator();
+                    homeController.showAjaxErrorMessagePopUp(xMLHttpRequest, textStatus, errorThrown);
+                }
+            });
+        }
+
+        publicMethod.getEncryptedFileDownloadHistory = function (fileName, actionUrl) {
+            homeController.ShowLoadingIndicator();
+            $.ajax({
+                url: actionUrl,
+                success: function (data, status, xhr) {
+                    homeController.HideLoadingIndicator();
+                    $('#loadEncryptedFileDownloadHistory').empty().html(data);
                 },
                 error: function (xMLHttpRequest, textStatus, errorThrown) {
                     homeController.HideLoadingIndicator();

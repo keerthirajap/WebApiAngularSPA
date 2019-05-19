@@ -136,5 +136,10 @@
 
             return isDbUpdateSuccess;
         }
+
+        public async Task<List<FileCrypt>> GetEncryptedFileDownloadHistoryAsync(FileCrypt fileCrypt)
+        {
+            return await this._fileCryptRepository.GetEncryptedFileDownloadHistoryAsync(fileCrypt);
+        }
     }
 }

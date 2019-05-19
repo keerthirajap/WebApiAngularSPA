@@ -1,0 +1,58 @@
+﻿@model IEnumerable<BindingModel.V1._0.FileCrypt.FileCryptBindingModel>
+
+<div class="modal" id="modalEncryptedFileDownloadHistory" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="modalContentEncryptedFileDownloadHistory">
+            <div class="card  bg-white">
+                <div class="card-header" id="cardHeaderEncryptedFileDownloadHistory">
+                    <h4 class="pt-1">   Upload Files </h4>
+                </div>
+
+                <div class="card-body pt-3" id="EncryptedFileDownloadHistoryCardBody">
+                    @(Html
+                    .Grid(Model)
+                    .Build(columns =>
+                    {
+
+                    columns.Add(model => model.FileName).Titled("File Name");
+
+                    columns.Add(model => model.CreatedBy).Titled("Downloaded By");
+                    columns.Add(model => model.CreatedOn).Titled("Downloaded On");
+
+                    })
+                    .Empty("No data found")
+                    .Id("gridGetsUsersAjax")
+                    //.Filterable()
+                    //.Sortable()
+                    .Pageable()
+                    )
+                </div>
+
+                <div class="card-footer text-center">
+                    <button type="button" id="btnCancelEncryptedFileDownloadHistory"
+                            onclick="closeEncryptedFileDownloadHistoryPartialView()"
+                            class="btn btn-dark ml-3">
+                        <i class="fas fa-times"></i>Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#modalEncryptedFileDownloadHistory').modal('show');
+
+    $("#modalContentEncryptedFileDownloadHistory").draggable(
+        {
+            handle: "#cardHeaderEncryptedFileDownloadHistory"
+        }
+    );
+
+    homeController.HideLoadingIndicator();
+
+    closeEncryptedFileDownloadHistoryPartialView = function () {
+        $('#modalEncryptedFileDownloadHistory').modal('hide');
+        $('#modalEncryptedFileDownloadHistory').remove();
+    }
+</script>

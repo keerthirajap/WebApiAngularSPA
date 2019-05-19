@@ -27,5 +27,7 @@
         Task<(FileCrypt fileDetails, MemoryStream memoryStream)> DecryptAndDownloadFileAsync(long fileCryptId);
 
         Task<bool> DeleteEncryptedFileAsync(FileCrypt fileCrypt);
+
+        Task<List<FileCrypt>> GetEncryptedFileDownloadHistoryAsync(FileCrypt fileCrypt);
     }
 }
