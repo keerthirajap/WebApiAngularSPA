@@ -68,12 +68,17 @@
                 builder
                     .Register(b => this._sqlConnection.AsParallel<IUserManagementRepository>())
                     .InstancePerLifetimeScope().EnableInterfaceInterceptors();
+                builder.Register(b => this._sqlConnection.AsParallel<IFileCryptRepository>())
+                    .InstancePerLifetimeScope()
+                    .EnableInterfaceInterceptors();
             }
             else
             {
                 builder.Register(b => this._sqlConnection.AsParallel<IAuthenticationRepository>())
                             .EnableInterfaceInterceptors();
                 builder.Register(b => this._sqlConnection.AsParallel<IUserManagementRepository>())
+                           .EnableInterfaceInterceptors();
+                builder.Register(b => this._sqlConnection.AsParallel<IFileCryptRepository>())
                            .EnableInterfaceInterceptors();
             }
 

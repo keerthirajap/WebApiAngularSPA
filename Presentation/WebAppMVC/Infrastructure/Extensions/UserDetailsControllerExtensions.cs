@@ -1,11 +1,11 @@
 ﻿namespace WebAppMVC.Infrastructure.Extensions
 {
-    using BindingModel.V1._0.User;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Security.Claims;
     using System.Threading.Tasks;
+    using BindingModel.V1._0.User;
 
     public static class UserDetailsControllerExtensions
     {

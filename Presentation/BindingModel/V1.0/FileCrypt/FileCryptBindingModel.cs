@@ -12,6 +12,8 @@
 
         public string EncryptedFileName { get; set; }
 
+        public string EncryptedFileExtension { get; set; }
+
         public string EncryptedFilePath { get; set; }
 
         public string EncryptedFileFullPath { get; set; }

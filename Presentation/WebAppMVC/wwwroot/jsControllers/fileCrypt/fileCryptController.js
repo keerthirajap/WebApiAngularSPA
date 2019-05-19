@@ -14,7 +14,7 @@
         }
 
         publicMethod.uploadFilesOnSuccess = function (data, status, xhr) {
-         
+
         }
 
         publicMethod.uploadFilesOnfailure = function (xMLHttpRequest, textStatus, errorThrown) {
@@ -25,6 +25,16 @@
         }
 
         publicMethod.uploadFilesOnComplete = function (xhr, data) {
+        }
+
+        // #endregion
+
+
+        // #region Decrypt And Download Files
+
+        publicMethod.decryptAndDownloadFile = function (url) {
+            
+            location = url;
         }
 
         // #endregion

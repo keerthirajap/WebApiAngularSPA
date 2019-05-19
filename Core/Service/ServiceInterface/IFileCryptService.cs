@@ -19,5 +19,11 @@
         Task WriteBufferToFile(byte[] buffer, string path);
 
         Task<bool> UploadFileAndEncrypt(FileCrypt fileCrypt, Stream stream);
+
+        Task<List<FileCrypt>> GetEncryptedFilesDetailsAsync();
+
+        Task<FileCrypt> GetEncryptedFileDetailsAsync(long fileCryptId);
+
+        Task<(FileCrypt fileDetails, MemoryStream memoryStream)> DecryptAndDownloadFileAsync(long fileCryptId);
     }
 }

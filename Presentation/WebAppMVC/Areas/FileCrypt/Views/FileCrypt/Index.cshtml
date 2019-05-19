@@ -18,8 +18,7 @@
         </div>
     </div>
     <div class="card-body">
-
-
+        @Html.AjaxGrid(Url.Action("GetEncryptedFilesDetailsAsync"), new { id = "gridGetsUsersAjax" })
     </div>
 </div>
 
@@ -31,4 +30,3 @@
          var loadUploadFilesPartialViewActionUrl = '@Url.Action("LoadUploadFilesPartialView", "FileCrypt", new { Area = "FileCrypt" })';
         $('#nav-ItemFileCrypt').addClass('active');
 </script>
-

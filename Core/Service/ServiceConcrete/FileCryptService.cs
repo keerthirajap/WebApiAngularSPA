@@ -5,18 +5,25 @@
     using System.Text;
     using System.Threading.Tasks;
     using System.Linq;
+    using System.IO;
+    using System.Reflection;
     using Domain.User;
     using Domain.User.Role;
     using RepositoryInterface;
     using ServiceInterface;
-    using System.IO;
     using Domain.FileCrypt;
     using Cinchoo.PGP;
-    using System.Reflection;
     using CrossCutting.ConfigCache;
 
     public class FileCryptService : IFileCryptService
     {
+        private readonly IFileCryptRepository _fileCryptRepository;
+
+        public FileCryptService(IFileCryptRepository fileCryptRepository)
+        {
+            this._fileCryptRepository = fileCryptRepository;
+        }
+
         public async Task<byte[]> CopyStreamToByteBuffer(Stream stream)
         {
             var memoryStream = new MemoryStream();
@@ -33,39 +40,46 @@
                 byte[] bytes = new byte[memoryStream.Length];
                 await memoryStream.ReadAsync(bytes, 0, (int)memoryStream.Length);
                 await fileStream.WriteAsync(bytes, 0, bytes.Length);
-            };
+            }
         }
 
         public async Task<bool> UploadFileAndEncrypt(FileCrypt fileCrypt, Stream stream)
         {
+            fileCrypt.FileCryptId = await this._fileCryptRepository.SaveFileDetailsForEncryptionAsync(fileCrypt);
             Assembly asm = Assembly.GetExecutingAssembly();
             var memoryStream = new MemoryStream();
             var memoryStreamEncrypted = new MemoryStream();
+            string tempFilePath = "";
 
+            fileCrypt.EncryptedFileName = "FileEncrypt_" + fileCrypt.FileCryptId.ToString();
+            fileCrypt.EncryptedFileFullPath = fileCrypt.EncryptedFilePath + fileCrypt.EncryptedFileName + fileCrypt.EncryptedFileExtension;
+            tempFilePath = fileCrypt.EncryptedFilePath + fileCrypt.EncryptedFileName + ".temp";
             string path = System.IO.Path.GetDirectoryName(asm.Location);
-            string pGPPrivateKeyFileFullPath = path + @"\" + GlobalAppConfigurations.Instance.GetValue("PGPPrivateKeyFileFullPath").ToString();
-            string pGPPublicKeyFileFullPath = path + @"\" + GlobalAppConfigurations.Instance.GetValue("PGPPublicKeyFileFullPath").ToString();
-            string pGPKeyPassword = GlobalAppConfigurations.Instance.GetValue("PGPKeyPassword").ToString();
+            string privateKeyFileFullPath = path + @"\" + GlobalAppConfigurations.Instance.GetValue("PGPPrivateKeyFileFullPath").ToString();
+            string publicKeyFileFullPath = path + @"\" + GlobalAppConfigurations.Instance.GetValue("PGPPublicKeyFileFullPath").ToString();
+            string pgpKeyPassword = GlobalAppConfigurations.Instance.GetValue("PGPKeyPassword").ToString();
 
             // Write File from stream to Byte
             await stream.CopyToAsync(memoryStream);
             byte[] fileInByte = memoryStream.ToArray();
 
             // Save Encrytped File byte to File
-            using (var fileStream = new FileStream(fileCrypt.EncryptedFileFullPath, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+            using (var fileStream = new FileStream(tempFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite))
             using (var memoryStreamToFile = new MemoryStream(fileInByte))
             {
                 byte[] bytes = new byte[memoryStreamToFile.Length];
                 await memoryStreamToFile.ReadAsync(bytes, 0, (int)memoryStreamToFile.Length);
                 await fileStream.WriteAsync(bytes, 0, bytes.Length);
-            };
+            }
 
             using (ChoPGPEncryptDecrypt pgp = new ChoPGPEncryptDecrypt())
             {
                 try
                 {
-                    pgp.EncryptAndSign(stream, memoryStreamEncrypted,
-                                                     pGPPublicKeyFileFullPath, pGPPrivateKeyFileFullPath, pGPKeyPassword, true, true);
+                    await pgp.EncryptFileAsync(tempFilePath,
+                                       fileCrypt.EncryptedFileFullPath,
+                                       publicKeyFileFullPath,
+                                       true, true);
                 }
                 catch (Exception ex)
                 {
@@ -73,18 +87,39 @@
                 }
             }
 
-            byte[] encryptedFileByte = memoryStreamEncrypted.ToArray();
-
-            // Save Encrytped File byte to File
-            using (var fileStream = new FileStream(fileCrypt.EncryptedFileFullPath, FileMode.OpenOrCreate, FileAccess.ReadWrite))
-            using (var memoryStreamToFile = new MemoryStream(encryptedFileByte))
+            if (File.Exists(tempFilePath))
             {
-                byte[] bytes = new byte[memoryStreamToFile.Length];
-                await memoryStreamToFile.ReadAsync(bytes, 0, (int)memoryStreamToFile.Length);
-                await fileStream.WriteAsync(bytes, 0, bytes.Length);
-            };
+                File.Delete(tempFilePath);
+            }
 
-            return true;
+            bool isUpdateSuccess = await this._fileCryptRepository.UpdateFileDetailsAfterEncryptionAsync(fileCrypt);
+
+            return isUpdateSuccess;
+        }
+
+        public async Task<List<FileCrypt>> GetEncryptedFilesDetailsAsync()
+        {
+            return await this._fileCryptRepository.GetEncryptedFilesDetailsAsync();
+        }
+
+        public async Task<FileCrypt> GetEncryptedFileDetailsAsync(long fileCryptId)
+        {
+            return await this._fileCryptRepository.GetEncryptedFileDetailsAsync(fileCryptId);
+        }
+
+        public async Task<(FileCrypt fileDetails, MemoryStream memoryStream)> DecryptAndDownloadFileAsync(long fileCryptId)
+        {
+            FileCrypt fileCrypt = await this._fileCryptRepository.GetEncryptedFileDetailsAsync(fileCryptId);
+            MemoryStream memoryStream = new MemoryStream();
+
+            using (var stream = new FileStream(fileCrypt.EncryptedFileFullPath, FileMode.Open))
+            {
+                await stream.CopyToAsync(memoryStream);
+            }
+
+            memoryStream.Position = 0;
+
+            return (fileCrypt, memoryStream);
         }
     }
 }
