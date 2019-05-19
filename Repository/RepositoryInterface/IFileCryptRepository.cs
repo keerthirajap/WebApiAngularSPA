@@ -27,5 +27,11 @@
 
         [Sql("SELECT * FROM [dbo].[FileCrypt] WHERE IsActive = 1 AND FileCryptId = @fileCryptId")]
         Task<FileCrypt> GetEncryptedFileDetailsAsync(long fileCryptId);
+
+        [Sql("[dbo].[P_SaveFileDecryptionHistory]")]
+        Task<long> SaveFileDecryptionHistoryAsync(FileCrypt fileCrypt);
+
+        [Sql("[dbo].[P_DeleteEncryptedFile]")]
+        Task<bool> DeleteEncryptedFileAsync(FileCrypt fileCrypt);
     }
 }

@@ -43,7 +43,7 @@
             }
         }
 
-        public async Task<bool> UploadFileAndEncrypt(FileCrypt fileCrypt, Stream stream)
+        public async Task<bool> UploadFileAndEncryptAsync(FileCrypt fileCrypt, Stream stream)
         {
             fileCrypt.FileCryptId = await this._fileCryptRepository.SaveFileDetailsForEncryptionAsync(fileCrypt);
             Assembly asm = Assembly.GetExecutingAssembly();
@@ -109,8 +109,11 @@
 
         public async Task<(FileCrypt fileDetails, MemoryStream memoryStream)> DecryptAndDownloadFileAsync(long fileCryptId)
         {
-            FileCrypt fileCrypt = await this._fileCryptRepository.GetEncryptedFileDetailsAsync(fileCryptId);
             MemoryStream memoryStream = new MemoryStream();
+
+            FileCrypt fileCrypt = await this._fileCryptRepository.GetEncryptedFileDetailsAsync(fileCryptId);
+
+            await this._fileCryptRepository.SaveFileDecryptionHistoryAsync(fileCrypt);
 
             using (var stream = new FileStream(fileCrypt.EncryptedFileFullPath, FileMode.Open))
             {
@@ -120,6 +123,18 @@
             memoryStream.Position = 0;
 
             return (fileCrypt, memoryStream);
+        }
+
+        public async Task<bool> DeleteEncryptedFileAsync(FileCrypt fileCrypt)
+        {
+            if (File.Exists(fileCrypt.EncryptedFileFullPath))
+            {
+                File.Delete(fileCrypt.EncryptedFileFullPath);
+            }
+
+            bool isDbUpdateSuccess = await this._fileCryptRepository.DeleteEncryptedFileAsync(fileCrypt);
+
+            return isDbUpdateSuccess;
         }
     }
 }

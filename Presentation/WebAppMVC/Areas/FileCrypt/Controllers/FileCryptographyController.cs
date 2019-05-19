@@ -18,6 +18,7 @@
     using ServiceInterface;
     using WebAppMVC.Infrastructure.Extensions;
     using CrossCutting.Extension;
+    using Newtonsoft.Json.Linq;
 
     [Area("FileCrypt")]
     [Authorize(Roles = "Admin")]
@@ -92,8 +93,9 @@
         [DisableRequestSizeLimit]
         public async Task<IActionResult> UploadFiles(List<IFormFile> filesForUpload)
         {
-            UserBindingModel loggediInUserDetails = new UserBindingModel();
-            loggediInUserDetails = this.User.GetLoggedInUserDetails();
+            dynamic ajaxReturn = new JObject();
+            UserBindingModel loggedInUserDetails = new UserBindingModel();
+            loggedInUserDetails = this.User.GetLoggedInUserDetails();
 
             var uploadFilepath = Path.Combine(this._hostingEnvironment.WebRootPath, @"EncryptedFiles\");
 
@@ -104,13 +106,47 @@
                 fileCrypt.EncryptedFilePath = uploadFilepath;
                 fileCrypt.EncryptedFileExtension = GlobalAppConfigurations.Instance.GetValue("PGPEncrypedFileExtension").ToString();
 
-                fileCrypt.CreatedBy = loggediInUserDetails.UserId;
-                fileCrypt.ModifiedBy = loggediInUserDetails.UserId;
+                fileCrypt.CreatedBy = loggedInUserDetails.UserId;
+                fileCrypt.ModifiedBy = loggedInUserDetails.UserId;
 
-                await this._fileCryptService.UploadFileAndEncrypt(fileCrypt, fileToEncrypt.OpenReadStream());
+                await this._fileCryptService.UploadFileAndEncryptAsync(fileCrypt, fileToEncrypt.OpenReadStream());
+            }
+            ajaxReturn.Status = "Success";
+            ajaxReturn.GetGoodJobVerb = "Good Work";
+            ajaxReturn.Message = "File uploaded successfully" +
+                " ";
+
+            return this.Json(ajaxReturn);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteEncryptedFiles(long fileCryptId)
+        {
+            dynamic ajaxReturn = new JObject();
+            UserBindingModel loggedInUserDetails = new UserBindingModel();
+            loggedInUserDetails = this.User.GetLoggedInUserDetails();
+            FileCrypt fileCrypt = new FileCrypt();
+
+            fileCrypt.ModifiedBy = loggedInUserDetails.UserId;
+            fileCrypt = await this._fileCryptService.GetEncryptedFileDetailsAsync(fileCryptId);
+
+            bool isFileDeletionSuccess = await this._fileCryptService.DeleteEncryptedFileAsync(fileCrypt);
+
+            if (isFileDeletionSuccess)
+            {
+                ajaxReturn.Status = "Success";
+                ajaxReturn.GetGoodJobVerb = "Good Work";
+                ajaxReturn.Message = fileCrypt.FileName + " - file delete sucessfully" +
+                                    "";
+            }
+            else
+            {
+                ajaxReturn.Status = "Error";
+                ajaxReturn.Message = "Error occured while deleting file - " + fileCrypt.FileName +
+                                    "";
             }
 
-            return this.Ok();
+            return this.Json(ajaxReturn);
         }
     }
 }
