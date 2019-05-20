@@ -72,12 +72,33 @@
             });
         }
 
-        publicMethod.deleteEncryptedFile = function (fileName, actionUrl) {
+        publicMethod.showConfirmForDeleteEncryptedFile = function (fileName, actionUrl) {
+            deleteEncryptedFileActionUrl = actionUrl
+            $('#deleteEncryptedFileConfirmText').text("Do you want to delete file - " + fileName + " ?");
+            $("#modalContentDeleteEncryptedFileConfirm").draggable(
+                {
+                    handle: "#cardHeaderModalDeleteEncryptedFileConfirm"
+                }
+            );
+            $('#modalDeleteEncryptedFileConfirm').modal('show');
+
+        }
+
+
+        publicMethod.closeConfirmForDeleteEncryptedFile = function () {
+            $('#modalDeleteEncryptedFileConfirm').modal('hide');
+        }
+
+        publicMethod.deleteEncryptedFile = function () {
+           
             homeController.ShowLoadingIndicator();
+
+            var actionUrl = deleteEncryptedFileActionUrl
+            $('#modalDeleteEncryptedFileConfirm').modal('hide');
+
             $.ajax({
                 url: actionUrl,
                 success: function (data, status, xhr) {
-                   
                     var grid = new MvcGrid(document.querySelector('.mvc-grid'));
                     grid.reload();
                     homeController.HideLoadingIndicator();

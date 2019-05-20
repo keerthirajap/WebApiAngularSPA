@@ -22,7 +22,7 @@ $"<button class='btn btn-success' id=\"{model.FileCryptId}\""
 + $"<i class='fas fa-history' style='padding-right: 0px;font-size: 17px;'></i></button>"
 
 + $"<button class='btn btn-danger ml-3' id=\"{model.FileCryptId}\""
-+ $"onclick='fileCryptController.deleteEncryptedFile(\"{model.FileName}\","
++ $"onclick='fileCryptController.showConfirmForDeleteEncryptedFile(\"{model.FileName}\","
 + $"\"{@Url.Action("DeleteEncryptedFilesAsync", "FileCrypt", new { Area = "FileCrypt", fileCryptId = model.FileCryptId })}\")'>"
 + $"<i class='fas fa-trash-alt' style='padding-right: 0px;font-size: 20px;'></i></button>"
 
