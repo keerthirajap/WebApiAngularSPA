@@ -252,6 +252,17 @@
                     }
                     else {
                         homeController.HideLoadingIndicator();
+
+                        setTimeout(
+                            function () {
+                                if (activeTabId == "profile") {
+                                    $('#tabEditUser a[href="#profile"]').tab('show')
+                                }
+                                else if (activeTabId == "roles") {
+                                    $('#tabEditUser a[href="#roles"]').tab('show')
+                                }
+                            }, 500);
+
                         swalWithBootstrapButtons.fire({
                             title: data.GetGoodJobVerb,
                             text: data.Message,
@@ -260,12 +271,7 @@
                             confirmButtonText: '<i class="fas fa-check"></i> Ok'
                         }).then((result) => {
                             if (result.value) {
-                                if (activeTabId == "profile") {
-                                    $('#tabEditUser a[href="#profile"]').tab('show')
-                                }
-                                else if (activeTabId == "roles") {
-                                    $('#tabEditUser a[href="#roles"]').tab('show')
-                                }
+                              
                             }
                         });
                     }
