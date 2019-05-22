@@ -21,7 +21,7 @@
     using Newtonsoft.Json.Linq;
 
     [Area("FileCrypt")]
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public class FileCryptController : Controller
     {
         private readonly IMapper _mapper;
@@ -119,6 +119,7 @@
             return this.Json(ajaxReturn);
         }
 
+        [Authorize(Policy = "SuperUser-Admin-Manager")]
         [HttpGet]
         public async Task<IActionResult> DeleteEncryptedFilesAsync(long fileCryptId)
         {

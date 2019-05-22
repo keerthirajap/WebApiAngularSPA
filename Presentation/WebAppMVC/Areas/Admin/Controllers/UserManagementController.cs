@@ -17,7 +17,7 @@
 
     [AutoValidateAntiforgeryToken]
     [Area("Admin")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "SuperUser,Admin")]
     public class UserManagementController : Controller
     {
         private readonly IMapper _mapper;

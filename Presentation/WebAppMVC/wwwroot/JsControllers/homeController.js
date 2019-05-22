@@ -1,18 +1,34 @@
 ﻿(
     function (publicMethod, $) {
         publicMethod.showAjaxErrorMessagePopUp = function (xMLHttpRequest, textStatus, errorThrown) {
-            swalWithBootstrapButtons.fire({
-                title: 'Oops...',
+            if (xMLHttpRequest.status == "403") {
+                swalWithBootstrapButtons.fire({
+                    title: 'Access Denied!',
 
-                type: 'error',
-                html: '<br> An error occurred while processing your request. <br> <br>' +
-                    '<div style="text-align: center; font-size : 14px;" >   Error Message: ' + XMLHttpRequest.status + " " + errorThrown +
-                    '<br> <br> ' + ' Request Id : ' + xMLHttpRequest.getResponseHeader('RequestId') + ' </div>',
-                showCancelButton: true,
-                showConfirmButton: false,
-                allowOutsideClick: false,
-                cancelButtonText: '<i class="fas fa-times"></i> Close'
-            });
+                    type: 'warning',
+                    html: '<br> Your request has been denied due to in-sufficient access. <br> <br>' +
+                        '<div style="text-align: center; font-size : 14px;" >   Error Message: ' + xMLHttpRequest.status + " " + errorThrown +
+                        '<br> <br> ' + ' Request Id : ' + xMLHttpRequest.getResponseHeader('RequestId') + ' </div>',
+                    showCancelButton: true,
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                    cancelButtonText: '<i class="fas fa-times"></i> Close'
+                });
+            }
+            else {
+                swalWithBootstrapButtons.fire({
+                    title: 'Oops...',
+
+                    type: 'error',
+                    html: '<br> An error occurred while processing your request. <br> <br>' +
+                        '<div style="text-align: center; font-size : 14px;" >   Error Message: ' + xMLHttpRequest.status + " " + errorThrown +
+                        '<br> <br> ' + ' Request Id : ' + xMLHttpRequest.getResponseHeader('RequestId') + ' </div>',
+                    showCancelButton: true,
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                    cancelButtonText: '<i class="fas fa-times"></i> Close'
+                });
+            }
         }
 
         publicMethod.showErrorMessagePopUp = function (message, requestId) {

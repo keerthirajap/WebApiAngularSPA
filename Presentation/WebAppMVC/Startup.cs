@@ -62,6 +62,15 @@
                         options.AccessDeniedPath = "/AccessDenied";
                     });
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("SuperUser-Admin-Manager-User", policy =>
+                   policy.RequireRole("SuperUser", "Admin", "Manager", "User"));
+
+                options.AddPolicy("SuperUser-Admin-Manager", policy =>
+                  policy.RequireRole("SuperUser", "Admin", "Manager"));
+            });
+
             ApplicationConfigurations = this.Configuration.GetSection("AppSettings")
                         .GetChildren()
                         .Select(item => new KeyValuePair<string, object>(item.Key, item.Value))

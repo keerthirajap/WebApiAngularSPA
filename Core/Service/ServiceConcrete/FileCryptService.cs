@@ -110,6 +110,12 @@
         public async Task<(FileCrypt fileDetails, MemoryStream memoryStream)> DecryptAndDownloadFileAsync(long fileCryptId)
         {
             MemoryStream memoryStream = new MemoryStream();
+            MemoryStream decryptMemoryStream = new MemoryStream();
+            Assembly asm = Assembly.GetExecutingAssembly();
+            string path = System.IO.Path.GetDirectoryName(asm.Location);
+            string privateKeyFileFullPath = path + @"\" + GlobalAppConfigurations.Instance.GetValue("PGPPrivateKeyFileFullPath").ToString();
+            string publicKeyFileFullPath = path + @"\" + GlobalAppConfigurations.Instance.GetValue("PGPPublicKeyFileFullPath").ToString();
+            string pgpKeyPassword = GlobalAppConfigurations.Instance.GetValue("PGPKeyPassword").ToString();
 
             FileCrypt fileCrypt = await this._fileCryptRepository.GetEncryptedFileDetailsAsync(fileCryptId);
 
@@ -122,7 +128,23 @@
 
             memoryStream.Position = 0;
 
-            return (fileCrypt, memoryStream);
+            using (ChoPGPEncryptDecrypt pgp = new ChoPGPEncryptDecrypt())
+            {
+                try
+                {
+                    pgp.Decrypt(memoryStream,
+                                           decryptMemoryStream,
+                                           privateKeyFileFullPath, pgpKeyPassword);
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+
+            decryptMemoryStream.Position = 0;
+
+            return (fileCrypt, decryptMemoryStream);
         }
 
         public async Task<bool> DeleteEncryptedFileAsync(FileCrypt fileCrypt)

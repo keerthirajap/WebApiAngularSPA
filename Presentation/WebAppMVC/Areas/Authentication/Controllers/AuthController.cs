@@ -20,7 +20,6 @@
 
     [AutoValidateAntiforgeryToken]
     [Area("Authentication")]
-    [Authorize(Roles = "Admin")]
     public class AuthController : Controller
     {
         private readonly IMapper _mapper;
@@ -203,6 +202,7 @@
             return this.Json(ajaxReturn);
         }
 
+        [Authorize]
         [Route("LoadUserDetailsPartialView")]
         [HttpGet]
         public async Task<IActionResult> LoadUserDetailsPartialViewAsync(string userName)
