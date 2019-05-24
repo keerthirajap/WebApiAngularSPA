@@ -3,7 +3,21 @@
 <div id="loadUserDetailsPartialView">
 </div>
 
+<script src="~/lib/aspnet/signalr/dist/browser/signalr.min.js"></script>
+
+<script>
+    "use strict";
+    var connection = new signalR.HubConnectionBuilder().withUrl("/anonymousHub").build();
+
+    connection.start().then(function () {
+        return console.log("HubConnectionBuilder");
+    }).catch(function (err) {
+        return console.error(err.toString());
+    });
+</script>
 <!-- The overlay -->
+
+
 
 <div id="myNav" class="overlay d-flex justify-content-center align-items-center flex-column">
     <div class="row bd-highlight">

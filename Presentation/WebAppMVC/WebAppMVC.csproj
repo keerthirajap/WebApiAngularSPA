@@ -36,6 +36,7 @@
     <Folder Include="Areas\FileCrypt\Data\" />
     <Folder Include="Areas\FileCrypt\Models\" />
     <Folder Include="wwwroot\EncryptedFiles\" />
+    <Folder Include="wwwroot\BootstrapBuild\" />
   </ItemGroup>
 
   <ItemGroup>

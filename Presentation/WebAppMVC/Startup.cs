@@ -27,6 +27,7 @@
     using Microsoft.Extensions.Logging;
     using StackExchange.Profiling.Storage;
     using WebAppMVC.Infrastructure.CustomFilters;
+    using WebAppMVC.Infrastructure.SignalRHubs;
 
     [SuppressMessage("StyleCop.CSharp.OrderingRules", "SA1202:ElementsMustBeOrderedByAccess", Justification = "Reviewed.")]
     [SuppressMessage("StyleCop.CSharp.OrderingRules", "SA1201:ElementsMustAppearInTheCorrectOrder", Justification = "Reviewed.")]
@@ -95,6 +96,8 @@
                 options.Filters.Add<LoggingActionFilter>();
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+            services.AddSignalR();
+
             services.AddSingleton<IConfiguration>(this.Configuration);
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
@@ -160,6 +163,11 @@
             };
 
             app.UseJSNLog(new LoggingAdapter(loggerFactory), jsnlogConfiguration);
+
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<AnonymousHub>("/anonymousHub");
+            });
 
             app.UseMvc(routes =>
             {
