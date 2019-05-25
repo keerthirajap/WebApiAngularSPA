@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +9,16 @@ namespace WebAppMVC.Infrastructure.SignalRHubs
 {
     public class AnonymousHub : Hub
     {
-        public async Task SendMessage(string user, string message)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public AnonymousHub(IHttpContextAccessor httpContextAccessor)
         {
-            await Clients.All.SendAsync("ReceiveMessage", user, message);
+            this._httpContextAccessor = httpContextAccessor;
+        }
+
+        public string GetConnectionId()
+        {
+            return Context.ConnectionId;
         }
     }
 }

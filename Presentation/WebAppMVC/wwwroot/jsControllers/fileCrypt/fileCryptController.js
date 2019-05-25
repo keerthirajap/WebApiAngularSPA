@@ -29,7 +29,7 @@
             else if (data.Status === "Error") {
                 homeController.showErrorMessagePopUp(data.Message, xhr.getResponseHeader('RequestId'));
             }
-            homeController.HideLoadingIndicator();
+            homeController.hideProgressbar();
 
             var grid = new MvcGrid(document.querySelector('.mvc-grid'));
             grid.reload();
@@ -38,12 +38,16 @@
         publicMethod.uploadFilesOnfailure = function (xMLHttpRequest, textStatus, errorThrown) {
             var grid = new MvcGrid(document.querySelector('.mvc-grid'));
             grid.reload();
-            homeController.HideLoadingIndicator();
+            homeController.hideProgressbar();
             homeController.showAjaxErrorMessagePopUp(xMLHttpRequest, textStatus, errorThrown);
         }
 
         publicMethod.uploadFilesOnBegin = function (xhr, data) {
-            homeController.ShowLoadingIndicator();
+            xhr.setRequestHeader("SignalRConnectionId", $('#signalRconnectionId').val());
+
+            homeController.showProgressbar();
+
+            homeController.updateProgressBar('10');
         }
 
         publicMethod.uploadFilesOnComplete = function (xhr, data) {
@@ -81,16 +85,13 @@
                 }
             );
             $('#modalDeleteEncryptedFileConfirm').modal('show');
-
         }
-
 
         publicMethod.closeConfirmForDeleteEncryptedFile = function () {
             $('#modalDeleteEncryptedFileConfirm').modal('hide');
         }
 
         publicMethod.deleteEncryptedFile = function () {
-           
             homeController.ShowLoadingIndicator();
 
             var actionUrl = deleteEncryptedFileActionUrl

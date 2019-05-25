@@ -19,6 +19,8 @@
     using WebAppMVC.Infrastructure.Extensions;
     using CrossCutting.Extension;
     using Newtonsoft.Json.Linq;
+    using Microsoft.AspNetCore.SignalR;
+    using WebAppMVC.Infrastructure.SignalRHubs;
 
     [Area("FileCrypt")]
     [Authorize]
@@ -26,15 +28,22 @@
     {
         private readonly IMapper _mapper;
         private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IHubContext<AnonymousHub> _anonymousHubContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         private readonly IFileCryptService _fileCryptService;
 
         public FileCryptController(IMapper mapper,
                                    IHostingEnvironment hostingEnvironment,
-                                   IFileCryptService fileCryptService)
+                                   IHubContext<AnonymousHub> anonymousHubContext,
+                                   IHttpContextAccessor httpContextAccessor,
+                                   IFileCryptService fileCryptService
+                                   )
         {
-            this._hostingEnvironment = hostingEnvironment;
             this._mapper = mapper;
+            this._hostingEnvironment = hostingEnvironment;
+            this._anonymousHubContext = anonymousHubContext;
+            this._httpContextAccessor = httpContextAccessor;
 
             this._fileCryptService = fileCryptService;
         }
@@ -93,14 +102,38 @@
         [DisableRequestSizeLimit]
         public async Task<IActionResult> UploadFiles(List<IFormFile> filesForUpload)
         {
+            string signalRConnectionId = this._httpContextAccessor.HttpContext.Request?.Headers["SignalRConnectionId"];
+            int percentCompleted = 20;
+
             dynamic ajaxReturn = new JObject();
             UserBindingModel loggedInUserDetails = new UserBindingModel();
             loggedInUserDetails = this.User.GetLoggedInUserDetails();
 
+            if (signalRConnectionId != null)
+            {
+                percentCompleted = percentCompleted + 10;
+                await this._anonymousHubContext.Clients
+                            .Client(signalRConnectionId)
+                            .SendAsync("progressBarUpdate", percentCompleted);
+            }
+
             var uploadFilepath = Path.Combine(this._hostingEnvironment.WebRootPath, @"EncryptedFiles\");
 
+            if (signalRConnectionId != null)
+            {
+                percentCompleted = percentCompleted + 10;
+
+                await this._anonymousHubContext.Clients
+                            .Client(signalRConnectionId)
+                            .SendAsync("progressBarUpdate", percentCompleted);
+            }
+            int count = 1;
             foreach (var fileToEncrypt in filesForUpload)
             {
+                int percentOfFiles = (int)Math.Round(((double)count / (double)filesForUpload.Count) * 50);
+                int percentCompletedForEncryption = percentCompleted + percentOfFiles;
+                count++;
+
                 FileCrypt fileCrypt = new FileCrypt();
                 fileCrypt.FileName = fileToEncrypt.FileName;
                 fileCrypt.EncryptedFilePath = uploadFilepath;
@@ -110,11 +143,26 @@
                 fileCrypt.ModifiedBy = loggedInUserDetails.UserId;
 
                 await this._fileCryptService.UploadFileAndEncryptAsync(fileCrypt, fileToEncrypt.OpenReadStream());
+
+                if (signalRConnectionId != null)
+                {
+                    await this._anonymousHubContext.Clients
+                                .Client(signalRConnectionId)
+                                .SendAsync("progressBarUpdate", percentCompletedForEncryption);
+                }
             }
+
             ajaxReturn.Status = "Success";
             ajaxReturn.GetGoodJobVerb = "Good Work";
             ajaxReturn.Message = "File uploaded successfully" +
                 " ";
+
+            if (signalRConnectionId != null)
+            {
+                await this._anonymousHubContext.Clients
+                            .Client(signalRConnectionId)
+                            .SendAsync("progressBarUpdate", 100);
+            }
 
             return this.Json(ajaxReturn);
         }

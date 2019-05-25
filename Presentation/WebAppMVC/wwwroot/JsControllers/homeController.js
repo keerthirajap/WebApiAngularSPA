@@ -107,6 +107,56 @@
                     }, 500);
             },
 
+            publicMethod.updateProgressBar = function (percentage) {
+            var delay = 40;
+
+                $("#progressBar")
+                    .attr("aria-valuenow", percentage);
+
+                $("#progressBar")
+                    .css("width", percentage + "%")
+
+                $("#progressBar").prop('Counter', percentage).animate({
+                    Counter: percentage
+                }, {
+                        duration: delay,
+                        step: function (now) {
+                            $(this).text(Math.ceil(now) + '%');
+                            $('#progressCompleted').text(Math.ceil(now) + '% Completed');
+                        }
+                    });
+
+                document.getElementById("progressBarDiv").style.height = "100%";
+            },
+
+            publicMethod.showProgressbar = function () {
+                $("#progressBar")
+                    .attr("aria-valuenow", 0);
+
+                $("#progressBar")
+                    .css("width", 0 + "%")
+
+                document.getElementById("progressBarDiv").style.height = "100%";
+            },
+
+            publicMethod.hideProgressbar = function () {
+
+            setTimeout(
+                function () {
+                    $("#progressBar")
+                        .attr("aria-valuenow", 0);
+
+                    $("#progressBar")
+                        .css("width", 0 + "%")
+                }, 1000);
+
+                setTimeout(
+                    function () {
+                        document.getElementById("progressBarDiv").style.height = "0%";
+                    }, 300);
+
+            },
+
             publicMethod.RedirectToHomePage = function () {
                 // JsMain.ShowLoadingIndicator();
                 var url = "\Home";

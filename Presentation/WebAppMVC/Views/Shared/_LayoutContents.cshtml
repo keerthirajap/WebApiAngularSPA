@@ -5,19 +5,26 @@
 
 <script src="~/lib/aspnet/signalr/dist/browser/signalr.min.js"></script>
 
-<script>
-    "use strict";
-    var connection = new signalR.HubConnectionBuilder().withUrl("/anonymousHub").build();
+<div id="progressBarDiv" class="overlay d-flex justify-content-center align-items-center flex-column">
 
-    connection.start().then(function () {
-        return console.log("HubConnectionBuilder");
-    }).catch(function (err) {
-        return console.error(err.toString());
-    });
-</script>
-<!-- The overlay -->
+    <div class="row bd-highlight ">
+        <span id="progressCompleted" style="color:white; font-size:25px; padding-top: 10px;"></span>
+    </div>
 
+    <div style="width:50%" class="pt-4">
+        <div id="progress" class="progress" style="height: 30px;">
+            <input type="hidden" id="progrsStartValue" name="progrsStartValue" value="" />
+            <input type="hidden" id="progrsEndValue" name="progrsEndValue" value="0" />
+            <input type="hidden" id="signalRconnectionId" name="signalRconnectionId" value="" />
+            <div id="progressBar" 
+                 class="progress-bar progress-bar-striped progress-bar-animated  bg-warning"
+                 role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+                 style="font-size: 20px; color:black">
 
+            </div>
+        </div>
+    </div>
+</div>
 
 <div id="myNav" class="overlay d-flex justify-content-center align-items-center flex-column">
     <div class="row bd-highlight">
@@ -26,46 +33,69 @@
     <div class="row bd-highlight">
         <span style="color:white; font-size:25px; padding-top: 10px;">Processing, Please Wait...</span>
     </div>
-    <style>
-        .overlay {
-            height: 0%;
-            width: 100%;
-            position: fixed;
-            z-index: 99999;
-            top: 0;
-            left: 0;
-            background-color: rgb(0,0,0);
-            background-color: rgba(0, 0, 0, 0.67);
-            overflow-y: hidden;
-            transition: 0.5s;
-        }
-
-        .overlay-content {
-            position: relative;
-            top: 25%;
-            width: 100%;
-            text-align: center;
-            margin-top: 30px;
-        }
-
-        .overlay a {
-            padding: 8px;
-            text-decoration: none;
-            font-size: 36px;
-            color: #818181;
-            display: block;
-            transition: 0.3s;
-        }
-
-            .overlay a:hover, .overlay a:focus {
-                color: #f1f1f1;
-            }
-
-        .overlay .closebtn {
-            position: absolute;
-            top: 20px;
-            right: 45px;
-            font-size: 60px;
-        }
-    </style>
 </div>
+
+<script>
+    "use strict";
+    var connection = new signalR.HubConnectionBuilder().withUrl("/anonymousHub").build();
+
+    connection.start().then(function () {
+
+        connection.invoke('getConnectionId')
+            .then(function (connectionId) {
+                // Send the connectionId to controller
+                console.log("connectionID: " + connectionId);
+                $("#signalRconnectionId").attr("value", connectionId);
+            });
+    }).catch(function (err) {
+        return console.error(err.toString());
+    });
+
+    connection.on("progressBarUpdate", function (percentage) {
+        homeController.updateProgressBar(percentage);
+    });
+</script>
+<!-- The overlay -->
+
+<style>
+    .overlay {
+        height: 0%;
+        width: 100%;
+        position: fixed;
+        z-index: 99999;
+        top: 0;
+        left: 0;
+        background-color: rgb(0,0,0);
+        background-color: rgba(0, 0, 0, 0.67);
+        overflow-y: hidden;
+        transition: 0.5s;
+    }
+
+    .overlay-content {
+        position: relative;
+        top: 25%;
+        width: 100%;
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .overlay a {
+        padding: 8px;
+        text-decoration: none;
+        font-size: 36px;
+        color: #818181;
+        display: block;
+        transition: 0.3s;
+    }
+
+        .overlay a:hover, .overlay a:focus {
+            color: #f1f1f1;
+        }
+
+    .overlay .closebtn {
+        position: absolute;
+        top: 20px;
+        right: 45px;
+        font-size: 60px;
+    }
+</style>
