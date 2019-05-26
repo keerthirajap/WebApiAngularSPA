@@ -1,0 +1,42 @@
+@inherits LayoutComponentBase
+
+<div class="main">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+
+        <div class="container-fluid pt-1 pb-1">
+            <a style="padding-top: 0px;" class="navbar-brand" href="#">Cryptography</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse"
+                    data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+
+                    <li class="nav-item pt-0 pb-0" id="nav-ItemHome">
+                        <a class="nav-link" href="Login" id="navbarHome">Login</a>
+                    </li>
+
+                    <li class="nav-item pt-0 pb-0" id="nav-ItemHome">
+                        <a class="nav-link" href="" id="navbarHome">Home</a>
+                    </li>
+
+                    <li class="nav-item pt-0 pb-0" id="nav-ItemHome">
+                        <a class="nav-link" href="counter" id="navbarHome">Counter</a>
+                    </li>
+                    <li class="nav-item pt-0 pb-0" id="nav-ItemHome">
+                        <a class="nav-link" href="fetchdata" id="navbarHome">Fetch data</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid">
+
+        <main role="main" class="pb-3 pt-2">
+            @Body
+        </main>
+    </div>
+</div>
