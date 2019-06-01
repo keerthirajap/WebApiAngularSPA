@@ -127,6 +127,7 @@
                             .Client(signalRConnectionId)
                             .SendAsync("progressBarUpdate", percentCompleted);
             }
+
             int count = 1;
             foreach (var fileToEncrypt in filesForUpload)
             {

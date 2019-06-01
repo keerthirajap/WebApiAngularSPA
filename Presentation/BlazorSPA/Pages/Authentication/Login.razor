@@ -1,8 +1,7 @@
 ﻿@page "/Login"
+@inherits LoginBase
 
 @using BindingModelSPA.User
-
-@inherits LoginBase
 
 <div class="row pl-2 d-flex justify-content-center">
     <div class="col-4">
@@ -30,11 +29,11 @@
 
             <div class="card-footer text-center">
                 <button type="button" class="btn btn-primary"
-                        onclick="@(async () => await Login(login))">
-                    Login
+                        onclick="@(async () => await this.Login(login))">
+                    <i class="fas fa-sign-in-alt pr-2"></i>  Login
                 </button>
                 <button type="button" class="ml-3 btn btn-secondary">
-                    <i class="fas fa-user-plus"></i>I'm New User
+                    <i class="fas fa-user-plus pr-2"></i>I'm New User
                 </button>
             </div>
         </div>
@@ -45,4 +44,9 @@
 
 @functions {
     UserLoginBindingModel login = new UserLoginBindingModel();
+
+    protected override async Task OnInitAsync()
+    {
+        await this.LoginOnLoad();
+    }
 }

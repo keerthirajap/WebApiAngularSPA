@@ -32,6 +32,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Infrastructure\CrossCutting\CrossCutting.csproj" />
     <ProjectReference Include="..\..\Infrastructure\IOC\IOC.csproj" />
+    <ProjectReference Include="..\BindingModelSPA\BindingModelSPA.csproj" />
     <ProjectReference Include="..\BindingModel\BindingModel.csproj" />
   </ItemGroup>
 

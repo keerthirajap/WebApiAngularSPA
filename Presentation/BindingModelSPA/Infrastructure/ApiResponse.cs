@@ -1,7 +1,10 @@
-﻿namespace BindingModelSPA
+﻿namespace BindingModelSPA.Infrastructure
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Net;
+    using System.Threading.Tasks;
 
     public interface IResponse
     {
@@ -34,6 +37,17 @@
         int ItemsCount { get; set; }
 
         double PageCount { get; }
+    }
+
+    public class Response : IResponse
+    {
+        public string Message { get; set; }
+
+        public bool DidError { get; set; }
+
+        public bool DidValidationError { get; set; }
+
+        public string ErrorMessage { get; set; }
     }
 
     public class SingleResponse<TModel> : ISingleResponse<TModel>

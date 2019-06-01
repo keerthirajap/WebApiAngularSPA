@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-
-namespace CrossCutting.Extension
+﻿namespace CrossCutting.Extension
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using System.Text;
+
     public static class MimeTypeMap
     {
         /// <summary>
@@ -32,9 +32,17 @@ namespace CrossCutting.Extension
         {
             return new Dictionary<string, string>
             {
-                {".txt", "text/plain"},
-                {".pdf", "application/pdf"},
-                {".doc", "application/vnd.ms-word"},
+                {
+                    ".txt", "text/plain"
+                },
+
+                {
+                    ".pdf", "application/pdf"
+                },
+
+                {
+                    ".doc", "application/vnd.ms-word"
+                },
                 {".docx", "application/vnd.ms-word"},
                 {".xls", "application/vnd.ms-excel"},
                 {".png", "image/png"},

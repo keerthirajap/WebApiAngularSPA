@@ -6,7 +6,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using AutoMapper;
-    using BindingModel.V1._0.User;
+    using BindingModelSPA.User;
     using Domain.User;
     using global::AutoMapper;
 
@@ -17,7 +17,6 @@
         {
             AllowNullDestinationValues = true;
 
-            CreateMap<UserBindingModel, User>().ReverseMap();
             CreateMap<UserLoginBindingModel, User>().ReverseMap();
             CreateMap<UserAuthenticationBindingModel, UserAuthentication>().ReverseMap();
         }
