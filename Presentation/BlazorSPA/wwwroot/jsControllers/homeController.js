@@ -45,59 +45,30 @@
                 cancelButtonText: '<i class="fas fa-times"></i> Close'
             });
         },
-            publicMethod.onLogoutButtonClick = function (url) {
-                $.ajax({
-                    async: true,
-                    type: "GET",
-                    url: url,
-                    contentType: 'application/json;',
-                    dataType: 'json',
-                    begin: function () {
-                    },
-                    complete: function () {
-                    },
-                    success: function (data) {
-                        swalWithBootstrapButtons.fire({
-                            text: data.Message,
-                            type: 'success',
-                            showCancelButton: false,
-                            showConfirmButton: false,
-                            allowOutsideClick: false,
-                        });
 
-                        setTimeout(
-                            function () {
-                                location.reload();
-                            }, 1000);
-                    },
-                    error: function (xMLHttpRequest, textStatus, errorThrown) {
-                        homeController.showAjaxErrorMessagePopUp(xMLHttpRequest, textStatus, errorThrown);
-                    }
+            publicMethod.showWarningMessagePopUp = function (message) {
+                swalWithBootstrapButtons.fire({
+                    title: 'Warning',
+                    html: '<br>' +
+                        '<div style="text-align: center; font-size : 16px;" > ' + message + ' </div>',
+                    type: 'warning',
+                    showCancelButton: true,
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                    cancelButtonText: '<i class="fas fa-times"></i> Close'
                 });
             },
 
-            publicMethod.getCookie = function (cname) {
-                var name = cname + "=";
-                var decodedCookie = decodeURIComponent(document.cookie);
-                var ca = decodedCookie.split(';');
-                for (var i = 0; i < ca.length; i++) {
-                    var c = ca[i];
-                    while (c.charAt(0) == ' ') {
-                        c = c.substring(1);
-                    }
-                    if (c.indexOf(name) == 0) {
-                        return c.substring(name.length, c.length);
-                    }
-                }
-                return "";
+            publicMethod.removeNavBarLogin = function () {
+                $("#navBarLogin").remove();
             },
 
-            publicMethod.getSignarRConnectionId = function () {
-                return $('#signalRconnectionId').val();
+            publicMethod.removeNavbarAuthenticated = function () {
+                $("#navbarAuthenticated").remove();
             },
 
             publicMethod.ShowLoadingIndicator = function () {
-            document.getElementById("processingOverlay").style.height = "100%";
+                document.getElementById("processingOverlay").style.height = "100%";
             },
 
             publicMethod.HideLoadingIndicator = function () {
@@ -108,7 +79,7 @@
             },
 
             publicMethod.updateProgressBar = function (percentage) {
-            var delay = 40;
+                var delay = 40;
 
                 $("#progressBar")
                     .attr("aria-valuenow", percentage);
@@ -140,36 +111,34 @@
             },
 
             publicMethod.hideProgressbar = function () {
+                setTimeout(
+                    function () {
+                        $("#progressBar")
+                            .attr("aria-valuenow", 0);
 
-            setTimeout(
-                function () {
-                    $("#progressBar")
-                        .attr("aria-valuenow", 0);
-
-                    $("#progressBar")
-                        .css("width", 0 + "%")
-                }, 1000);
+                        $("#progressBar")
+                            .css("width", 0 + "%")
+                    }, 1000);
 
                 setTimeout(
                     function () {
                         document.getElementById("progressBarDiv").style.height = "0%";
                     }, 300);
-
             },
 
             publicMethod.RedirectToHomePage = function () {
-                // JsMain.ShowLoadingIndicator();
+                homeController.ShowLoadingIndicator();
                 var url = "\Home";
                 window.location.href = url;
             },
 
             publicMethod.RedirectToUrl = function (url) {
-                // JsMain.ShowLoadingIndicator();
-
+                homeController.ShowLoadingIndicator();
                 window.location.href = url;
             },
 
             publicMethod.reloadCurrentPage = function () {
+                homeController.ShowLoadingIndicator();
                 location.reload();
             },
 

@@ -2,7 +2,9 @@
 @inherits LoginBase
 
 @using BindingModelSPA.User
+@using System.Linq
 
+<h1>sdvsdvsdvs</h1>
 <div class="row pl-2 d-flex justify-content-center">
     <div class="col-4">
     </div>
@@ -11,31 +13,41 @@
             <div class="card-header text-center">
                 <h4>  Login </h4>
             </div>
-            <div class="card-body pl-3 pr-3 pt-3">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label for="FullName" class="control-label">User Name</label>
-                            <input for="FullName" class="form-control" bind="login.UserName" />
-                        </div>
+            <EditForm Model="@loginBindingModel" OnValidSubmit="@(async () => await this.Login())">
+                <DataAnnotationsValidator />
 
-                        <div class="form-group">
-                            <label asp-for="LastName" class="control-label">Password</label>
-                            <input asp-for="LastName" class="form-control" bind="login.Password" />
+                <div class="card-body pl-3 pr-3 pt-3">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group mb-0">
+                                <label for="UserName" class="control-label">User Name</label>
+                                <InputText id="UserName" class="form-control" bind-Value="@loginBindingModel.UserName" />
+                                <label class="text-danger small">
+                                    <ValidationMessage For="@(() => loginBindingModel.UserName)" />
+                                </label>
+                            </div>
+
+                            <div class="form-group mb-0">
+                                <label asp-for="LastName" class="control-label">Password</label>
+                                <InputText id="Password" class="form-control" bind-Value="@loginBindingModel.Password" />
+                                <label class="text-danger small">
+                                    <ValidationMessage For="@(() => loginBindingModel.Password)" />
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="card-footer text-center">
-                <button type="button" class="btn btn-primary"
-                        onclick="@(async () => await this.Login(login))">
-                    <i class="fas fa-sign-in-alt pr-2"></i>  Login
-                </button>
-                <button type="button" class="ml-3 btn btn-secondary">
-                    <i class="fas fa-user-plus pr-2"></i>I'm New User
-                </button>
-            </div>
+                <div class="card-footer text-center">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt"></i>  Login
+                    </button>
+                    <button type="button" class="ml-3 btn btn-secondary"
+                            onclick="homeController.RedirectToUrl('Register')">
+                        <i class="fas fa-user-plus"></i>I'm New User
+                    </button>
+                </div>
+            </EditForm>
         </div>
     </div>
     <div class="col-4">
@@ -43,7 +55,6 @@
 </div>
 
 @functions {
-    UserLoginBindingModel login = new UserLoginBindingModel();
 
     protected override async Task OnInitAsync()
     {

@@ -16,9 +16,14 @@
     <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="3.0.0-preview5-19227-01" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="3.0.0-preview5-19227-01" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.DevServer" Version="3.0.0-preview5-19227-01" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.0-preview5.19227.9" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BindingModelSPA\BindingModelSPA.csproj" />
+
+    <EmbeddedResource Include="appsettings.json" />
+    <EmbeddedResource Include="appsettings.*.json" />
   </ItemGroup>
 </Project>

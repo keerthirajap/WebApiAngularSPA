@@ -11,24 +11,18 @@
     using BindingModelSPA.Infrastructure;
     using Microsoft.JSInterop;
     using BlazorSPA.Infrastructure;
-    using System.Net.Http;
-    using Microsoft.Extensions.Configuration;
 
-    public class LoginBase : ComponentBase
+    public class RegisterBase : ComponentBase
     {
         [Inject] private ILogger<LoginBase> _logger { get; set; }
         [Inject] private IJSRuntime _jsRuntime { get; set; }
         [Inject] private AppState _appState { get; set; }
-
-        [Inject] private IConfiguration _configuration { get; set; }
-
         [Inject] private AuthenticationDataService _authenticationDataService { get; set; }
 
         protected UserLoginBindingModel loginBindingModel = new UserLoginBindingModel();
 
         protected async Task LoginOnLoad()
         {
-            this._logger?.LogInformation(this._configuration.GetValue<string>("title"));
             await this._jsRuntime.InvokeAsync<object>("homeController.HideLoadingIndicator");
         }
 
@@ -40,26 +34,12 @@
             try
             {
                 var response = new SingleResponse<UserAuthenticationBindingModel>();
-                try
-                {
-                    response = await this._authenticationDataService.Login(loginBindingModel);
-                }
-                catch (HttpRequestException ex)
-                {
-                    this._logger?.LogInformation(response.Message);
-
-                    await this._jsRuntime.InvokeAsync<object>("homeController.HideLoadingIndicator");
-                    await this._jsRuntime.InvokeAsync<object>("homeController.showWarningMessagePopUp", response.Message);
-                }
+                response = await this._authenticationDataService.Login(loginBindingModel);
 
                 if (response.Model.IsUserAuthenticated)
                 {
                     await this._appState.SaveJwtTokenAsync(response.Model);
                     await this._jsRuntime.InvokeAsync<object>("homeController.RedirectToUrl", "/");
-                }
-                else if (!response.Model.IsUserAuthenticated)
-                {
-                    await this._jsRuntime.InvokeAsync<object>("homeController.showWarningMessagePopUp", response.Message);
                 }
 
                 await this._jsRuntime.InvokeAsync<object>("homeController.HideLoadingIndicator");

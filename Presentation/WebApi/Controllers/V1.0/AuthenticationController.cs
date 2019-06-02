@@ -88,6 +88,47 @@
             return response.ToHttpResponse();
         }
 
+        [HttpPost("User/RegisterUser")]
+        [ValidateModelState]
+        [AllowAnonymous]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(201)] //A response as creation of user
+        [ProducesResponseType(400)] //For bad request
+        [ProducesResponseType(500)] //If there was an internal server error
+        public async Task<IActionResult> RegisterUserAsync([FromBody]UserBindingModel userBindingModel)
+        {
+            var errors = new Dictionary<string, string>();
+            var response = new SingleCreatedResponse<dynamic>();
+
+            User user = await this._authenticationService.GetUserDetailsByUserNameAsync(userBindingModel.UserName);
+
+            if (user != null)
+            {
+                errors.Add("UserName", "User Name " + userBindingModel.UserName + " already exists");
+                response.ErrorMessage = "Validation error occured";
+                response.DidValidationError = true;
+                response.Model = errors;
+                return response.ToHttpResponse();
+            }
+
+            user = this._mapper.Map<User>(userBindingModel);
+
+            var userCreationSuccess = await this._authenticationService.RegisterUserAsync(user);
+
+            if (userCreationSuccess > 0)
+            {
+                UserAuthenticationBindingModel userAuthentication = new UserAuthenticationBindingModel();
+
+                userAuthentication.UserName = userBindingModel.UserName;
+
+                response.Message = "User " + userAuthentication.UserName
+                + " created successfully. Redirecting to Home screen.";
+                this.CreateJWTToken(response, userAuthentication);
+            }
+
+            return response.ToHttpResponse();
+        }
+
         [HttpGet("User/CheckAuthentication")]
         [Produces("application/json")]
         [ProducesResponseType(200)]

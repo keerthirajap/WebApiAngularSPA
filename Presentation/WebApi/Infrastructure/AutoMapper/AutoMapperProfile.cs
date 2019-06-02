@@ -17,6 +17,7 @@
         {
             AllowNullDestinationValues = true;
 
+            CreateMap<UserBindingModel, User>().ReverseMap();
             CreateMap<UserLoginBindingModel, User>().ReverseMap();
             CreateMap<UserAuthenticationBindingModel, UserAuthentication>().ReverseMap();
         }

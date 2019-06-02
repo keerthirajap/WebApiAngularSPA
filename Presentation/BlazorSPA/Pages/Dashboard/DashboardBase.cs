@@ -18,6 +18,7 @@
         protected async Task DashboardOnLoad()
         {
             await this._jsRuntime.InvokeAsync<object>("homeController.HideLoadingIndicator");
+            bool isUserAuthenticated = this._appState.CheckUserAuthenticatedAsync();
         }
     }
 }

@@ -50,10 +50,6 @@
             {
                 status = HttpStatusCode.InternalServerError;
             }
-            else if (response.DidValidationError)
-            {
-                status = HttpStatusCode.BadRequest;
-            }
 
             return new ObjectResult(response)
             {
@@ -68,12 +64,6 @@
             if (response.DidError)
             {
                 status = HttpStatusCode.InternalServerError;
-            }
-            else if (response.DidValidationError)
-            {
-                status = HttpStatusCode.BadRequest;
-
-                response.Model = response.Model;
             }
             else if (response.Model == null)
             {
@@ -95,12 +85,6 @@
             {
                 status = HttpStatusCode.InternalServerError;
             }
-            else if (response.DidValidationError)
-            {
-                status = HttpStatusCode.BadRequest;
-
-                response.Model = response.Model;
-            }
             else if (response.Model == null)
             {
                 response.ErrorMessage = "Result not found";
@@ -120,10 +104,6 @@
             if (response.DidError)
             {
                 status = HttpStatusCode.InternalServerError;
-            }
-            else if (response.DidValidationError)
-            {
-                status = HttpStatusCode.BadRequest;
             }
             else if (response.Model == null)
             {
