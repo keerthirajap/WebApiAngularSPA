@@ -28,19 +28,37 @@
             this._logger = logger;
         }
 
-        public async Task<SingleResponse<UserAuthenticationBindingModel>> Login(UserLoginBindingModel userLoginBindingModel)
+        public async Task<SingleResponse<UserAuthenticationBindingModel>> LoginAsync(UserLoginBindingModel userLoginBindingModel)
         {
             var response = new SingleResponse<UserAuthenticationBindingModel>();
-
+            var baseUrl = this._appState.GlobalAppSettings["AuthenticationApiURL"];
             try
             {
                 response = await this._httpClient
                             .SendJsonAsync<SingleResponse<UserAuthenticationBindingModel>>
-                            (HttpMethod.Post, "https://localhost:44388/api/v1.0/Authentication/User/AuthenticateUser", userLoginBindingModel);
+                            (HttpMethod.Post, baseUrl + "User/AuthenticateUser", userLoginBindingModel);
             }
             catch (Exception ex)
             {
                 this._logger?.LogError(ex.Message + " " + ex.StackTrace);
+            }
+
+            return response;
+        }
+
+        public async Task<SingleResponse<dynamic>> RegisterAsync(RegisterUserBindingModel registerUser)
+        {
+            var response = new SingleResponse<dynamic>();
+            var baseUrl = this._appState.GlobalAppSettings["AuthenticationApiURL"];
+            try
+            {
+                response = await this._httpClient
+                            .SendJsonAsync<SingleResponse<dynamic>>
+                            (HttpMethod.Post, baseUrl + "User/RegisterUser", registerUser);
+            }
+            catch (Exception ex)
+            {
+                this._logger?.LogCritical(ex.Message + " " + ex.StackTrace);
             }
 
             return response;

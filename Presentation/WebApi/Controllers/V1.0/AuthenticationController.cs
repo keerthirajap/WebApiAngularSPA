@@ -95,7 +95,7 @@
         [ProducesResponseType(201)] //A response as creation of user
         [ProducesResponseType(400)] //For bad request
         [ProducesResponseType(500)] //If there was an internal server error
-        public async Task<IActionResult> RegisterUserAsync([FromBody]UserBindingModel userBindingModel)
+        public async Task<IActionResult> RegisterUserAsync([FromBody]RegisterUserBindingModel userBindingModel)
         {
             var errors = new Dictionary<string, string>();
             var response = new SingleCreatedResponse<dynamic>();

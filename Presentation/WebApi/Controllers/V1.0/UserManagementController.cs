@@ -7,7 +7,7 @@
     using System.Security.Claims;
     using System.Threading.Tasks;
     using AutoMapper;
-    using BindingModel.V1._0.User;
+    using BindingModelSPA.User;
     using CrossCutting.ConfigCache;
     using CrossCutting.Constants;
     using Domain.User;

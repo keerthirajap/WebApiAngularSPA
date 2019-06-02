@@ -5,7 +5,7 @@
 @using BlazorSPA.Infrastructure
 
 @inject IUriHelper _uriHelper
-@inject ILogger<MainLayout>  _logger
+@inject ILogger<MainLayout> _logger
 @inject Blazored.LocalStorage.ISyncLocalStorageService _localStorage
 
 @inject AppState _appState
@@ -14,7 +14,7 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-success">
 
-        <div class="container-fluid pt-1 pb-1">
+        <div class="container-fluid">
             <a style="padding-top: 0px;" class="navbar-brand" href="#">Cryptography</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse"
                     data-target="#navbarSupportedContent"
@@ -29,10 +29,8 @@
                 <ul class="navbar-nav mr-auto">
 
                     <li class="nav-item pt-0 pb-0" id="nav-ItemLogin">
-                        <a href="Login"
-                           class="nav-link" id="navbarLogin" style="cursor:pointer">Login</a>
+                        <a  href="Login" class="nav-link" id="navbarLogin" style="cursor:pointer">Login</a>
                     </li>
-
                     <li class="nav-item pt-0 pb-0" id="nav-ItemRegister">
                         <a href="Register"
                            style="cursor:pointer" class="nav-link" id="navbarRegister">Register</a>
@@ -48,10 +46,10 @@
                         <a class="nav-link" href="" id="navbarHome">Home</a>
                     </li>
 
-                    <li class="nav-item pt-0 pb-0" id="nav-ItemHome">
+                    <li class="nav-item pt-0 pb-0" id="nav-ItemCounter">
                         <a class="nav-link" href="counter" id="navbarHome">Counter</a>
                     </li>
-                    <li class="nav-item pt-0 pb-0" id="nav-ItemHome">
+                    <li class="nav-item pt-0 pb-0" id="nav-ItemFetchdata">
                         <a class="nav-link" href="fetchdata" id="navbarHome">Fetch data</a>
                     </li>
                 </ul>
@@ -92,14 +90,13 @@
 
     protected override async Task OnInitAsync()
     {
+        await this._appState.SetAppSettings();
 
         string authenticationToken = _localStorage.GetItem<string>
             ("AuthenticationToken");
 
         DateTime expiresOn = _localStorage.GetItem<DateTime>
             ("ExpiresOn");
-
-        this._logger.LogInformation(expiresOn.ToString());
 
         if (authenticationToken != null && authenticationToken.Length > 0 && expiresOn >= DateTime.Now)
         {

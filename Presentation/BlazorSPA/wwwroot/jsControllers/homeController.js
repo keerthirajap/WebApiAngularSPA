@@ -142,37 +142,19 @@
                 location.reload();
             },
 
-            publicMethod.ShowMessageShowReloadPopUp = function (header, message) {
-                $('#modalMessageShowReloadPopUpHeaderTitle').text(header);
-                $('#modalMessageShowReloadPopUpMessage').text(message);
-                $('#modalMessageShowReloadPopUp').modal('show');
-            },
-
-            publicMethod.ShowMessageShowPopUp = function (header, message) {
-                $('#modalMessageShowPopUpHeaderTitle').text(header);
-                $('#modalMessageShowPopUpMessage').text(message);
-                $('#modalMessageShowPopUp').modal('show');
-            },
-
-            publicMethod.ShowMessageShowPopUp1 = function (data) {
-                var splitedDtata = data.split("|");
-                if (splitedDtata[1]) {
-                    $('#modalMessageShowPopUpHeaderTitle').text(splitedDtata[2]);
-                    $('#modalMessageShowPopUpMessage').text(splitedDtata[3]);
-                    $('#modalMessageShowPopUp').modal('show');
-                }
+            publicMethod.loadScriptFile = function (scriptPath) {
+                $.getScript(scriptPath);
             }
 
-        // #region User Details
-        publicMethod.getUserDetails = function (actionUrl) {
-            homeController.ShowLoadingIndicator();
-            $('#loadUserDetailsPartialView').load(actionUrl);
-        }
+        publicMethod.navActiveColorChange = function (navBarId) {
 
-        publicMethod.closeGetUserDetailsPartialView = function (actionUrl) {
-            $('#modalUserDetails').modal('hide');
-            $('#modalUserDetails').remove();
+            $('[id^="nav-Item"]').css("background-color", "rgba(53, 35, 35, 0)");
+
+            setTimeout(
+                function () {
+                    $("#" + navBarId).css("background-color", "rgba(53, 35, 35, 0.25)");
+                }, 200);
+
         }
-        // #endregion
     }(window.homeController = window.homeController || {}, jQuery)
 );

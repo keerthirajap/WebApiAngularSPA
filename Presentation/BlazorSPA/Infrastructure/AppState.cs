@@ -6,6 +6,7 @@
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Threading.Tasks;
+    using BindingModelSPA.Infrastructure;
     using BindingModelSPA.User;
     using Blazored.LocalStorage;
     using Microsoft.AspNetCore.Components;
@@ -18,26 +19,24 @@
         private HttpClient _httpClient;
         private IUriHelper _uriHelper;
         private IJSRuntime _jsRuntime;
-        private IConfiguration _configuration;
 
         private ISyncLocalStorageService _localStorage;
         private ILogger<AppState> _logger;
+
+        public Dictionary<string, string> GlobalAppSettings = new Dictionary<string, string>();
 
         public AppState(HttpClient httpInstance
                        , ISyncLocalStorageService localStorage
                        , IUriHelper uriHelper
                        , IJSRuntime jsRuntime
                        , ILogger<AppState> logger
-                       , IConfiguration configuration)
+                       )
         {
             this._httpClient = httpInstance;
             this._localStorage = localStorage;
             this._uriHelper = uriHelper;
             this._jsRuntime = jsRuntime;
             this._logger = logger;
-            this._configuration = configuration;
-
-            this._logger?.LogInformation(this._configuration["AppSettings:SqlDbConnection"]);
         }
 
         public async Task SaveJwtTokenAsync(UserAuthenticationBindingModel userAuthentication)
@@ -80,6 +79,18 @@
             {
                 var token = this._localStorage.GetItem<string>("AuthenticationToken");
                 this._httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+        }
+
+        public async Task SetAppSettings()
+        {
+            List<AppSetting> appsettings = new List<AppSetting>();
+
+            appsettings = await this._httpClient.GetJsonAsync<List<AppSetting>>("appsettings.json");
+
+            foreach (var item in appsettings)
+            {
+                this.GlobalAppSettings.Add(item.Key, item.Value);
             }
         }
     }

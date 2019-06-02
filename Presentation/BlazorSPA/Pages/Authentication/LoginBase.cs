@@ -19,16 +19,13 @@
         [Inject] private ILogger<LoginBase> _logger { get; set; }
         [Inject] private IJSRuntime _jsRuntime { get; set; }
         [Inject] private AppState _appState { get; set; }
-
-        [Inject] private IConfiguration _configuration { get; set; }
-
         [Inject] private AuthenticationDataService _authenticationDataService { get; set; }
 
         protected UserLoginBindingModel loginBindingModel = new UserLoginBindingModel();
 
         protected async Task LoginOnLoad()
         {
-            this._logger?.LogInformation(this._configuration.GetValue<string>("title"));
+            await this._jsRuntime.InvokeAsync<object>("homeController.navActiveColorChange", "nav-ItemLogin");
             await this._jsRuntime.InvokeAsync<object>("homeController.HideLoadingIndicator");
         }
 
@@ -42,7 +39,7 @@
                 var response = new SingleResponse<UserAuthenticationBindingModel>();
                 try
                 {
-                    response = await this._authenticationDataService.Login(loginBindingModel);
+                    response = await this._authenticationDataService.LoginAsync(loginBindingModel);
                 }
                 catch (HttpRequestException ex)
                 {
