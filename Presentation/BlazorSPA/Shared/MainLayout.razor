@@ -29,7 +29,7 @@
                 <ul class="navbar-nav mr-auto">
 
                     <li class="nav-item pt-0 pb-0" id="nav-ItemLogin">
-                        <a  href="Login" class="nav-link" id="navbarLogin" style="cursor:pointer">Login</a>
+                        <a href="Login" class="nav-link" id="navbarLogin" style="cursor:pointer">Login</a>
                     </li>
                     <li class="nav-item pt-0 pb-0" id="nav-ItemRegister">
                         <a href="Register"
@@ -62,7 +62,7 @@
                  class="d-flex justify-content-end">
                 <button type="button"
                         class="btn btn-outline-light" data-toggle="tooltip" data-placement="bottom" title="Click to see current user information">
-                    Hello Keerthi
+                    Hello <strong> @this.LoggedInUserName </strong>
                 </button>
 
                 <button type="button" onclick="@(async () => await this.LogOutBtnOnClickAsync())"
@@ -78,10 +78,19 @@
         <main role="main" class="pb-3 pt-2">
             @Body
         </main>
+
+        @dynamicComponent()
     </div>
 </div>
 
 @functions {
+
+    RenderFragment dynamicComponent() => builder =>
+    {
+        builder.OpenComponent(0, typeof(BlazorSPA.Pages.Authentication._UserDetails));
+        builder.AddAttribute(1, "Title", "Some title");
+        builder.CloseComponent();
+    };
 
     private async Task LogOutBtnOnClickAsync()
     {
@@ -101,6 +110,8 @@
         if (authenticationToken != null && authenticationToken.Length > 0 && expiresOn >= DateTime.Now)
         {
             this.IsLoginNavVisible = false;
+            this.LoggedInUserName = _localStorage.GetItem<string>
+                                                        ("UserName");
         }
         else
         {

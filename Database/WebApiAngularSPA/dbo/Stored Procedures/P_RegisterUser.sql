@@ -60,8 +60,8 @@ AS
 				 [ModifiedBy]
 				)
                SELECT @ID, 
-                      3, 
-                      'Access1', 
+                      4, 
+                      'User', 
                       1, 
                       @TodaysDate, 
                       @CreatedBy, 

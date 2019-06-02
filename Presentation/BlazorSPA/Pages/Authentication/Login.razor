@@ -24,7 +24,7 @@
                             </div>
 
                             <div class="form-group mb-0">
-                                <label asp-for="LastName" class="control-label">Password</label>
+                                <label asp-for="Password" class="control-label">Password</label>
                                 <InputText id="Password" class="form-control" bind-Value="@loginBindingModel.Password" />
                                 <label class="text-danger small">
                                     <ValidationMessage For="@(() => loginBindingModel.Password)" />

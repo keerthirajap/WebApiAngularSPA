@@ -17,6 +17,8 @@
 
         protected bool IsFullNavVisible { get; set; }
 
+        protected string LoggedInUserName { get; set; }
+
         public MainLayoutBase()
         {
             // this.IsUserAuthenticated = this._appState.CheckUserAuthenticationAsync();

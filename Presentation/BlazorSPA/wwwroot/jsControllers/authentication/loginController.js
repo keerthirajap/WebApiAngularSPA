@@ -1,23 +1,17 @@
 ﻿(
     function (publicMethod, $) {
-
-        $("#txtUserName").on('change click keyup focus keypress input', function () {
-            DotNet.invokeMethodAsync("BlazorSPA", 'ValidateUserNameAsync');
-        })
-
         $('#Password').attr('type', 'password');
-        $('#ConfirmPassword').attr('type', 'password'); 
 
         publicMethod.registerPageOnLoad = function () {
         }
 
-        publicMethod.onUserRegistrationSuccess = function (userName, url) {
+        publicMethod.onUserLoginSuccess = function (userName, url) {
             let timerInterval
             Swal.fire({
                 title: 'Congratulation!',
-                html: '  <blockquote class="blockquote pt-2"> <p> User ' +
-                    '<mark  class="h5"> ' + userName + '</mark>' +
-                    ' created successfully.<br> <br><small class="text-muted"> Redirecting to Home screen in <strong></strong> seconds.'
+                html: '  <blockquote class="blockquote pt-2"> <p> You have ' +
+
+                    ' loggeed in successfully.<br> <br><small class="text-muted"> Redirecting to Home screen in <strong></strong> seconds.'
                     + '</small></p></blockquote> ',
                 timer: 3000,
                 allowOutsideClick: false,

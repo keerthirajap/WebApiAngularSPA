@@ -26,6 +26,7 @@
         protected async Task LoginOnLoad()
         {
             await this._jsRuntime.InvokeAsync<object>("homeController.navActiveColorChange", "nav-ItemLogin");
+            await this._jsRuntime.InvokeAsync<object>("homeController.loadScriptFile", "jsControllers/authentication/loginController.js");
             await this._jsRuntime.InvokeAsync<object>("homeController.HideLoadingIndicator");
         }
 

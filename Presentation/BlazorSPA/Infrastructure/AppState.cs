@@ -47,6 +47,8 @@
               .SetItem("ExpiresOn", userAuthentication.ExpiresOn);
             this._localStorage
              .SetItem("LoggedOn", userAuthentication.LoggedOn);
+            this._localStorage
+            .SetItem("UserName", userAuthentication.UserName);
         }
 
         public async Task LogOutUserAsync()
@@ -67,8 +69,6 @@
             {
                 return true;
             }
-
-            this._uriHelper.NavigateTo("Login");
 
             return false;
         }

@@ -8,6 +8,9 @@
     [CreatedBy]  BIGINT         NULL,
     [ModifiedOn] DATETIME       NULL,
     [ModifiedBy] BIGINT         NULL,
-    CONSTRAINT [PK_dbo.UserRoles] PRIMARY KEY CLUSTERED ([UserRoleId] ASC, [UserId] ASC, [RoleId] ASC)
+    CONSTRAINT [PK_dbo.UserRoles] PRIMARY KEY CLUSTERED ([UserRoleId] ASC, [UserId] ASC, [RoleId] ASC),
+    CONSTRAINT [FK_UserRoles_Roles] FOREIGN KEY ([RoleId]) REFERENCES [dbo].[Roles] ([RoleId])
 );
+
+
 
