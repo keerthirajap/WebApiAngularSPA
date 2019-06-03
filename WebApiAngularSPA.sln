@@ -61,11 +61,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{83B44DC8-774F-4C72-BD72-AF6CE44B6B6A}"
 	ProjectSection(SolutionItems) = preProject
 		Database\Infrastructure\Scripts\Data13052019.sql = Database\Infrastructure\Scripts\Data13052019.sql
+		Database\Infrastructure\Scripts\ObjectAndData03062019.sql = Database\Infrastructure\Scripts\ObjectAndData03062019.sql
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorSPA", "Presentation\BlazorSPA\BlazorSPA.csproj", "{6D243A6E-BBC9-47F0-98D2-39F3FCA3F4E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BindingModelSPA", "Presentation\BindingModelSPA\BindingModelSPA.csproj", "{A3D68B0C-A8A6-4A36-AA38-C6BA8B9E5EA6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BindingModelSPA", "Presentation\BindingModelSPA\BindingModelSPA.csproj", "{A3D68B0C-A8A6-4A36-AA38-C6BA8B9E5EA6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
