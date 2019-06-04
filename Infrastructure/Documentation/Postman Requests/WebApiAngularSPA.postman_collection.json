@@ -235,10 +235,6 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://localhost:44388/api/v1.0/UserManagement/User/IsUserAdmin",
 							"protocol": "https",
@@ -416,10 +412,6 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://localhost:44388/api/v1.0/UserManagement/User/IsUserAdminAndUser",
 							"protocol": "https",
@@ -590,10 +582,6 @@
 						},
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://localhost:44388/api/v1.0/UserManagement/User/string",
 							"protocol": "https",
@@ -622,10 +610,6 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://localhost:44388/api/v1.0/AntiForgery1/api/antiforgery",
 							"protocol": "https",
@@ -639,6 +623,79 @@
 								"AntiForgery1",
 								"api",
 								"antiforgery"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "AuthenticationController",
+			"item": [
+				{
+					"name": "AuthenticateUserAsync",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"UserName\": \"localhost\",\n    \"Password\": \"localhost\",\n    \"CanRememberMe\": true\n}"
+						},
+						"url": {
+							"raw": "https://localhost:44388/api/v1.0/Authentication/User/AuthenticateUser",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44388",
+							"path": [
+								"api",
+								"v1.0",
+								"Authentication",
+								"User",
+								"AuthenticateUser"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User/RegisterUser",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"UserName\": \"string1yy\",\r\n  \"Password\": \"string\",\r\n  \"ConfirmPassword\": \"string\"\r\n}"
+						},
+						"url": {
+							"raw": "https://localhost:44388/api/v1.0/Authentication/User/RegisterUser",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44388",
+							"path": [
+								"api",
+								"v1.0",
+								"Authentication",
+								"User",
+								"RegisterUser"
 							]
 						}
 					},
