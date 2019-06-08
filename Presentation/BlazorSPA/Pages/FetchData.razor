@@ -1,4 +1,8 @@
 ﻿@page "/fetchdata"
+
+@using Microsoft.JSInterop
+
+@inject IJSRuntime _jsRuntime
 @inject HttpClient Http
 
 <h1>Weather forecast</h1>
@@ -39,7 +43,9 @@ else
 
     protected override async Task OnInitAsync()
     {
+        await this._jsRuntime.InvokeAsync<object>("homeController.navActiveColorChange", "nav-ItemFetchdata");
         forecasts = await Http.GetJsonAsync<WeatherForecast[]>("sample-data/weather.json");
+        await this._jsRuntime.InvokeAsync<object>("homeController.HideLoadingIndicator");
     }
 
     class WeatherForecast

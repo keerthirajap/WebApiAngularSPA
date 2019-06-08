@@ -24,6 +24,7 @@ namespace BlazorSPA
 
             services.AddSingleton<AppState>();
             services.AddSingleton<AuthenticationDataService>();
+            services.AddSingleton<UserManagementDataService>();
         }
 
         public void Configure(IComponentsApplicationBuilder app)

@@ -8,9 +8,11 @@
     using System.Threading.Tasks;
     using AutoMapper;
     using BindingModelSPA.User;
+    using BindingModelSPA.User.Role;
     using CrossCutting.ConfigCache;
     using CrossCutting.Constants;
     using Domain.User;
+    using Domain.User.Role;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Cors;
@@ -33,6 +35,7 @@
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IAuthenticationService _authenticationService;
+        private readonly IUserManagementService _userManagementService;
 
         private readonly IOptions<JwtAuthentication> _jwtAuthentication;
 
@@ -40,7 +43,8 @@
                                 IMapper mapper,
                                 IHttpContextAccessor httpContextAccessor,
                                 IOptions<JwtAuthentication> jwtAuthentication,
-                                IAuthenticationService authenticationService)
+                                IAuthenticationService authenticationService,
+                                IUserManagementService userManagementService)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._logger = logger;
@@ -48,6 +52,7 @@
             this._jwtAuthentication = jwtAuthentication ?? throw new ArgumentNullException(nameof(jwtAuthentication));
 
             this._authenticationService = authenticationService;
+            this._userManagementService = userManagementService;
         }
 
         // api/UserManagement/User/Test201?api-version=1.0
@@ -150,6 +155,45 @@
                 + " created successfully. Redirecting to Home screen.";
                 this.CreateJWTToken(response, userAuthentication);
             }
+
+            return response.ToHttpResponse();
+        }
+
+        [HttpGet("User/GetUserDetailsAndRoles/{userName}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)] //For bad request
+        [ProducesResponseType(500)] //If there was an internal server error
+        public async Task<IActionResult> GetUserDetailsAndRolesAsync(string userName)
+        {
+            var response = new SingleResponse<dynamic>();
+
+            if (userName == null || userName == string.Empty)
+            {
+                response.DidValidationError = true;
+                response.ErrorMessage = "User Name is incorrect";
+                response.DidValidationError = true;
+                return response.ToHttpResponse();
+            }
+
+            List<UserRoleBindingModel> userRolesBindingModel = new List<UserRoleBindingModel>();
+            UserBindingModel userBindingModel = new UserBindingModel();
+            User user = new User();
+            List<UserRole> roles = new List<UserRole>();
+
+            user = await this._authenticationService.GetUserDetailsByUserNameAsync(userName);
+
+            if (user == null)
+            {
+                response.DidValidationError = true;
+                response.ErrorMessage = "User Name - " + userName + "not found";
+                return response.ToHttpResponse();
+            }
+
+            List<UserRole> userRoles = await this._userManagementService.GetUserRolesAsync(user);
+            userBindingModel = this._mapper.Map<UserBindingModel>(user);
+            userRolesBindingModel = this._mapper.Map<List<UserRoleBindingModel>>(userRoles);
+
+            response.Model = (userDetails: userBindingModel, userRoles: userRolesBindingModel);
 
             return response.ToHttpResponse();
         }

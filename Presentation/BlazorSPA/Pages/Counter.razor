@@ -1,5 +1,8 @@
 ﻿@page "/counter"
 
+@using Microsoft.JSInterop
+
+@inject IJSRuntime _jsRuntime
 <h1>Counter</h1>
 
 <p>Current count: @currentCount</p>
@@ -12,5 +15,11 @@
     void IncrementCount()
     {
         currentCount++;
+    }
+
+    protected override async Task OnInitAsync()
+    {
+        await this._jsRuntime.InvokeAsync<object>("homeController.navActiveColorChange", "nav-ItemCounter");
+        await this._jsRuntime.InvokeAsync<object>("homeController.HideLoadingIndicator");
     }
 }

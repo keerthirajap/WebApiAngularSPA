@@ -146,15 +146,29 @@
                 $.getScript(scriptPath);
             }
 
-        publicMethod.navActiveColorChange = function (navBarId) {
+        publicMethod.showModalPopUp = function (modalName) {
+            $('#' + modalName).modal('show');
+        }
 
+        publicMethod.HideModalPopUp = function (modalName) {
+            $('#' + modalName).modal('hide');
+        }
+
+        publicMethod.ChangeBootstrapTab = function (modalName) {
+            $('.nav-tabs a[href="#' + modalName + '"]').tab('show');
+
+            var url = window.location.href;
+            url = url.split('#')[0];
+            window.history.pushState('object', document.title, url);
+        }
+
+        publicMethod.navActiveColorChange = function (navBarId) {
             $('[id^="nav-Item"]').css("background-color", "rgba(53, 35, 35, 0)");
 
             setTimeout(
                 function () {
                     $("#" + navBarId).css("background-color", "rgba(53, 35, 35, 0.25)");
                 }, 200);
-
         }
     }(window.homeController = window.homeController || {}, jQuery)
 );

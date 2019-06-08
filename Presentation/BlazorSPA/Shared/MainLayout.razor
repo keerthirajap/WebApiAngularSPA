@@ -4,12 +4,16 @@
 @using Microsoft.AspNetCore.Components
 @using BlazorSPA.Infrastructure
 
+@using BindingModelSPA.User
+@using BindingModelSPA.User.Role
+
 @inject IUriHelper _uriHelper
+@inject IJSRuntime _jsRuntime
 @inject ILogger<MainLayout> _logger
 @inject Blazored.LocalStorage.ISyncLocalStorageService _localStorage
 
 @inject AppState _appState
-
+@inject Services.UserManagementDataService _userManagementDataService
 <div class="main">
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-success">
@@ -60,7 +64,7 @@
                         display: @(this.IsLoginNavVisible ?  " none !important " : " flex" )
                      "
                  class="d-flex justify-content-end">
-                <button type="button"
+                <button type="button" onclick="@(async () => await this.GetCurrentUserDetailsAsync())"
                         class="btn btn-outline-light" data-toggle="tooltip" data-placement="bottom" title="Click to see current user information">
                     Hello <strong> @this.LoggedInUserName </strong>
                 </button>
@@ -79,26 +83,56 @@
             @Body
         </main>
 
-        @dynamicComponent()
+        <BlazorSPA.Pages.Authentication._UserDetails UserDetails="@this.UserDetails"
+                                                     UserRoles="@this.UserRoles" />
     </div>
 </div>
 
 @functions {
 
-    RenderFragment dynamicComponent() => builder =>
-    {
-        builder.OpenComponent(0, typeof(BlazorSPA.Pages.Authentication._UserDetails));
-        builder.AddAttribute(1, "Title", "Some title");
-        builder.CloseComponent();
-    };
+    [Parameter]
+    protected UserBindingModel UserDetails { get; set; } = new UserBindingModel();
+
+    [Parameter]
+    protected List<UserRoleBindingModel> UserRoles { get; set; } = new List<UserRoleBindingModel>();
+
+    //RenderFragment dynamicComponent() => builder =>
+    //{
+    //    UserBindingModel userDetails = new UserBindingModel();
+    //    List<UserRoleBindingModel>
+    //    userRoles = new List<UserRoleBindingModel>
+    //        ();
+
+    //    builder.OpenComponent(0, typeof(BlazorSPA.Pages.Authentication._UserDetails));
+    //    builder.AddAttribute(1, "UserDetails", userDetails);
+    //    builder.AddAttribute(2, "UserRoles", userRoles);
+
+    //    builder.CloseComponent();
+    //};
 
     private async Task LogOutBtnOnClickAsync()
     {
         await this._appState.LogOutUserAsync();
     }
 
+    private async Task GetCurrentUserDetailsAsync()
+    {
+        await this._jsRuntime.InvokeAsync<object>("homeController.ShowLoadingIndicator");
+        string userName = _localStorage.GetItem<string>
+            ("UserName");
+
+        var userDetails = await this._userManagementDataService.GetLoggedInUserDetailsAsync(userName);
+        this.UserDetails = userDetails.userDetails;
+        this.UserRoles = userDetails.userRoles;
+
+        await this._jsRuntime.InvokeAsync<object>("homeController.showModalPopUp", "modalUserDetails");
+        await this._jsRuntime.InvokeAsync<object>("homeController.HideLoadingIndicator");
+    }
+
     protected override async Task OnInitAsync()
     {
+        this.UserDetails.UserName = "sdvsd";
+
         await this._appState.SetAppSettings();
 
         string authenticationToken = _localStorage.GetItem<string>
@@ -111,7 +145,7 @@
         {
             this.IsLoginNavVisible = false;
             this.LoggedInUserName = _localStorage.GetItem<string>
-                                                        ("UserName");
+                ("UserName");
         }
         else
         {

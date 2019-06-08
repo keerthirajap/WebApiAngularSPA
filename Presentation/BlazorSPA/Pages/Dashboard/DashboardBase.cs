@@ -17,13 +17,15 @@
 
         protected async Task DashboardOnLoad()
         {
-            await this._jsRuntime.InvokeAsync<object>("homeController.HideLoadingIndicator");
+            await this._jsRuntime.InvokeAsync<object>("homeController.navActiveColorChange", "nav-ItemHome");
+
             bool isUserAuthenticated = this._appState.CheckUserAuthenticatedAsync();
 
             if (!isUserAuthenticated)
             {
                 await this._jsRuntime.InvokeAsync<object>("homeController.RedirectToUrl", "/Login");
             }
+            await this._jsRuntime.InvokeAsync<object>("homeController.HideLoadingIndicator");
         }
     }
 }
