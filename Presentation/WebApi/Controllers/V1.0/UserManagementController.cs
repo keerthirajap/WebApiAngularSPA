@@ -217,6 +217,34 @@
             return response.ToHttpResponse();
         }
 
+        [HttpDelete("User/DeleteUser/{userName}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(201)] //A response as creation of user
+        [ProducesResponseType(400)] //For bad request
+        [ProducesResponseType(500)] //If there was an internal server error
+        public async Task<IActionResult> DeleteUserAsync(string userName)
+        {
+            var response = new SingleResponse<bool>();
+
+            User user = new User();
+            user.UserName = userName;
+            var userCreationSuccess = await this._userManagementService.DeleteUserAsync(user);
+
+            if (userCreationSuccess)
+            {
+                response.Message = userName + " - user deleted sucessfully" +
+                    " ";
+            }
+            else
+            {
+                response.DidError = true;
+                response.Message = "Error occured while deleting user - " + userName +
+                                    "";
+            }
+
+            return response.ToHttpResponse();
+        }
+
         [Authorize(Roles = CoreWebApiRoles.User)]
         [HttpPost("User/IsUserAdmin")]
         [Produces("application/json")]

@@ -1,10 +1,13 @@
 ﻿@page "/UserManagement"
 
 @using Microsoft.JSInterop
+@using BlazorSPA.Services
 
 @inject IUriHelper UriHelper
 @inject IJSRuntime _jsRuntime
 @inject HttpClient Http
+
+@inject UserManagementDataService _userManagementDataService
 
 @inherits UserManagementBase
 
@@ -15,7 +18,9 @@
                 <h4>  <i class="fas fa-users"></i>  Users </h4>
             </div>
             <div class="col-6">
-                <button type="button" id="btnGetAddUserPartialView" class="btn btn-primary float-right">
+                <button type="button" id="btnGetAddUserPartialView"
+                        class="btn btn-primary float-right"
+                        onclick="@(async () => await this.ShowAddUserModal())">
                     <i class="fas fa-user-plus"></i> Add User
                 </button>
             </div>
@@ -23,52 +28,68 @@
     </div>
     <div class="card-body table-responsive">
 
-        @if (this.UsersDetails == null)
+        @if (UsersDetails == null)
         {
-            <p><em>Loading...</em></p>
+        <p><em>Loading...</em></p>
         }
         else
         {
-            <table class="table table-bordered table-hover table-sm">
-                <thead style="color: #fff;
-    background: #007bff linear-gradient(180deg, #268fff, #007bff) repeat-x;">
-                    <tr>
-                        <th>User Id</th>
-                        <th>User Name</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Created On</th>
-                        <th>Created By</th>
-                        <th>Manage</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var usersDetails in this.UsersDetails)
-                    {
-                        <tr>
-                            <td>@usersDetails.UserId</td>
-                            <td>@usersDetails.UserName</td>
-                            <td>@usersDetails.FirstName</td>
-                            <td>@usersDetails.LastName</td>
-                            <td>@usersDetails.CreatedOn.Value.ToShortDateString()</td>
-                            <td>@usersDetails.CreatedBy</td>
-                            <td class="d-flex justify-content-center">
-                                <button type="button" class='btn btn-secondary btn-sm' id="" 
-                                        onclick="">
-                                    <i class='fas fa-user-edit'></i> Edit
-                                </button>
+        <table class="table table-bordered table-hover table-sm">
+            <thead style="color: #fff;
+    background: #17a2b8 linear-gradient(180deg, #3ab0c3, #17a2b8) repeat-x">
+                <tr>
+                    <th>User Id</th>
+                    <th>User Name</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Created On</th>
+                    <th>Created By</th>
+                    <th class="d-flex justify-content-center">Manage</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var usersDetails in UsersDetails)
+                {
+                <tr>
+                    <td>@usersDetails.UserId</td>
+                    <td>@usersDetails.UserName</td>
+                    <td>@usersDetails.FirstName</td>
+                    <td>@usersDetails.LastName</td>
+                    <td>@usersDetails.CreatedOn.Value.ToShortDateString()</td>
+                    <td>@usersDetails.CreatedBy</td>
+                    <td class="d-flex justify-content-center">
+                        <button type="button" class='btn btn-secondary btn-sm' id="">
+                            <i class='fas fa-user-edit'></i> Edit
+                        </button>
 
-                                <button type="button" class='btn btn-danger btn-sm ml-2' id="" 
-                                        onclick="">
-                                    <i class='fas fa-user-times'></i> Delete
-                                </button>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                        <button type="button" class='btn btn-danger btn-sm ml-2' id=""
+                                onclick="@(async () => await this.ShowDeleteUserConfirmModal(usersDetails))">
+                            <i class='fas fa-user-times'></i> Delete
+                        </button>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
         }
     </div>
+
+    <button type="button" style="display:none" class='invisible btn btn-danger btn-sm ml-2' id="btnForPageLoaded"
+            onclick="@(async () => await this.UserManagementOnLoaded())">
+        For PageLoaded Button Trigger
+    </button>
+
+    @if (this.UserDetailsForDelete != null)
+    {
+    <BlazorSPA.Pages.Admin.UserManagement._DeleteUser UserDetails="@this.UserDetailsForDelete"
+                                                      DeleteUser="@this.DeleteUser" />
+    }
+
+    @if (this.UserDetailsForAdd != null)
+    {
+    <BlazorSPA.Pages.Admin.UserManagement._AddUser UserDetails="@this.UserDetailsForAdd"
+                                                   AddUser="@this.AddUser" />
+    }
 </div>
 
 @functions {

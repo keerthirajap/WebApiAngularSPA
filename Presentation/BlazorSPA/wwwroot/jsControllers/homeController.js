@@ -1,5 +1,19 @@
 ﻿(
     function (publicMethod, $) {
+        publicMethod.showSweetAlertMessagePopUp = function (title, message) {
+            swalWithBootstrapButtons.fire({
+                title: title,
+                text: message,
+                type: 'success',
+                allowOutsideClick: false,
+                showCancelButton: false,
+                confirmButtonText: '<i class="fas fa-check"></i> Ok'
+            }).then((result) => {
+                if (result.value) {
+                }
+            });
+        }
+
         publicMethod.showAjaxErrorMessagePopUp = function (xMLHttpRequest, textStatus, errorThrown) {
             if (xMLHttpRequest.status == "403") {
                 swalWithBootstrapButtons.fire({

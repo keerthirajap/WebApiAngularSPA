@@ -1,0 +1,113 @@
+﻿@using BindingModelSPA.User
+
+@using BlazorSPA.Infrastructure
+
+@inject IJSRuntime _jsRuntime
+
+<div class="modal" id="modalAddUser" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="modalContentAddUser">
+            <div class="card  bg-white">
+                <div class="card-header" id="cardHeaderModalAddUser">
+                    <h4 class="pt-1">   Add User </h4>
+                </div>
+                <EditForm Model="@UserDetails" OnValidSubmit="@AddUserSubmit">
+                    <DataAnnotationsValidator />
+                    <div class="card-body pl-3 pr-3 pt-3" id="addUserCardBody">
+                        <div class="row shadow-sm bg-white rounded">
+                            <div class="col-6">
+                                <div class="form-group">
+
+                                    <label for="UserName" class="control-label">User Name</label>
+                                    <InputText id="UserName" class="form-control" bind-Value="@UserDetails.UserName" />
+                                    <label class="text-danger small">
+                                        <ValidationMessage For="@(() => UserDetails.UserName)" />
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label asp-for="Password" class="control-label">Password</label>
+                                    <InputText id="Password" class="form-control" bind-Value="@UserDetails.Password" />
+                                    <label class="text-danger small">
+                                        <ValidationMessage For="@(() => UserDetails.Password)" />
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+
+                                    <label> First Name </label>
+                                    <InputText bind-Value="@UserDetails.FirstName"
+                                               class="form-control" id="txtFirstName" />
+                                    <label class="text-danger small">
+                                        <ValidationMessage For="@(() => UserDetails.FirstName)" />
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label asp-for="LastName"> Last Name </label>
+                                    <InputText bind-Value="@UserDetails.LastName"
+                                               class="form-control" id="txtLastName" />
+                                    <label class="text-danger small">
+                                        <ValidationMessage For="@(() => UserDetails.LastName)" />
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label asp-for="Email">Email</label>
+                                    <InputText bind-Value="@UserDetails.Email"
+                                               class="form-control" id="txtEmail"
+                                               />
+                                    <label class="text-danger small">
+                                        <ValidationMessage For="@(() => UserDetails.Email)" />
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer text-center">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-user-plus"></i> Add
+                        </button>
+                        <button type="button" id="btnAddUserCancel"
+                                onclick="@(async () => await this.CloseAddUserConfirmModal())"
+                                class="btn btn-dark ml-3">
+                            <i class="fas fa-times"></i>Cancel
+                        </button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+
+    [Parameter]
+    private UserBindingModel UserDetails { get; set; }
+
+    public async Task CloseAddUserConfirmModal()
+    {
+        this.UserDetails = new UserBindingModel();
+
+        await this._jsRuntime.InvokeAsync<object>("homeController.HideModalPopUp", "modalAddUser");
+    }
+
+    [Parameter]
+    private EventCallback<UIMouseEventArgs> AddUser { get; set; }
+
+    protected async Task AddUserSubmit()
+    {
+
+    }
+}

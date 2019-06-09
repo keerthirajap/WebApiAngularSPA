@@ -1,1 +1,115 @@
-﻿
+﻿@using BindingModelSPA.User
+
+@using BlazorSPA.Infrastructure
+
+@inject IUriHelper _uriHelper
+@inject IJSRuntime _jsRuntime
+
+@inject AppState _appState
+@inject Services.UserManagementDataService _userManagementDataService
+
+<div class="modal" id="modalDeleteUser" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="modalContentDeleteUser">
+            <div class="card  bg-white">
+                <div class="card-header" id="cardHeaderModalDeleteUser">
+                    <h4 class="pt-1">   Delete User </h4>
+                </div>
+                <div class="card-body pl-3 pr-3 pt-0" id="deleteUserCardBody">
+
+                    <div class="row shadow-sm bg-white rounded">
+                        <div class="col-6 text-center">
+                            <label>User Id</label>
+                            <h4>@UserDetails.UserId</h4>
+                        </div>
+                        <div class="col-6 text-center">
+                            <label>User Name</label>
+                            <h4>@UserDetails.UserName</h4>
+                            <input hidden="hidden" type="text" asp-for="UserName"
+                                   class="form-control" id="txtUserName"
+                                   >
+                        </div>
+                    </div>
+
+                    <div class="row pt-3">
+                        <div class="col-6">
+                            <div class="form-group">
+
+                                <label asp-for="FirstName"></label>
+                                <input disabled="disabled" type="text" bind="@UserDetails.FirstName"
+                                       class="form-control" id="txtFirstName"
+                                        />
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label asp-for="LastName"></label>
+                                <input disabled="disabled" type="text" bind="@UserDetails.LastName"
+                                       class="form-control" id="txtLastName"
+                                       />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+
+                                <label asp-for="Email"></label>
+                                <input disabled="disabled" type="text" bind="@UserDetails.Email"
+                                       class="form-control" id="txtEmail"
+                                       />
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="form-group pt-2">
+                                <div class="custom-control custom-switch">
+                                    <input disabled="disabled" type="checkbox" class="custom-control-input" id="IsActive"
+                                           bind="@UserDetails.IsActive" />
+                                    <label class="custom-control-label">Active</label>
+                                </div>
+                            </div>
+
+                            <div class="form-group pt-2">
+                                <div class="custom-control custom-switch">
+                                    <input disabled="disabled" type="checkbox" class="custom-control-input" id="IsLocked"
+                                           bind="@UserDetails.IsLocked" />
+                                    <label class="custom-control-label" asp-for="IsLocked">Locked</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-end">
+                    <p class="pr-4 mb-0 align-self-center"><em>Do you want to delete user from application?</em></p>
+                    <button type="submit" class="btn btn-primary"
+                            onclick="@DeleteUser">
+                        <i class="fas fa-trash-alt"></i> Yes, Delete
+                    </button>
+
+                    <button type="button" id="btnDeleteUserCancel"
+                            onclick="@(async () => await this.CloseDeleteUserConfirmModal())"
+                            class="btn btn-dark ml-3">
+                        <i class="fas fa-times"></i>Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@functions {
+
+    [Parameter]
+    private UserBindingModel UserDetails { get; set; }
+
+    public async Task CloseDeleteUserConfirmModal()
+    {
+        this.UserDetails = new UserBindingModel();
+
+        await this._jsRuntime.InvokeAsync<object>("homeController.HideModalPopUp", "modalDeleteUser");
+    }
+
+    [Parameter]
+    private EventCallback<UIMouseEventArgs> DeleteUser { get; set; }
+}

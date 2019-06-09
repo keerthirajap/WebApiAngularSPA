@@ -82,7 +82,7 @@
             }
         }
 
-        public async Task SetAppSettings()
+        public async Task<bool> SetAppSettings()
         {
             List<AppSetting> appsettings = new List<AppSetting>();
 
@@ -92,6 +92,8 @@
             {
                 this.GlobalAppSettings.Add(item.Key, item.Value);
             }
+
+            return true;
         }
     }
 }

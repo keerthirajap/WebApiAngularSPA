@@ -92,6 +92,9 @@
                         {
                             options.Filters.Add(typeof(ValidateModelStateAttribute));
                             options.Filters.Add<LoggingActionFilter>();
+                        }).ConfigureApiBehaviorOptions(options =>
+                        {
+                            options.SuppressModelStateInvalidFilter = true;
                         })
                  .AddJsonOptions(options =>
                  {

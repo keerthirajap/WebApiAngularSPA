@@ -166,9 +166,7 @@
 
     protected override async Task OnInitAsync()
     {
-        this.UserDetails.UserName = "sdvsd";
-
-        await this._appState.SetAppSettings();
+        //await this._appState.SetAppSettings();
 
         string authenticationToken = _localStorage.GetItem<string>
             ("AuthenticationToken");

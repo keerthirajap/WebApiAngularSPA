@@ -68,5 +68,29 @@
 
             return response.Model.ToList();
         }
+
+        public async Task<SingleResponse<bool>> DeleteUserAsync(UserBindingModel userBindingModel)
+        {
+            this._logger?.LogInformation("'{0}' Method execution started", nameof(this.DeleteUserAsync));
+
+            var response = new SingleResponse<bool>();
+            var baseUrl = this._appState.GlobalAppSettings["UserManagementApiURL"];
+            await this._appState.SetAuthorizationHeader();
+
+            try
+            {
+                response = await this._httpClient
+                                     .SendJsonAsync<SingleResponse<bool>>
+                                     (HttpMethod.Delete, baseUrl + "User/DeleteUser/" + userBindingModel.UserName, null);
+            }
+            catch (Exception ex)
+            {
+                this._logger?.LogError(ex.Message + " " + ex.StackTrace);
+            }
+
+            this._logger?.LogInformation("'{0}' Method execution completed successfully", nameof(this.DeleteUserAsync));
+
+            return response;
+        }
     }
 }
