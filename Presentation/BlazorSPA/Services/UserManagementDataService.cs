@@ -48,5 +48,25 @@
 
             return response.Model;
         }
+
+        public async Task<List<UserBindingModel>> GetUsersAsync()
+        {
+            var response = new ListResponse<UserBindingModel>();
+            var baseUrl = this._appState.GlobalAppSettings["UserManagementApiURL"];
+            await this._appState.SetAuthorizationHeader();
+
+            try
+            {
+                response = await this._httpClient
+                                     .GetJsonAsync<ListResponse<UserBindingModel>>
+                                     (baseUrl + "User/GetUsers");
+            }
+            catch (Exception ex)
+            {
+                this._logger?.LogError(ex.Message + " " + ex.StackTrace);
+            }
+
+            return response.Model.ToList();
+        }
     }
 }

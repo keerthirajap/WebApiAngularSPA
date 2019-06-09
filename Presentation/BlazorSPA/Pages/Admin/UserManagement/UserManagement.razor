@@ -1,0 +1,79 @@
+﻿@page "/UserManagement"
+
+@using Microsoft.JSInterop
+
+@inject IUriHelper UriHelper
+@inject IJSRuntime _jsRuntime
+@inject HttpClient Http
+
+@inherits UserManagementBase
+
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-6">
+                <h4>  <i class="fas fa-users"></i>  Users </h4>
+            </div>
+            <div class="col-6">
+                <button type="button" id="btnGetAddUserPartialView" class="btn btn-primary float-right">
+                    <i class="fas fa-user-plus"></i> Add User
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="card-body table-responsive">
+
+        @if (this.UsersDetails == null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+            <table class="table table-bordered table-hover table-sm">
+                <thead style="color: #fff;
+    background: #007bff linear-gradient(180deg, #268fff, #007bff) repeat-x;">
+                    <tr>
+                        <th>User Id</th>
+                        <th>User Name</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Created On</th>
+                        <th>Created By</th>
+                        <th>Manage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var usersDetails in this.UsersDetails)
+                    {
+                        <tr>
+                            <td>@usersDetails.UserId</td>
+                            <td>@usersDetails.UserName</td>
+                            <td>@usersDetails.FirstName</td>
+                            <td>@usersDetails.LastName</td>
+                            <td>@usersDetails.CreatedOn.Value.ToShortDateString()</td>
+                            <td>@usersDetails.CreatedBy</td>
+                            <td class="d-flex justify-content-center">
+                                <button type="button" class='btn btn-secondary btn-sm' id="" 
+                                        onclick="">
+                                    <i class='fas fa-user-edit'></i> Edit
+                                </button>
+
+                                <button type="button" class='btn btn-danger btn-sm ml-2' id="" 
+                                        onclick="">
+                                    <i class='fas fa-user-times'></i> Delete
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+@functions {
+    protected override async Task OnInitAsync()
+    {
+        await this.UserManagementOnLoad();
+    }
+}

@@ -154,12 +154,20 @@
             $('#' + modalName).modal('hide');
         }
 
-        publicMethod.ChangeBootstrapTab = function (modalName) {
-            $('.nav-tabs a[href="#' + modalName + '"]').tab('show');
+        publicMethod.showProfileTab = function () {
+            $("#tabRoles").removeClass("active");
+            $("#roles").removeClass("active show");
 
-            var url = window.location.href;
-            url = url.split('#')[0];
-            window.history.pushState('object', document.title, url);
+            $("#tabProfile").addClass("active");
+            $("#profile").addClass("active show");
+        }
+
+        publicMethod.showRolesTab = function () {
+            $("#tabProfile").removeClass("active");
+            $("#profile").removeClass("active show");
+
+            $("#tabRoles").addClass("active");
+            $("#roles").addClass("active show");
         }
 
         publicMethod.navActiveColorChange = function (navBarId) {

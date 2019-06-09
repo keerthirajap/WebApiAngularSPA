@@ -32,10 +32,10 @@
                  id="navBarLogin">
                 <ul class="navbar-nav mr-auto">
 
-                    <li class="nav-item pt-0 pb-0" id="nav-ItemLogin">
+                    <li class="nav-item pt-0 pb-0 pr-1 pl-1" id="nav-ItemLogin">
                         <a href="Login" class="nav-link" id="navbarLogin" style="cursor:pointer">Login</a>
                     </li>
-                    <li class="nav-item pt-0 pb-0" id="nav-ItemRegister">
+                    <li class="nav-item pt-0 pb-0 pr-1 pl-1" id="nav-ItemRegister">
                         <a href="Register"
                            style="cursor:pointer" class="nav-link" id="navbarRegister">Register</a>
                     </li>
@@ -46,15 +46,39 @@
                  id="navbarAuthenticated">
                 <ul class="navbar-nav mr-auto">
 
-                    <li class="nav-item pt-0 pb-0" id="nav-ItemHome">
-                        <a class="nav-link" href="" id="navbarHome">Home</a>
+                    <li class="nav-item pt-0 pb-0 pr-1 pl-1" id="nav-ItemHome">
+                        <a onclick="@(async () => await this.NavBarLinksOnClickAsync())"
+                           class="nav-link" href="" id="navbarHome">Home</a>
                     </li>
 
-                    <li class="nav-item pt-0 pb-0" id="nav-ItemCounter">
-                        <a class="nav-link" href="counter" id="navbarHome">Counter</a>
+                    <li class="nav-item pt-0 pb-0 pr-1 pl-1" id="nav-ItemCounter">
+                        <a onclick="@(async () => await this.NavBarLinksOnClickAsync())"
+                           class="nav-link" href="counter" id="navbarHome">Counter</a>
                     </li>
-                    <li class="nav-item pt-0 pb-0" id="nav-ItemFetchdata">
-                        <a class="nav-link" href="fetchdata" id="navbarHome">Fetch data</a>
+                    <li class="nav-item pt-0 pb-0 pr-1 pl-1" id="nav-ItemFetchdata">
+                        <a onclick="@(async () => await this.NavBarLinksOnClickAsync())"
+                           class="nav-link" href="fetchdata" id="navbarHome">Fetch data</a>
+                    </li>
+
+                    <li class="nav-item dropdown " id="nav-ItemAdmin" style="cursor:pointer">
+                        <a class="nav-link dropdown-toggle  pr-2 pl-2" id=""
+                           role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Admin
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a onclick="@(async () => await this.NavBarLinksOnClickAsync())"
+                               class="dropdown-item" href="UserManagement">User Management</a>
+                        </div>
+                    </li>
+
+                    <li class="nav-item dropdown" id="nav-ItemSamples" style="cursor:pointer">
+                        <a class="nav-link dropdown-toggle pr-2 pl-2" id="" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Samples
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a onclick="@(async () => await this.NavBarLinksOnClickAsync())"
+                               class="dropdown-item" href="ErrorPage">Error</a>
+                        </div>
                     </li>
                 </ul>
             </div>
@@ -94,7 +118,10 @@
     protected UserBindingModel UserDetails { get; set; } = new UserBindingModel();
 
     [Parameter]
-    protected List<UserRoleBindingModel> UserRoles { get; set; } = new List<UserRoleBindingModel>();
+    protected List<UserRoleBindingModel>
+        UserRoles
+    { get; set; } = new List<UserRoleBindingModel>
+            ();
 
     //RenderFragment dynamicComponent() => builder =>
     //{
@@ -115,9 +142,15 @@
         await this._appState.LogOutUserAsync();
     }
 
+    private async Task NavBarLinksOnClickAsync()
+    {
+        //await this._jsRuntime.InvokeAsync<object>("homeController.ShowLoadingIndicator");
+    }
+
     private async Task GetCurrentUserDetailsAsync()
     {
-        await this._jsRuntime.InvokeAsync<object>("homeController.ShowLoadingIndicator");
+        await this._jsRuntime.InvokeAsync<object>
+            ("homeController.ShowLoadingIndicator");
         string userName = _localStorage.GetItem<string>
             ("UserName");
 
@@ -125,8 +158,10 @@
         this.UserDetails = userDetails.userDetails;
         this.UserRoles = userDetails.userRoles;
 
-        await this._jsRuntime.InvokeAsync<object>("homeController.showModalPopUp", "modalUserDetails");
-        await this._jsRuntime.InvokeAsync<object>("homeController.HideLoadingIndicator");
+        await this._jsRuntime.InvokeAsync<object>
+            ("homeController.showModalPopUp", "modalUserDetails");
+        await this._jsRuntime.InvokeAsync<object>
+            ("homeController.HideLoadingIndicator");
     }
 
     protected override async Task OnInitAsync()

@@ -27,14 +27,14 @@
                         <ul class="nav nav-tabs">
                             <li class="nav-item">
                                 <a class="nav-link active" data-toggle="tab" style="cursor:pointer"
-                                   href="#profile"
-                                   onclick="@(async () => await this.ChangeTabAsync("profile"))">Profile</a>
+                                   id="tabProfile"
+                                   onclick="@(async () => await this.ShowProfileTabAsync())">Profile</a>
                             </li>
 
                             <li class="nav-item">
                                 <a class="nav-link" data-toggle="tab" style="cursor:pointer"
-                                   href="#roles"
-                                   onclick="@(async () => await this.ChangeTabAsync("roles"))">Roles</a>
+                                   id="tabRoles"
+                                   onclick="@(async () => await this.ShowRolesTabAsync())">Roles</a>
                             </li>
                         </ul>
                         <div id="myTabContent" class="tab-content">
@@ -88,7 +88,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="roles">
+                            <div class="tab-pane fade " id="roles">
                                 <div id="divUserRolesCards" class="row text-center pt-2" style="overflow-y: scroll;height: 360px;">
 
                                     @foreach (var userRoles in this.UserRoles.OrderBy(o => o.RoleId))
@@ -141,15 +141,25 @@
     private UserBindingModel UserDetails { get; set; }
 
     [Parameter]
-    private List<UserRoleBindingModel> UserRoles { get; set; }
+    private List<UserRoleBindingModel>
+    UserRoles
+    { get; set; }
 
-    private async Task ChangeTabAsync(string tabName)
+    private async Task ShowProfileTabAsync()
     {
-        await this._jsRuntime.InvokeAsync<object>("homeController.ChangeBootstrapTab", tabName);
+        await this._jsRuntime.InvokeAsync<object>
+            ("homeController.showProfileTab");
+    }
+
+    private async Task ShowRolesTabAsync()
+    {
+        await this._jsRuntime.InvokeAsync<object>
+            ("homeController.showRolesTab");
     }
 
     private async Task DismissUserDetailsPopUp()
     {
-        await this._jsRuntime.InvokeAsync<object>("homeController.HideModalPopUp", "modalUserDetails");
+        await this._jsRuntime.InvokeAsync<object>
+            ("homeController.HideModalPopUp", "modalUserDetails");
     }
 }

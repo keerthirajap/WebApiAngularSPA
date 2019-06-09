@@ -198,6 +198,25 @@
             return response.ToHttpResponse();
         }
 
+        // api/UserManagement/User/Test201?api-version=1.0
+        [HttpGet("User/GetUsers")]
+        [ProducesResponseType(200)] //If User Detail found
+        [ProducesResponseType(404)] //If User Detail is not exists
+        [ProducesResponseType(500)] //If there was an internal server error
+        public async Task<IActionResult> GetUsersAsync()
+        {
+            var response = new ListResponse<UserBindingModel>();
+
+            List<UserBindingModel> userBindingModel = new List<UserBindingModel>();
+
+            List<User> users =
+               await this._userManagementService.GetUsersAsync(isLocked: false, isActive: true);
+
+            response.Model = this._mapper.Map<List<UserBindingModel>>(users);
+
+            return response.ToHttpResponse();
+        }
+
         [Authorize(Roles = CoreWebApiRoles.User)]
         [HttpPost("User/IsUserAdmin")]
         [Produces("application/json")]
