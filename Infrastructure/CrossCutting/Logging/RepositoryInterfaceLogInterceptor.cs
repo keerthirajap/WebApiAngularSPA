@@ -9,6 +9,8 @@
     using Castle.DynamicProxy;
     using NLog;
 
+    //Follow anti-pattern only
+
     public class RepositoryInterfaceLogInterceptor : IInterceptor
     {
         private readonly ILogger _logger;
@@ -26,16 +28,7 @@
 
             try
             {
-                var logMethodStartEvent = LogEventInfo.Create(
-                                                                LogLevel.Info,
-                                                                invocationTarget,
-                                                                "Executing method " + methodName);
-
-                logMethodStartEvent.SetCallerInfo(
-                                                    invocationTarget,
-                                                    methodName + " - ",
-                                                    codeBase, 0);
-                this._logger.Log(logMethodStartEvent);
+                LogMethodEvent("MethodStart", codeBase, this._logger, invocationTarget, methodName);
 
                 invocation.Proceed();
 
@@ -48,24 +41,13 @@
                 }
                 else
                 {
-                    var logMethodEndEvent = LogEventInfo.Create(LogLevel.Info, invocationTarget,
-                                                      "Method Excuted Successfuly " + methodName);
-
-                    logMethodEndEvent.SetCallerInfo(invocationTarget, methodName + " - ",
-                                                                             codeBase, 0);
-                    this._logger.Log(logMethodEndEvent);
+                    LogMethodEvent("MethodEnd", codeBase, this._logger, invocationTarget, methodName);
                 }
             }
             catch (Exception ex)
             {
-                var logMethodEndEvent = LogEventInfo.Create(LogLevel.Error, invocationTarget,
-                                ex, null, "Error Occured on " + methodName +
-                                " | Trace : " + ex.InnerException + ex.Message + ex.StackTrace);
+                LogMethodEvent("MethodError", codeBase, _logger, invocationTarget, methodName, ex);
 
-                logMethodEndEvent.SetCallerInfo(invocationTarget, methodName + " - ",
-                                                                         codeBase, 0);
-
-                this._logger.Log(logMethodEndEvent);
                 throw;
             }
         }
@@ -75,23 +57,12 @@
             try
             {
                 await task.ConfigureAwait(false);
-                var logMethodEndEvent = LogEventInfo.Create(LogLevel.Info, invocationTarget,
-                                                        "Method Excuted Successfuly " + methodName);
 
-                logMethodEndEvent.SetCallerInfo(invocationTarget, methodName + " - ",
-                                                                        codeBase, 0);
-                _logger.Log(logMethodEndEvent);
+                LogMethodEvent("MethodEnd", codeBase, _logger, invocationTarget, methodName);
             }
             catch (Exception ex)
             {
-                var logMethodEndEvent = LogEventInfo.Create(LogLevel.Error, invocationTarget,
-                               ex, null, "Error Occured on " + methodName +
-                               " | Trace : " + ex.InnerException + ex.Message + ex.StackTrace);
-
-                logMethodEndEvent.SetCallerInfo(invocationTarget, methodName + " - ",
-                                                                         codeBase, 0);
-
-                _logger.Log(logMethodEndEvent);
+                LogMethodEvent("MethodError", codeBase, _logger, invocationTarget, methodName, ex);
                 throw;
             }
         }
@@ -101,28 +72,49 @@
             try
             {
                 T result = await task.ConfigureAwait(false);
-                var logMethodEndEvent = LogEventInfo.Create(LogLevel.Info, invocationTarget,
-                                                        "Method Excuted Successfuly " + methodName);
-
-                logMethodEndEvent.SetCallerInfo(invocationTarget, methodName + " - ",
-                                                                         codeBase, 0);
-
-                _logger.Log(logMethodEndEvent);
-
+                LogMethodEvent("MethodEnd", codeBase, _logger, invocationTarget, methodName);
                 return result;
             }
             catch (Exception ex)
             {
-                var logMethodEndEvent = LogEventInfo.Create(LogLevel.Error, invocationTarget,
-                              ex, null, "Error Occured on " + methodName +
-                              " | Trace : " + ex.InnerException + ex.Message + ex.StackTrace);
-
-                logMethodEndEvent.SetCallerInfo(invocationTarget, methodName + " - ",
-                                                                        codeBase, 0);
-                _logger.Log(logMethodEndEvent);
+                LogMethodEvent("MethodError", codeBase, _logger, invocationTarget, methodName, ex);
 
                 throw;
             }
+        }
+
+        private static void LogMethodEvent(string logEvent, string codeBase
+                                            , ILogger _logger, string invocationTarget
+                                            , string methodName, Exception ex = null)
+        {
+            var logMethodEvent = new LogEventInfo();
+
+            if (logEvent == "MethodStart")
+            {
+                logMethodEvent = LogEventInfo.Create(
+                                                        LogLevel.Info,
+                                                        invocationTarget,
+                                                        "Executing Method - " + methodName
+                                                        + " | Class - " + invocationTarget);
+            }
+            else if (logEvent == "MethodEnd")
+            {
+                logMethodEvent = LogEventInfo.Create(LogLevel.Info, invocationTarget,
+                                           "Successfuly Executed Method - " + methodName
+                                            + " | Class - " + invocationTarget);
+            }
+            else if (logEvent == "MethodError")
+            {
+                logMethodEvent = LogEventInfo.Create(LogLevel.Error, invocationTarget,
+                              ex, null, "Error Occured on Executing Method - " + methodName
+                               + " | Class - " + invocationTarget +
+                              " | Trace - " + ex.InnerException + ex.Message + ex.StackTrace);
+            }
+
+            logMethodEvent.SetCallerInfo(invocationTarget,
+                                                methodName + " - ",
+                                                codeBase, 0);
+            _logger.Log(logMethodEvent);
         }
     }
 }
