@@ -31,7 +31,6 @@
                 LogMethodEvent("MethodStart", codeBase, this._logger, invocationTarget, methodName);
 
                 invocation.Proceed();
-
                 var method = invocation.MethodInvocationTarget;
                 var isAsync = method.GetCustomAttribute(typeof(AsyncStateMachineAttribute)) != null;
 
@@ -63,6 +62,7 @@
             catch (Exception ex)
             {
                 LogMethodEvent("MethodError", codeBase, _logger, invocationTarget, methodName, ex);
+
                 throw;
             }
         }
@@ -73,6 +73,7 @@
             {
                 T result = await task.ConfigureAwait(false);
                 LogMethodEvent("MethodEnd", codeBase, _logger, invocationTarget, methodName);
+
                 return result;
             }
             catch (Exception ex)
@@ -91,8 +92,7 @@
 
             if (logEvent == "MethodStart")
             {
-                logMethodEvent = LogEventInfo.Create(
-                                                        LogLevel.Info,
+                logMethodEvent = LogEventInfo.Create(LogLevel.Info,
                                                         invocationTarget,
                                                         "Executing Method - " + methodName
                                                         + " | Class - " + invocationTarget);
