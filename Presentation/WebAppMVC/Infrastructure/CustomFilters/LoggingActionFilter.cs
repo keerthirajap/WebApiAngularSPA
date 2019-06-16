@@ -12,7 +12,7 @@
     {
         private readonly Microsoft.Extensions.Logging.ILogger _logger;
 
-        private Logger _nogLogger = LogManager.GetCurrentClassLogger(); // creates a logger using the class name
+        private Logger _nlogger = LogManager.GetCurrentClassLogger(); // creates a logger using the class name
 
         public LoggingActionFilter(ILoggerFactory loggerFactory)
         {
@@ -23,24 +23,24 @@
         ActionExecutingContext context,
         ActionExecutionDelegate next)
         {
-            this._nogLogger = LogManager.GetLogger(context.ActionDescriptor.DisplayName);
+            this._nlogger = LogManager.GetLogger(context.ActionDescriptor.DisplayName);
 
             try
             {
-                this._nogLogger.Info(
-                "Started method execution '{0}'", context.ActionDescriptor.DisplayName);
+                this._nlogger.Info(
+                     "Executing Method - " + context.ActionDescriptor.DisplayName);
 
                 var resultContext = await next();
 
                 if (resultContext.Exception == null)
                 {
-                    this._nogLogger.Info(
-                            "Completed method execution '{0}'", context.ActionDescriptor.DisplayName);
+                    this._nlogger.Info(
+                             "Successfuly Executed Method - " + context.ActionDescriptor.DisplayName);
                 }
                 else
                 {
-                    this._nogLogger.Error(
-                          "Error occured on method execution - "
+                    this._nlogger.Error(
+                          "Error Occured on Executing Method - "
                           + resultContext.Exception.Message
                           , resultContext.Exception);
 
