@@ -130,7 +130,7 @@
             var builder = new ContainerBuilder();
             builder.Populate(services);
             builder.Register(c => new RepositoryInterfaceLogInterceptor(this.logger)).InstancePerLifetimeScope();
-            builder.Register(c => new ServiceClassLogInterceptor(this.logger)).InstancePerLifetimeScope();
+            builder.Register(c => new ServiceInterfaceLogInterceptor(this.logger)).InstancePerLifetimeScope();
 
             builder.RegisterModule(new DatabaseIOC(GlobalAppConfigurations.Instance.GetValue("SqlDbConnection").ToString(), "InstancePerLifetimeScope"));
             builder.RegisterModule(new ServiceIOC("InstancePerLifetimeScope"));

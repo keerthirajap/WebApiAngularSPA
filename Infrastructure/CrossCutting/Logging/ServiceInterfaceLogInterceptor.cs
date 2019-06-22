@@ -9,13 +9,13 @@
 
     //Follow anti-pattern only
 
-    public class ServiceClassLogInterceptor : IInterceptor
+    public class ServiceInterfaceLogInterceptor : IInterceptor
     {
         private readonly ILogger _logger;
 
         private Logger _nlogger = LogManager.GetCurrentClassLogger(); // creates a logger using the class name
 
-        public ServiceClassLogInterceptor(ILogger logger)
+        public ServiceInterfaceLogInterceptor(ILogger logger)
         {
             this._logger = logger;
         }
@@ -47,7 +47,6 @@
             catch (Exception ex)
             {
                 LogMethodEvent("MethodError", codeBase, _logger, invocationTarget, methodName, ex);
-
                 throw;
             }
         }
@@ -62,7 +61,6 @@
             catch (Exception ex)
             {
                 LogMethodEvent("MethodError", codeBase, _logger, invocationTarget, methodName, ex);
-
                 throw;
             }
         }

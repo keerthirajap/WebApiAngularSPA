@@ -46,7 +46,6 @@
             catch (Exception ex)
             {
                 LogMethodEvent("MethodError", codeBase, _logger, invocationTarget, methodName, ex);
-
                 throw;
             }
         }
@@ -56,13 +55,11 @@
             try
             {
                 await task.ConfigureAwait(false);
-
                 LogMethodEvent("MethodEnd", codeBase, _logger, invocationTarget, methodName);
             }
             catch (Exception ex)
             {
                 LogMethodEvent("MethodError", codeBase, _logger, invocationTarget, methodName, ex);
-
                 throw;
             }
         }
@@ -79,7 +76,6 @@
             catch (Exception ex)
             {
                 LogMethodEvent("MethodError", codeBase, _logger, invocationTarget, methodName, ex);
-
                 throw;
             }
         }

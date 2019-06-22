@@ -9,7 +9,7 @@
     using Domain.User;
     using Domain.User.Role;
 
-    [Intercept(typeof(ServiceClassLogInterceptor))]
+    [Intercept(typeof(ServiceInterfaceLogInterceptor))]
     public interface IUserManagementService
     {
         Task<List<User>> GetUsersAsync(bool isLocked, bool isActive);

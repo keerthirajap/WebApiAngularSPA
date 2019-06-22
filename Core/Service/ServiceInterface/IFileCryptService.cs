@@ -11,7 +11,7 @@
     using Domain.User;
     using Domain.User.Role;
 
-    [Intercept(typeof(ServiceClassLogInterceptor))]
+    [Intercept(typeof(ServiceInterfaceLogInterceptor))]
     public interface IFileCryptService
     {
         Task<byte[]> CopyStreamToByteBuffer(Stream stream);
