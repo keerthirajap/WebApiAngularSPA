@@ -7734,6 +7734,9 @@ tbody > tr > td {
   .col-form-label-lg {
     font-size: 1.15rem; }
 
+.form-group {
+  margin-bottom: .75rem; }
+
 .navbar {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
   -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
